@@ -72,12 +72,28 @@ For a quick test of jGallery do the following:<br>
   <li>create a folder called <span style="font-style: italic;">images</span>
 below jGallery ( C:\jakarta-tomcat-5.0.19\webapps\jGallery\images )</li>
   <li>restart Tomcat</li>
+  <li>try <a href="http://localhost:8080/jGallery/">http://localhost:8080/jGallery/</a>&nbsp;
+and you should see thes documentation page your are viewing now<br>
+  </li>
   <li>copy some images into the <span style="font-style: italic;">images</span>
 folder</li>
   <li>in a web browser open: <a
- href="http://localhost:8080/jGallery/images/index.html">http://localhost:8080/jGallery/images/index.html</a><br>
+ href="http://localhost:8080/jGallery/images/index.html">http://localhost:8080/jGallery/images/index.html<br>
+    </a>
+    <p>It takes some time until the index page appears as jGallery is
+creating the thumbnails the first time.</p>
   </li>
 </ul>
+<h6>Trouble shooting</h6>
+<ul>
+  <li><a href="http://localhost:8080/jGallery/">http://localhost:8080/jGallery/</a>
+does not work: consult the Tomcat documentation on how to setup a web
+application. Try the Tomcat manager application, to see if jGallery is
+in the list of web applications.</li>
+  <li>you get HTTP Status 404: check if your URL has the right text
+case of the folder path</li>
+</ul>
+<br>
 <h3><a name="RecommendedSetup">Recommended setup</a></h3>
 Contrary to the method shown in Quickstart, I recommend you put your
 images in a separate folder. You might even choose to put the images in

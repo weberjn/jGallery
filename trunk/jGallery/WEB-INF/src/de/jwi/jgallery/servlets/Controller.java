@@ -220,7 +220,7 @@ public class Controller extends HttpServlet
         return folders;
     }
 
-    private Folder createFolder(HttpSession session, String folderPath,
+    private Folder createFolder(HttpSession session, String folderPath, String imagePath,
             String folderRealPath, String jgalleryContextPath)
             throws GalleryException
     {
@@ -260,7 +260,7 @@ public class Controller extends HttpServlet
         }
 
         folder = new Folder(directory, getServletContext(), configuration, version,
-                jgalleryContextPath, folderPath, dBManager);
+                jgalleryContextPath, folderPath, imagePath, dBManager);
 
         Hashtable folders = getFolders(session);
 
@@ -344,7 +344,7 @@ public class Controller extends HttpServlet
         String requestURI = request.getRequestURI();
         String requestURL = request.getRequestURL().toString();
 
-        // contextPath := "/JGallery"
+        // contextPath := "/jGallery"
         String contextPath = request.getContextPath();
 
         String servletPath = request.getServletPath();
@@ -387,8 +387,17 @@ public class Controller extends HttpServlet
                 }
 
                 folderRealPath = theRealPath.getRealPath();
+                
+                String imagePath = folderPath;
 
-                folder = createFolder(request.getSession(), folderPath,
+                if (contextPath.substring(1).equals(theRealPath.getContext()))
+                {
+                	// special case for image folders below jGallery's context
+                	
+                	imagePath = contextPath + folderPath;
+                }
+                
+                folder = createFolder(request.getSession(), folderPath,imagePath,
                         folderRealPath, contextPath);
 
                 folder.loadFolder();
