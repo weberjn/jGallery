@@ -184,7 +184,7 @@ public class Image implements Serializable
         String n;
         if (isRepresentsSubdirectory)
         {
-            n = name + "index.html";
+            n = name + "/index.html";
         }
         else
         {
