@@ -7,6 +7,12 @@
 
     <display-name>jGallery</display-name>
 
+    <context-param>
+    	<param-name>dirmappings</param-name>
+	<param-value>/=D:/java/jakarta-tomcat-5.0.19/webapps/ROOT</param-value>
+	<description>seperate with commas</description>
+    </context-param>
+    
     <resource-ref>
       <description>DB Connection</description>
       <res-ref-name>jdbc/jGallery</res-ref-name>
