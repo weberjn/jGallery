@@ -46,12 +46,24 @@
 
 	
     </servlet>
+    
+    
+    <servlet>
+        <servlet-name>StatisticsController</servlet-name>
+        <servlet-class>de.jwi.jgallery.servlets.StatisticsController</servlet-class>
+    </servlet>
 
     <servlet-mapping>
         <servlet-name>Controller</servlet-name>
 	<url-pattern>*.html</url-pattern>
     </servlet-mapping>
 
+    
+    <servlet-mapping>
+        <servlet-name>StatisticsController</servlet-name>
+	<url-pattern>/Statistics</url-pattern>
+    </servlet-mapping>
+    
   
     <welcome-file-list>
     	<welcome-file>jGallery.htm</welcome-file>
