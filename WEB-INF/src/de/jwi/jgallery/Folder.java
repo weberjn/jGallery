@@ -250,10 +250,12 @@ public class Folder implements FilenameFilter, Serializable
         {
             if (n > subDirectories.length)
             {
+                // get an image
                 image = getImage(n - subDirectories.length);
             }
             else
             {
+                // get a subfolder representation
                 image = new Image(subDirectories[n - 1], true, this,
                         makeImageAccessor(subDirectories[n - 1]));
             }
@@ -859,25 +861,18 @@ public class Folder implements FilenameFilter, Serializable
 
             StringBuffer sb = new StringBuffer();
 
-            if (parts.length > 2) // [0] is empty
+            if (parts.length > 2) // [0] is empty, [1..n-2] are parents, [n-1] is current
             {
-                sb.append('/');
-                for (int i = 1; i < parts.length; i++)
+                for (int i = 1; i < parts.length-1; i++)
                 {
                     level = i;
                     sb.append(parts[i]);
                     sb.append('/');
                 }
-            }
-            //String parent = folderPath.substring(0,
-            //      folderPath.lastindexOf('/',1)+1);
+                String parent = sb.toString();
 
-            String parent = sb.toString();
-
-            if (parent.length() > 1)
-            {
-                // TODO
-                parentIndexPage = getHTMLBase() + parent + "/index.html";
+                String hTMLBase = jgalleryContextPath;
+                parentIndexPage = hTMLBase + "/" + parent + "index.html";
             }
             else
             {
