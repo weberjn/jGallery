@@ -54,10 +54,10 @@ generated HTML pages</a></li>
 <h3><a name="What_you_need"></a>What you need</h3>
 <ul>
   <li>a web container supporting JSP 2.0. jGallery will <strong>not</strong>
-work with an older container. At the moment (June 2004)
-there is only <a href="http://jakarta.apache.org/">Jakarta Tomcat 5</a>.
-  </li>
-  <li><a href="http://java.sun.com/j2se/">JDK 1.3</a> or newer</li>
+work with an older container. Development of jGallery is done with <a
+ href="http://jakarta.apache.org/">Jakarta Tomcat 5</a>, but I also
+successfully tested jGallery with WebLogic Server 9.0b. </li>
+  <li><a href="http://java.sun.com/j2se/">JDK 1.4</a> or newer</li>
   <li>folders with images to display ;-)<br>
   </li>
 </ul>
@@ -116,15 +116,15 @@ holiday2004, france2003 or myeos300dimages.<br>
 Now tell Tomcat that this folder is a context and create a file
 $CATALINA_HOME/conf/Catalina/localhost/galleries.xml<br>
 with this content:<br>
-
 <pre>&lt;Context path="/galleries" docBase="/usr/local/apache/htdocs/galleries" /&gt;</pre>
 In $CATALINA_HOME/conf/Catalina/localhost there also must be the
-jGallery.xml (with an adapted <span style="font-style: italic;">docbase</span>)
+jGallery.xml (with an suitable <span style="font-style: italic;">docbase</span>
+attribute)
 found in the jGallery distribution.<br>
 <br>
 Now restart Tomcat and point your browser to <a
  href="http://localhost:8080/jGallery/images/index.html">http://localhost:8080/jGallery/galleries/holiday2004/index.html</a>
- <br>
+<br>
 <br>
 If you have set up mod_jk and add <br>
 <pre>JkMount /jGallery/* jgallery</pre>
@@ -384,7 +384,7 @@ jGallery</li>
 </ul>
 <a name="postcard"></a>And, if you want to thank me, <a
  href="contact.htm#postcard">send me a picture postcard.</a><br>
-<p class="lastmod">Last modification 2004-06-03</p>
+<p class="lastmod">Last modification 2004-12-21</p>
 <p class="copyright">Copyright &copy; 2004 <a href="contact.htm">J&uuml;rgen
 Weber</a></p>
 </body>

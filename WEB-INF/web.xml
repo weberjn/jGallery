@@ -31,9 +31,9 @@
     
     
     <context-param>
+    	<description>separate with commas</description>
     	<param-name>dirmappings</param-name>
-	<param-value>/galleries=/home/galleries</param-value>
-	<description>seperate with commas</description>
+		<param-value>galleries=/home/galleries</param-value>
     </context-param>
 
     <servlet>
@@ -41,9 +41,9 @@
         <servlet-class>de.jwi.jgallery.servlets.Controller</servlet-class>
 	
 	<init-param>
+		<description>Path prefix, that maps to web ressources</description>
 		<param-name>webprefix</param-name>
 		<param-value>/web/</param-value>
-		<description>Path prefix, that maps to web ressources</description>
 	</init-param>
 
 	
@@ -57,7 +57,7 @@
 
     <servlet-mapping>
         <servlet-name>Controller</servlet-name>
-	<url-pattern>*.html</url-pattern>
+		<url-pattern>*.html</url-pattern>
     </servlet-mapping>
 
     
