@@ -1,0 +1,5 @@
+This XP skin is based on the GPLed singapore XP skin.
+
+Author: Tamlyn Rhodes
+
+http://singapore.sourceforge.net/?page=templates
