@@ -37,6 +37,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -49,6 +50,7 @@ import de.jwi.jgallery.Configuration;
 import de.jwi.jgallery.Folder;
 import de.jwi.jgallery.GalleryException;
 import de.jwi.jgallery.GalleryNotFoundException;
+import de.jwi.jgallery.IThumbnailWriter;
 import de.jwi.jgallery.WebFolder;
 import de.jwi.jgallery.db.DBManager;
 import de.jwi.servletutil.PathHelper;
@@ -114,10 +116,12 @@ public class Controller extends HttpServlet
 
 	public void init() throws ServletException
 	{
-		dataSource = (String) getServletContext()
+		ServletContext context = getServletContext();
+		
+		dataSource = (String) context
 				.getInitParameter("dataSource");
 
-		String s = (String) getServletContext().getInitParameter("dirmappings");
+		String s = (String) context.getInitParameter("dirmappings");
 
 		dirmapping = new Properties();
 
@@ -137,7 +141,7 @@ public class Controller extends HttpServlet
 			}
 		}
 
-		s = getServletContext().getInitParameter("useDataBase");
+		s = context.getInitParameter("useDataBase");
 
 		if (null != s)
 		{
@@ -145,19 +149,25 @@ public class Controller extends HttpServlet
 			initDBConnection();
 		}
 
-		InputStream is = getServletContext().getResourceAsStream(
+		InputStream is = context.getResourceAsStream(
 				"/WEB-INF/" + CONFIGFILE);
 
 		try
 		{
 			configuration = new Configuration(is);
+			
+			s = (String) context.getInitParameter("thumbnailWriter"); 
+			
+			Object o = Class.forName(s).newInstance();
+			
+			configuration.setThumbnailWriter((IThumbnailWriter)o);
 		}
-		catch (IOException e)
+		catch (Exception e)
 		{
 			throw new ServletException(e.getMessage());
 		}
 
-		is = getServletContext().getResourceAsStream("/WEB-INF/" + WEBDIRSFILE);
+		is = context.getResourceAsStream("/WEB-INF/" + WEBDIRSFILE);
 
 		if (null != is)
 		{
@@ -180,7 +190,7 @@ public class Controller extends HttpServlet
 
 		try
 		{
-			is = getServletContext().getResourceAsStream(
+			is = context.getResourceAsStream(
 					"/WEB-INF/" + VERSIONCONFIGFILE);
 
 			Properties versionProperties = new Properties();

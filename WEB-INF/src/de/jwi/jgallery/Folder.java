@@ -61,11 +61,6 @@ public class Folder implements FilenameFilter, Serializable
 
 	private static final String GENERATORURL = "http://www.jwi.de/jgallery/";
 
-	private static final int THUMBNAILTOOLKIT = 0;
-
-	private static final int THUMBNAILIMAGEIO = 1;
-
-	private int thumbnailGenerationMethod = THUMBNAILTOOLKIT;
 
 	private String thumbsdir = "thumbs";
 
@@ -183,7 +178,8 @@ public class Folder implements FilenameFilter, Serializable
 
 		readConfiguration();
 
-		createThumbnailWriter();
+		thumbnailWriter = configuration.getThumbnailWriter();
+
 	}
 
 	public HashMap getVariables()
@@ -235,14 +231,9 @@ public class Folder implements FilenameFilter, Serializable
 		thumbSize = configuration.getInt("thumbnails.size", thumbSize);
 		thumbQuality = configuration.getFloat("thumbnails.quality",thumbQuality);
 
-		s = configuration.getString("thumbnails.method");
 
 		// parentlink.galleries=
 		
-		thumbnailGenerationMethod = "imageio".equals(s)
-				? THUMBNAILIMAGEIO
-				: THUMBNAILTOOLKIT;
-
 		resResourcePath = "/skins/" + skin + "/res";
 		resPath = jgalleryContextPath + "/skins/" + skin + "/res";
 		stylePath = jgalleryContextPath + "/skins/" + skin + "/styles/" + style
@@ -265,17 +256,6 @@ public class Folder implements FilenameFilter, Serializable
 		configuration.getUserVariables(variables);
 	}
 
-	private void createThumbnailWriter()
-	{
-		if (THUMBNAILIMAGEIO == thumbnailGenerationMethod)
-		{
-			thumbnailWriter = new ImageIOThumbnailWriter();
-		}
-		else
-		{
-			thumbnailWriter = new ToolkitThumbnailWriter();
-		}
-	}
 
 	private void setIconDimensions()
 	{
