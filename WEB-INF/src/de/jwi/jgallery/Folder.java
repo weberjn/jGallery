@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.Properties;
 
 import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 
 import de.jwi.jgallery.db.DBManager;
 
@@ -77,7 +78,7 @@ public class Folder implements FilenameFilter, Serializable
 	private IThumbnailWriter thumbnailWriter = null;
 
 	private File directory;
-	
+
 	private List parentFolderList;
 
 	private Configuration configuration;
@@ -125,9 +126,9 @@ public class Folder implements FilenameFilter, Serializable
 	private String indexJsp;
 
 	private String slideJsp;
-	
+
 	private String skinPath;
-	
+
 	private String resPath;
 
 	private String resResourcePath;
@@ -162,7 +163,7 @@ public class Folder implements FilenameFilter, Serializable
 	private String albumPath;
 
 	private String title;
-	
+
 	private String name;
 
 	private HashMap variables = new HashMap();
@@ -202,14 +203,53 @@ public class Folder implements FilenameFilter, Serializable
 
 	private int sortingOrder = ImageComparator.SORTNONE;
 
+
+	private Configuration readSkinConfiguration(String skinConfigFile,
+			Configuration c)
+	{
+		Configuration c1 = c;
+
+		InputStream is = appContext.getResourceAsStream(skinConfigFile);
+
+		if (is != null)
+		{
+			try
+			{
+				c1 = new Configuration(is, c);
+			}
+			catch (IOException e)
+			{
+				// NOP
+			}
+			finally
+			{
+				try
+				{
+					is.close();
+				}
+				catch (IOException e1)
+				{
+					// NOP
+				}
+			}
+		}
+		return c1;
+	}
+
 	private void readConfiguration() throws GalleryException
 	{
+		skin = configuration.getString("skin", skin);
+		String skinConfig = "/skins/" + skin + "/skin.properties";
+
+		// Skin Configurations cannot be overridden
+		configuration = readSkinConfiguration(skinConfig, configuration);
+
 		cols = configuration.getInt("index.columns", cols);
 		rows = configuration.getInt("index.rows", rows);
 
-		skin = configuration.getString("skin", skin);
 		indexJsp = "/skins/" + skin + "/index.jsp";
 		slideJsp = "/skins/" + skin + "/slide.jsp";
+
 
 		style = configuration.getString("style", style);
 
@@ -811,12 +851,12 @@ public class Folder implements FilenameFilter, Serializable
 	{
 		return title;
 	}
-	
+
 	public String getName()
 	{
 		return name;
 	}
-	
+
 
 	/**
 	 * @return Total number of index pages
@@ -1020,9 +1060,8 @@ public class Folder implements FilenameFilter, Serializable
 	{
 		return skinPath;
 	}
-	
-	
-	
+
+
 	// 1..
 	private String getSlidePage(int n)
 	{
@@ -1277,56 +1316,61 @@ public class Folder implements FilenameFilter, Serializable
 	public class ParentLink
 	{
 		private String name;
+
 		private String url;
-		
+
 		private ParentLink(String name, String url)
 		{
 			this.name = name;
 			this.url = url;
 		}
+
 		public String getName()
 		{
 			return name;
 		}
+
 		public String getUrl()
 		{
 			return url;
 		}
 	}
-	
+
 	private void calculateParentFolderList(String folderPath)
 	{
 		// folderPath is URL part after context
 		// e.g. /galleries/SkinTest/
-		
+
 		parentFolderList = new ArrayList();
-		
-		String s = folderPath.substring(1,folderPath.length()-1);
-		
+
+		String s = folderPath.substring(1, folderPath.length() - 1);
+
 		String hTMLBase = jgalleryContextPath;
-		
-		String[] s1=s.split("/");
-		
+
+		String[] s1 = s.split("/");
+
 		String p = jgalleryContextPath;
-		
-		StringBuffer sb = new StringBuffer(jgalleryContextPath).append('/').append(s1[0]).append('/');
+
+		StringBuffer sb = new StringBuffer(jgalleryContextPath).append('/')
+				.append(s1[0]).append('/');
 		StringBuffer sb1;
-		
-		for (int i=1;i<s1.length;i++)
+
+		for (int i = 1; i < s1.length; i++)
 		{
-			sb1 = new StringBuffer(sb.toString()).append("index.").append(configData.urlExtention);
-			parentFolderList.add(new ParentLink(s1[i-1],sb1.toString()));
+			sb1 = new StringBuffer(sb.toString()).append("index.").append(
+					configData.urlExtention);
+			parentFolderList.add(new ParentLink(s1[i - 1], sb1.toString()));
 			sb.append(s1[i]).append('/');
 		}
-		
-		int x=5;
+
+		int x = 5;
 	}
-	
+
 	public List getParentFolderList()
 	{
 		return parentFolderList;
 	}
-	
+
 	protected void endLoad() throws GalleryException
 	{
 		imagesArray = new Image[imageFiles.length];
@@ -1364,11 +1408,11 @@ public class Folder implements FilenameFilter, Serializable
 		{
 			title = title.substring(0, title.lastIndexOf('/'));
 		}
-		
+
 		int p = title.lastIndexOf('/');
-		if (p>-1)
+		if (p > -1)
 		{
-			name = title.substring(p+1);
+			name = title.substring(p + 1);
 		}
 		else
 		{
@@ -1416,12 +1460,12 @@ public class Folder implements FilenameFilter, Serializable
 		{
 			// increment counter only once per Session
 
-			if (null != dBManager) 
+			if (null != dBManager)
 			{
 				try
 				{
-					folderCounter = dBManager
-							.getAndIncFolderCounter(folderPath,this.configData.doCount);
+					folderCounter = dBManager.getAndIncFolderCounter(
+							folderPath, this.configData.doCount);
 				}
 				catch (SQLException e)
 				{
@@ -1448,7 +1492,7 @@ public class Folder implements FilenameFilter, Serializable
 
 		int c = imageCounters[imageNum - 1];
 
-		if (null != dBManager) 
+		if (null != dBManager)
 		{
 			// increment counter only once per Session
 
@@ -1457,7 +1501,7 @@ public class Folder implements FilenameFilter, Serializable
 				try
 				{
 					c = dBManager.getAndIncImageCounter(folderPath,
-							imageFiles[imageNum - 1],this.configData.doCount);
+							imageFiles[imageNum - 1], this.configData.doCount);
 
 					imageCounters[imageNum - 1] = c;
 
