@@ -1146,6 +1146,10 @@ public class Folder implements FilenameFilter, Serializable
                     rc = null;
                 }
             }
+            else
+            {
+            	rc = Integer.toString(c);
+            }
         }
         return rc;
     }
