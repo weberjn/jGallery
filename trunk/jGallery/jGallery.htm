@@ -8,9 +8,9 @@
 <body lang="en">
 <h1>jGallery<br>
 </h1>
-<p><a href="http://jgallery.dev.java.net/">jGallery</a> is a web
-application to present image galleries. There is a thumbnail page and
-detail pages for images with EXIF information.<br>
+<p><a href="http://jgallery.dev.java.net/">jGallery</a> is a Java web
+application to present image galleries. There are thumbnail pages and
+detail pages for images. EXIF information is displayed, too.<br>
 </p>
 <p>Get jGallery at <a href="http://jgallery.dev.java.net/">http://jgallery.dev.java.net/</a><br>
 </p>
@@ -18,19 +18,12 @@ detail pages for images with EXIF information.<br>
 the online demo</a>.<br>
 </p>
 <p>jGallery consists of a controller that reads in the image
-information and JSPs that generate the HTML pages. There are different
-sets of templates that define the generated
-pages. jGallery's templates are to a high degree compatible with <a
- href="http://www.datadosen.se/jalbum/">JAlbum</a>'s skins. Get them at
-<a href="http://jrepository.engblom.org/">http://jrepository.engblom.org/</a>.<br>
+information, and JSPs that generate the HTML pages. There are different
+sets of templates that define the look of generated
+pages. jGallery's templates are based on the idea of <a
+ href="http://www.datadosen.se/jalbum/">JAlbum</a>'s skins.<br>
 </p>
-<p>jGallery uses <a
- href="http://www.geocities.com/marcoschmidt.geo/image-info.html">Marco
-Schmidt's ImageInfo</a> class and <a
- href="http://www.drewnoakes.com/code/exif/">Drew Noakes</a>' metadata
-extraction library to parse EXIF image information.<br>
-</p>
-<p>jGallery itself is licensed under the <a href="http://www.gnu.org/">Gnu
+<p>jGallery is licensed under the <a href="http://www.gnu.org/">Gnu
 Public License</a> (GPL).<br>
 </p>
 <p>Nevertheless, I'd be happy if you <a href="contact.htm#postcard">send
@@ -42,7 +35,11 @@ picture postcard of your place.<br>
   <li><a href="#What_you_need">What you need</a></li>
   <li><a href="#Installation">Installation</a></li>
   <li><a href="#Quickstart">Quickstart</a></li>
-  <li><a href="jGallery.htm#RecommendedSetup">Recommended Setup</a></li>
+  <li><a href="jGallery.htm#RecommendedSetup">Using seperate contexts
+for jGallery and images</a></li>
+  <li><a href="jGallery.htm#RecommendedSetup">Using jGallery as default
+context<br>
+    </a></li>
   <li><a href="#how_jGallery_finds_its_images">URI Addresses of
 generated HTML pages</a></li>
   <li><a href="#Configuration">Configuration</a></li>
@@ -53,11 +50,13 @@ generated HTML pages</a></li>
 <br>
 <h3><a name="What_you_need"></a>What you need</h3>
 <ul>
-  <li>a web container supporting JSP 2.0. jGallery will <strong>not</strong>
-work with an older container. Development of jGallery is done with <a
- href="http://jakarta.apache.org/">Jakarta Tomcat 5</a>, but I also
-successfully tested jGallery with WebLogic Server 9.0b. </li>
-  <li><a href="http://java.sun.com/j2se/">JDK 1.4</a> or newer</li>
+  <li>a <span style="font-weight: bold;">java web container</span>
+supporting <a href="http://java.sun.com/products/jsp/">JSP</a> <span
+ style="font-weight: bold;">2.0</span> or newer and running under <a
+ href="http://java.sun.com/j2se/">JDK 1.4</a> or newer. Development of
+jGallery is done with <a href="http://jakarta.apache.org/">Jakarta
+Tomcat 5</a>, but I also
+found jGallery to work with WebLogic Server 9.0b.</li>
   <li>folders with images to display ;-)<br>
   </li>
 </ul>
@@ -102,9 +101,11 @@ in the list of web applications.</li>
 case of the folder path</li>
 </ul>
 <br>
-<h3><a name="RecommendedSetup">Recommended setup</a></h3>
+<h3><a name="RecommendedSetup">using a jGallery context together with
+an galleries context</a></h3>
 Contrary to the method shown in Quickstart, I recommend you put your
-images in a separate folder. You might even choose to put the images in
+images in a separate context. You might even choose to put the images
+in
 a directory served by apache.<br>
 <br>
 Unix example: <br>
@@ -133,7 +134,25 @@ at<br>
 <br>
 <a href="http://localhost:8080/jGallery/images/index.html">http://localhost/jGallery/galleries/holiday2004/index.html</a><br>
 <br>
-whereas the images themselves are served by Apache.
+whereas the images themselves are served by Apache.<br>
+<h3><a name="RecommendedSetup">Using jGallery as default context</a></h3>
+If you install jGallery as default context and put your image folders
+within the jGallery web application, you can get shorter URLs for your
+images, e.g.<br>
+<br>
+<a href="http://localhost:8080/jGallery/images/index.html">http://localhost:8080/holiday2004/index.html</a><br>
+<br>
+Installing jGallery as default context within Tomcat can be done like
+this:<br>
+<ul>
+  <li>rename the $CATALINA_HOME/webapps/ROOT web application to
+something different</li>
+  <li>to make jGallery the default context use an empty Context path in
+$CATALINA_HOME/conf/Catalina/localhost/jGallery.xml<br>
+  </li>
+</ul>
+<pre>&lt;Context path="" docBase="jGallery" /&gt;</pre>
+<br>
 <h3><a name="how_jGallery_finds_its_images">URI Addresses of generated
 HTML pages</a></h3>
 <br>
@@ -187,7 +206,8 @@ for each HTTP session. </p>
     <tr>
       <td style="vertical-align: top; text-align: justify; width: 25%;">template<br>
       </td>
-      <td style="vertical-align: top;">template is the name of the folder
+      <td style="vertical-align: top;">template is the name of the
+folder
 to use for index and slide templates in jGallery/template/<br>
       </td>
     </tr>
@@ -303,7 +323,8 @@ After collecting this information, the Controller Servlet puts the
 Folder and currently selected Image as attributes <span
  style="font-style: italic;">folder </span>and <span
  style="font-style: italic;">image </span>into the ServletRequest
-object and forwards to the index.jsp or slide.jsp of the active template.
+object and forwards to the index.jsp or slide.jsp of the active
+template.
 In the JSPs the <span style="font-style: italic;">folder </span>and <span
  style="font-style: italic;">image </span>attributes are available as
 JSP 2.0 EL variables, e.g. ${image.exif.cameraModel}. The JSP engine
@@ -313,7 +334,8 @@ request.getAttribute("image").getExif().getCameraModel().<br>
 <h3><a name="Architecture">Variables</a></h3>
 TODO<br>
 <h3><a name="Adapting_a_JAlbum_skin">Porting a JAlbum skin</a></h3>
-<p>A template consists of JSP 2.0 files. In order to make porting JAlbum
+<p>A template consists of JSP 2.0 files. In order to make porting
+JAlbum
 skins as easy as possible, jGallery uses variables of same name and
 semantic as JAlbum, but variables can only be referenced from an
 object. jGallery calls pages with the current Folder and Image

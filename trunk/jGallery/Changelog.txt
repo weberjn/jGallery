@@ -1,5 +1,9 @@
 
-Version 0.9.2, 2005-01-02
+Version 0.9.2,2005-01-09
+- Fixed a bug that prevented jGallery from running as default context
+- updated jGallery.htm to include a setup for jGallery as default context 
+
+2005-01-02
 - Added statistics page for individual images
 
 Version 0.9.1, 2004-12-28
