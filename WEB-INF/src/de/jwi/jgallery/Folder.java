@@ -349,9 +349,8 @@ public class Folder implements FilenameFilter, Serializable
 		{
 			public boolean accept(File dir, String name)
 			{
-				String n = name.toLowerCase();
 				File f1 = new File(dir, name);
-				if (!(n.endsWith("jpg") || n.endsWith("jpeg")))
+				if (!isJPEGExtension(name))
 				{
 					return false;
 				}
@@ -969,10 +968,15 @@ public class Folder implements FilenameFilter, Serializable
 		return imageNum < totalImages ? getSlidePage(imageNum + 1) : "";
 	}
 
+	public static boolean isJPEGExtension(String s)
+	{
+		String s1 = s.toLowerCase();
+		return s1.endsWith(".jpg") | s1.endsWith(".jpeg");
+	}
+	
 	public boolean accept(File dir, String name)
 	{
-		String s = name.toLowerCase();
-		return s.endsWith(".jpg") | s.endsWith(".jpeg");
+		return isJPEGExtension(name);
 	}
 
 	public static final int INDEX = 1, SLIDE = 2;
