@@ -20,6 +20,10 @@ CAPTIONS
 
 Iterator über einzelne Indexseiten
 
+02.05.2004 -----------------
+Eingebaut, daß folder als Parent folder ignoriert wird, falls dort .jGalleryIgnore existiert.
+02.05.2004 -----------------
+Bug gefixed, dass Parent Index nicht funktionierte
 25.03.2004 -----------------
 
 Tagsüber mit Rémy von Apache rumgemailt, er will einfach nicht kapieren, was ich meine. Na gut, dann muß halt der Workaround, nur den /start Part von den Pfaden zur Bestimmung des Contextes zu nehmen, herhalten.
