@@ -6,10 +6,17 @@
 
 
 <Context path="/jGallery" docBase="jGallery"
-        crossContext="true" debug="9" >
+        crossContext="true" debug="1" >
 
 
-  <Parameter name="useDataBase" value="true" override="false"/>
+<!--
+
+    The staff below is only needed if you want to have images counters in a database. For this, useDataBase must be true
+
+-->
+	
+	
+  <Parameter name="useDataBase" value="false" override="false"/>
 	
 	
   <Resource name="jdbc/jGallery"
@@ -45,7 +52,7 @@
          -->
     <parameter>
       <name>maxWait</name>
-      <value>10000</value>
+      <value>5000</value>
     </parameter>
 
     <!-- MySQL dB username and password for dB connections  -->
@@ -73,13 +80,5 @@
       <value>jdbc:mysql://localhost:3306/jgallery?autoReconnect=true</value>
     </parameter>
   </ResourceParams>
-	
-	
-	
-	
-	
-	
-	
-	
 	
 </Context>

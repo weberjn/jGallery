@@ -52,11 +52,11 @@
 	    dir="." includes="WEB-INF/**"
 	    excludes="WEB-INF/classes/test/**"/>
 	    <zipfileset prefix="${ant.project.name}"
-	    dir="." includes="skins/Spartan/**"/>
+	    dir="." includes="skins/Spartan/**,skins/Standard/**"/>
 	    <zipfileset prefix="${ant.project.name}"
-	    dir="." includes="build.xml,build.properties,jGallery.xml,jGallery.htm,contact.htm"/>
+	    dir="." includes="build.xml,build.properties,jGallery.xml,jgallery.sql, jGallery.htm,contact.htm"/>
 	    <zipfileset prefix="${ant.project.name}"
-	    dir="." includes="COPYING,readme.txt,converted-skins.txt"/>
+	    dir="." includes="COPYING,readme.txt,converted-skins.txt,Changelog.txt"/>
     </zip>
     
   </target>

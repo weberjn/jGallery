@@ -1,0 +1,7 @@
+Version 0.8.1, 2004-06-04
+- included JAlbum's Standard Skin into distribution
+- documentation updates: Quickstart and Recommended Setup
+
+
+
+

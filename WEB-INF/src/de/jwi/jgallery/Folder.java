@@ -116,8 +116,6 @@ public class Folder implements FilenameFilter, Serializable
     private String resResourcePath;
     
 
-    private File resFolder;
-
     private String stylePath;
 
     private String style;
@@ -133,6 +131,8 @@ public class Folder implements FilenameFilter, Serializable
     private int rows; // 	Max number of image rows on index pages
 
     private boolean isShowImageNum;
+    
+    private boolean isShowDates = true;
 
     private int totalIndexes; //	Total number of index pages
 
@@ -254,10 +254,9 @@ public class Folder implements FilenameFilter, Serializable
      * String getDirectory() { return directory;
      */
 
-    // imageDirectory
     public String getShowDates()
     {
-        return "true";
+        return Boolean.toString(isShowDates);
     }
 
     public String getShowImageNum()
@@ -541,7 +540,7 @@ public class Folder implements FilenameFilter, Serializable
      */
     public String getRows()
     {
-        return "10";
+        return Integer.toString(rows);
     }
 
     /**
