@@ -362,7 +362,7 @@ public class Controller extends HttpServlet
         String imageName = servletPath
                 .substring(servletPath.lastIndexOf('/') + 1);
 
-        getServletContext().log("folderPath: "+folderPath);
+        // getServletContext().log("folderPath: "+folderPath);
         
         
         

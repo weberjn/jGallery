@@ -313,9 +313,9 @@ public class Image implements Serializable
     
     public String getCounter()
     {
-        int c = folder.getImageCounter(name);
+        String rc = folder.getImageCounter(name);
         
-        return c>-1 ? Integer.toString(c) : "";
+        return rc;
     }
     
 }

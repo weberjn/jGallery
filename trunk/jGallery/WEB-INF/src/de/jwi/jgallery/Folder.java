@@ -1068,7 +1068,6 @@ public class Folder implements FilenameFilter, Serializable
 
     public String getCounter()
     {
-
         if (folderCounter == -1)
         {
             if (null != dBManager)
@@ -1082,22 +1081,23 @@ public class Folder implements FilenameFilter, Serializable
                 }
                 catch (SQLException e)
                 {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    appContext.log(e.getMessage(),e);
                 }
             }
         }
-        String s = folderCounter > -1 ? Integer.toString(folderCounter) : "";
+        String s = folderCounter > -1 ? Integer.toString(folderCounter) : null;
 
         return s;
     }
 
-    public int getImageCounter(String name)
+    public String getImageCounter(String name)
     {
         // trigger first putting folder into DB
         getCounter();
 
         String s = name.substring(0, name.indexOf('.'));
+        
+        String rc = null;
 
         Integer theImage = (Integer) images.get(s);
         imageNum = theImage.intValue();
@@ -1114,15 +1114,18 @@ public class Folder implements FilenameFilter, Serializable
                 {
                     c = dBManager.getAndIncImageCounter(folderPath,
                             imageFiles[imageNum - 1]);
+                    
+                    imageCounters[imageNum - 1] = c;
+                    
+                    rc = Integer.toString(c);
                 }
                 catch (SQLException e)
                 {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    appContext.log(e.getMessage(),e);
+                    rc = null;
                 }
-                imageCounters[imageNum - 1] = c;
             }
         }
-        return c;
+        return rc;
     }
 }
