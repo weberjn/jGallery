@@ -73,7 +73,7 @@ public class WebFolder extends Folder
         endLoad();
     }
     
-    protected ImageAccessor makeImageAccessor(String name)
+    protected IImageAccessor makeImageAccessor(String name)
     {
         return new WebImageAccessor(name, this);
     }

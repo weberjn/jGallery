@@ -41,7 +41,7 @@ import javax.imageio.stream.ImageOutputStream;
  * Source file created on 29.02.2004
  */
 public class ImageIOThumbnailWriter
-implements ThumbnailWriter, Serializable
+implements IThumbnailWriter, Serializable
 {
     public void write(File infile, File outfile, float compressionQuality,
             int thumbBounds) throws IOException

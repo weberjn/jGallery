@@ -34,7 +34,7 @@ import java.net.URLConnection;
  * Source file created on 07.03.2004
  *  
  */
-public class WebImageAccessor implements ImageAccessor
+public class WebImageAccessor implements IImageAccessor
 {
 
     private String name;

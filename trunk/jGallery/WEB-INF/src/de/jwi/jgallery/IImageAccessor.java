@@ -1,4 +1,4 @@
-package de.jwi.jgallery.imageio;
+package de.jwi.jgallery;
 
 /*
  * jGallery - Java web application to display image galleries
@@ -23,17 +23,25 @@ package de.jwi.jgallery.imageio;
  */
 
 
-import java.io.File;
-import java.io.IOException;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+
 
 /**
  * @author Jürgen Weber
- * Source file created on 29.02.2004
- *  
+ * Source file created on 07.03.2004
+ *
  */
-public interface ThumbnailWriter
+public interface IImageAccessor
 {
-
-    void write(File infile, File outfile, float compressionQuality,
-            int thumbBounds) throws IOException;
+    InputStream getImageInputStream()
+    throws FileNotFoundException;
+    
+    InputStream getThumbInputStream()
+    throws FileNotFoundException;
+    
+    long getLength(); 
+    
+    long getLastModified();
+    
 }

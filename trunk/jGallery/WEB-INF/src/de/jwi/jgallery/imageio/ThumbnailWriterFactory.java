@@ -42,7 +42,7 @@ public class ThumbnailWriterFactory
     }
     
      
-    public ThumbnailWriter createThumbnailWriter() 
+    public IThumbnailWriter createThumbnailWriter() 
     {
         return new ImageIOThumbnailWriter();
     }

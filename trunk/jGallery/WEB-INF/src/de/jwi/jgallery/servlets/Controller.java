@@ -72,8 +72,6 @@ public class Controller extends HttpServlet
 
     private static final String WEBDIRSFILE = "web.properties";
 
-    private String webprefix;
-
     private Configuration configuration;
 
     private Properties webDirectories = null;
@@ -138,10 +136,6 @@ public class Controller extends HttpServlet
             initDBConnection();
         }
 
-        webprefix = getInitParameter("webprefix");
-
-        System.out.println("Controller.init()");
-
         InputStream is = getServletContext().getResourceAsStream(
                 "/WEB-INF/" + CONFIGFILE);
 
@@ -155,8 +149,6 @@ public class Controller extends HttpServlet
         {
             throw new ServletException(e.getMessage());
         }
-
-        System.out.println(configuration.toString());
 
         is = getServletContext().getResourceAsStream("/WEB-INF/" + WEBDIRSFILE);
 
@@ -354,9 +346,6 @@ public class Controller extends HttpServlet
 
         String servletPath = request.getServletPath();
 
-        System.out.println("contextPath: " + contextPath);
-        System.out.println("servletPath: " + servletPath);
-
         // servletPath := "/galleries" with path mapping
 
         // servletPath= "/testalbum/CRW_9753.html" with ext mapping
@@ -370,6 +359,8 @@ public class Controller extends HttpServlet
         String imageName = servletPath
                 .substring(servletPath.lastIndexOf('/') + 1);
 
+        getServletContext().log("folderPath: "+folderPath);
+        
         String folderRealPath = null;
 
         String forward = null;

@@ -8,9 +8,8 @@
     <display-name>jGallery</display-name>
 
     <context-param>
-    	<param-name>dirmappings</param-name>
-	<param-value>/=D:/java/jakarta-tomcat-5.0.19/webapps/ROOT</param-value>
-	<description>seperate with commas</description>
+    	<param-name>useDataBase</param-name>
+	<param-value>false</param-value>
     </context-param>
     
     <resource-ref>

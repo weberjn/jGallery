@@ -70,7 +70,7 @@ public class Image implements Serializable
     private EXIFInfo exif;
 
     Image(String name, boolean isRepresentsSubdirectory, Folder folder,
-            ImageAccessor imageAccessor) throws GalleryException
+            IImageAccessor imageAccessor) throws GalleryException
     {
         this.name = name;
         this.folder = folder;
