@@ -49,7 +49,7 @@ public class IndexIteratorTag extends BodyTagSupport
     {
         int i = totalIndexes - index + 1;
 
-        String page = folder.getIndexPage(i);
+        String page = folder.getCalculatedIndexPage(i);
         String number = Integer.toString(i);
         String selected = folder.getIndexNum().equals(number) ? "selected" : "";
 

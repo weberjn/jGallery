@@ -1,3 +1,6 @@
+Version 0.8.9a, 2004-11-11
+- some Tomcat versions seem to have problems with overloaded methods where the non-parameter version is used as a JSP EL variable, therefore renamed getIndexPage(int) to getCalculatedIndexPage(int)
+
 Version 0.8.9, 2004-11-11
 - ThumbnailWriter are instantiated by reflection and specified in web.xml
 - for subfolders a random image can be used as icon (old way with folder icon can be configured with foldericon.style=icon
