@@ -190,6 +190,17 @@ ${folder.variables["<span
  style="color: rgb(102, 102, 204); font-style: italic;"><span
  style="color: rgb(102, 102, 204); font-style: italic;">copyright</span></span>"]}<br>
 <br>
+<h4>Image captions</h4>
+In the image folder there may be a file called captions.txt containing
+entries of the form imagename=description, e.g. <br>
+crw_9754.jpg=This is my favorite image<br>
+<br>
+If filename is "folder" then this is a description for the whole folder
+and can be used for the index page, e.g.<br>
+folder=These are images from the birthday party<br>
+<br>
+From within the JSP the image and folder comments can be accessed by
+${image.comment} and ${folder.comment} respectively.<br>
 <p></p>
 <h3><a name="Adapting_a_JAlbum_skin">Porting a JAlbum skin</a></h3>
 <p>A skin consists of JSP 2.0 files. In order to make porting JAlbum
