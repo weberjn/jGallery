@@ -116,15 +116,15 @@ holiday2004, france2003 or myeos300dimages.<br>
 Now tell Tomcat that this folder is a context and create a file
 $CATALINA_HOME/conf/Catalina/localhost/galleries.xml<br>
 with this content:<br>
-<ul>
-</ul>
+
 <pre>&lt;Context path="/galleries" docBase="/usr/local/apache/htdocs/galleries" /&gt;</pre>
 In $CATALINA_HOME/conf/Catalina/localhost there also must be the
 jGallery.xml (with an adapted <span style="font-style: italic;">docbase</span>)
 found in the jGallery distribution.<br>
 <br>
 Now restart Tomcat and point your browser to <a
- href="http://localhost:8080/jGallery/images/index.html">http://localhost:8080/jGallery/galleries/holiday2004/index.html</a><br>
+ href="http://localhost:8080/jGallery/images/index.html">http://localhost:8080/jGallery/galleries/holiday2004/index.html</a>
+ <br>
 <br>
 If you have set up mod_jk and add <br>
 <pre>JkMount /jGallery/* jgallery</pre>
