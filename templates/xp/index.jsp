@@ -8,7 +8,7 @@
 
 
 
-<link rel="stylesheet" type="text/css" href="${folder.skinPath}/main.css">
+<link rel="stylesheet" type="text/css" href="${folder.templatePath}/main.css">
 
 
 <head>
@@ -46,7 +46,7 @@ ${folder.name}
 
 <div class="sgShadow"><table class="sgShadow" cellspacing="0">
   <tr>
-    <td><img src="${folder.skinPath}/images/shadow-tabl.gif" alt="" /></td>
+    <td><img src="${folder.templatePath}/images/shadow-tabl.gif" alt="" /></td>
     <td class="tabm"><table class="sgShadowTab" cellspacing="0"><tr><td>
   
     Showing ${folder.firstImage}-${folder.lastImage} of ${folder.totalImages}  <c:if test="${!empty folder.parentIndexPage}"> 
@@ -62,23 +62,23 @@ ${folder.name}
   </c:if> 
 
   
-    </td><td><img src="${folder.skinPath}/images/shadow-tabr.gif" alt="" /></td></tr></table></td>
-    <td class="tabr"><img src="${folder.skinPath}/images/blank.gif" alt="" /></td>
+    </td><td><img src="${folder.templatePath}/images/shadow-tabr.gif" alt="" /></td></tr></table></td>
+    <td class="tabr"><img src="${folder.templatePath}/images/blank.gif" alt="" /></td>
   </tr>
   <tr>
-    <td class="tl"><img src="${folder.skinPath}/images/blank.gif" width="16" height="16" alt="" /></td>
-    <td class="tm"><img src="${folder.skinPath}/images/blank.gif" alt="" /></td>
-    <td class="tr"><img src="${folder.skinPath}/images/blank.gif" alt="" /></td>
+    <td class="tl"><img src="${folder.templatePath}/images/blank.gif" width="16" height="16" alt="" /></td>
+    <td class="tm"><img src="${folder.templatePath}/images/blank.gif" alt="" /></td>
+    <td class="tr"><img src="${folder.templatePath}/images/blank.gif" alt="" /></td>
   </tr>
   <tr>
-    <td class="ml"><img src="${folder.skinPath}/images/blank.gif" alt="" /></td>
+    <td class="ml"><img src="${folder.templatePath}/images/blank.gif" alt="" /></td>
     <td class="mm">
   
     <c:forEach var="image" items="${folder.images}">
     <div class="sgThumbnail">
       <div class="sgThumbnailContent">
-        <img class="borderTL" src="${folder.skinPath}/images/slide-tl.gif" alt="" />
-        <img class="borderTR" src="${folder.skinPath}/images/slide-tr.gif" alt="" />
+        <img class="borderTL" src="${folder.templatePath}/images/slide-tl.gif" alt="" />
+        <img class="borderTR" src="${folder.templatePath}/images/slide-tr.gif" alt="" />
         
         <table><tr><td>
           	<a href="${image.closeupPath}">
@@ -100,19 +100,19 @@ ${folder.name}
         <div class="roundedCornerSpacer">&nbsp;</div>
       </div>
       <div class="bottomCorners">
-        <img class="borderBL" src="${folder.skinPath}/images/slide-bl.gif" alt="" />
-        <img class="borderBR" src="${folder.skinPath}/images/slide-br.gif" alt="" />
+        <img class="borderBL" src="${folder.templatePath}/images/slide-bl.gif" alt="" />
+        <img class="borderBR" src="${folder.templatePath}/images/slide-br.gif" alt="" />
       </div>
     </div>
      </c:forEach>
   
     </td>
-    <td class="mr"><img src="${folder.skinPath}/images/blank.gif" alt="" /></td>
+    <td class="mr"><img src="${folder.templatePath}/images/blank.gif" alt="" /></td>
   </tr>
   <tr>
-    <td class="bl"><img src="${folder.skinPath}/images/blank.gif" alt="" /></td>
-    <td class="bm"><img src="${folder.skinPath}/images/blank.gif" alt="" /></td>
-    <td class="br"><img src="${folder.skinPath}/images/blank.gif" width="32" height="32" alt="" /></td>
+    <td class="bl"><img src="${folder.templatePath}/images/blank.gif" alt="" /></td>
+    <td class="bm"><img src="${folder.templatePath}/images/blank.gif" alt="" /></td>
+    <td class="br"><img src="${folder.templatePath}/images/blank.gif" width="32" height="32" alt="" /></td>
   </tr>
 </table></div>
 

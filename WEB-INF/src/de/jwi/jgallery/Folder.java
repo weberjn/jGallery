@@ -239,7 +239,7 @@ public class Folder implements FilenameFilter, Serializable
 	private void readConfiguration() throws GalleryException
 	{
 		template = configuration.getString("template", template);
-		String templateConfig = "/template/" + template + "/template.properties";
+		String templateConfig = "/templates/" + template + "/template.properties";
 
 		// Template Configurations cannot be overridden
 		configuration = readTemplateConfiguration(templateConfig, configuration);
