@@ -41,7 +41,6 @@ import java.util.List;
 import java.util.Properties;
 
 import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 
 import de.jwi.jgallery.db.DBManager;
 
@@ -123,6 +122,8 @@ public class Folder implements FilenameFilter, Serializable
 
 	private String template = "Standard"; // Name (and folder) of template
 
+	private String textEncoding = "iso-8859-1";
+	
 	private String indexJsp;
 
 	private String slideJsp;
@@ -252,6 +253,8 @@ public class Folder implements FilenameFilter, Serializable
 
 
 		style = configuration.getString("style", style);
+		
+		textEncoding = configuration.getString("textEncoding", textEncoding);
 
 		String s = configuration.getString("sortingOrder");
 		if ("filedate".equals(s))
@@ -362,6 +365,13 @@ public class Folder implements FilenameFilter, Serializable
 	public String getComment()
 	{
 		String s = captions.getProperty(FOLDER_KEY);
+		
+		if (s!=null)
+		{
+			return s;
+		}
+		
+		s = configuration.getString(FOLDER_KEY);
 		return (s == null) ? "" : s;
 	}
 
@@ -555,7 +565,8 @@ public class Folder implements FilenameFilter, Serializable
 
 	public String getLastIndexImage()
 	{
-		int lastImageOnIndexPage = getImageNumI() + getCurrentImagesPerPage() - 1;
+		int n = Math.min(getCurrentImagesPerPage(),imagesArray.length);
+		int lastImageOnIndexPage = getImageNumI() + n - 1; 
 
 		return Integer.toString(lastImageOnIndexPage);
 	}
@@ -576,7 +587,7 @@ public class Folder implements FilenameFilter, Serializable
 	private List getImages(boolean inRows) throws GalleryException
 	{
 		int cols = getColsI();
-		int n = getCurrentImagesPerPage();
+		int n = Math.min(getCurrentImagesPerPage(),imagesArray.length);
 		int i = getImageNumI();
 
 		List rl = new ArrayList();
@@ -878,7 +889,7 @@ public class Folder implements FilenameFilter, Serializable
 	 */
 	public String getTextEncoding()
 	{
-		return "UTF-8";
+		return textEncoding;
 	}
 
 	/**

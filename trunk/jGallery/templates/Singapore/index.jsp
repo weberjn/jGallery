@@ -9,8 +9,7 @@
 
 <head>
 
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-
+<meta http-equiv="Content-Type" content="text/html; charset=${folder.textEncoding}" />
 <link rel="stylesheet" type="text/css" media="screen" href="${folder.templatePath}/main.css" />
 
 
@@ -34,12 +33,26 @@ You are here:
 
 </c:forEach>
 
+
 ${folder.name}
 
 </div>
 
 
-<h2 class="sgTitle">${folder.name}</h2>
+<h2 class="sgTitle">
+
+
+<c:choose> 
+  <c:when test="${!empty folder.comment}"> 
+    ${folder.comment}
+  </c:when> 
+  <c:otherwise> 
+    ${folder.name}
+  </c:otherwise> 
+</c:choose>  
+
+
+</h2>
 <c:if test="${!empty folder.variables.copyright}"> 
 	<h4 class="sgSubTitle">by ${folder.variables.copyright}</h4>
 </c:if> 
