@@ -28,7 +28,6 @@ import java.net.URL;
 import java.util.Properties;
 
 import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServlet;
 
 
 /**
@@ -36,7 +35,7 @@ import javax.servlet.http.HttpServlet;
  * Source file created on 20.04.2004
  *  
  */
-public class PathHelper extends HttpServlet
+public class PathHelper
 {
 
 
