@@ -19,7 +19,7 @@
 <table border="1" cellpadding="3" cellspacing="0">
 <tbody>
 <tr>
-<td colspan="4" class="title">
+<td colspan="3" class="title">
 
 </tr>
 <tr>
@@ -30,9 +30,7 @@
 </td>
 
 
-<td class="header-center"><small>max/min Hits/Image</small>&nbsp;
-</td>
-<td class="header-center"><small>avg Hits/Image</small>&nbsp;
+<td class="header-center"><small>max/min/avg Hits/Image</small>&nbsp;
 </td>
 </tr>
 
@@ -46,9 +44,7 @@
 
 <td class="row-center">${folder.hits}</td>
 
-<td class="row-center">${folder.max} / ${folder.min}</td>
-
-<td class="row-center">${folder.avg}</td>
+<td class="row-center">${folder.max} / ${folder.min} / ${folder.avg}</td>
 
 
 

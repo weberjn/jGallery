@@ -64,6 +64,37 @@
 	<url-pattern>/Statistics</url-pattern>
     </servlet-mapping>
     
+    <!--
+    
+    <security-constraint>
+      <web-resource-collection>
+         <web-resource-name>jGallery</web-resource-name>
+         <url-pattern>/Statistics</url-pattern>
+      </web-resource-collection>
+
+      <auth-constraint>
+	 <role-name>manager</role-name>
+      </auth-constraint>
+    </security-constraint>
+       
+    
+    
+    <login-config>
+      <auth-method>FORM</auth-method>
+      <realm-name>Example Form-Based Authentication Area</realm-name>
+
+      <form-login-config>
+        <form-login-page>/security/login.jsp</form-login-page>
+        <form-error-page>/security/error.jsp</form-error-page>
+      </form-login-config>
+      
+    </login-config>
+        
+       <security-role>
+      <role-name>manager</role-name>
+    </security-role>   
+    
+    -->
   
     <welcome-file-list>
     	<welcome-file>jGallery.htm</welcome-file>
