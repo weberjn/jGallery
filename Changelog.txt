@@ -1,5 +1,8 @@
 TODO: fix unclosed InputStreams on thumbnail load
 
+2004-12-27
+- ported singapore.sourceforge.net's standard template, included as template "Singapore"
+
 2004-12-26
 - renamed the term "skin" to "template"
 - some more fixes in XP template
