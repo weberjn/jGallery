@@ -22,9 +22,6 @@
 	<param-value>de.jwi.jgallery.toolkit.ToolkitThumbnailWriter</param-value>
     </context-param>
     
-    
-    
-    
     <resource-ref>
       <description>DB Connection</description>
       <res-ref-name>jdbc/jGallery</res-ref-name>
