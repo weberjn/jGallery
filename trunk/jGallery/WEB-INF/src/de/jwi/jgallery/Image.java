@@ -162,7 +162,7 @@ public class Image implements Serializable
     {
         int p = name.indexOf('.');
 
-        return p > -1 ? name.substring(0, p) : name;
+        return (Folder.isJPEGExtension(name) & (p > -1)) ? name.substring(0, p) : name;
     }
 
     public String getFileName()
