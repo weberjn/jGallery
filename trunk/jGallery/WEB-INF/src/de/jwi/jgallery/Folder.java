@@ -358,6 +358,14 @@ public class Folder implements FilenameFilter, Serializable
 				return !f1.isDirectory();
 			};
 		});
+		
+		if (subImages == null)
+		{
+			// no thumbnails created yet
+			
+			return null;
+		}
+		
 		int n = (int) (Math.random() * subImages.length);
 
 		File f1 = new File(f, subImages[n]);
@@ -421,6 +429,12 @@ public class Folder implements FilenameFilter, Serializable
 				else
 				{
 					thumbNailInfo = makeThumbNailInfoFromRandom(subDirectories[n - 1]);
+					if (thumbNailInfo == null)
+					{
+						// no thumbnails created yet, use icon for now
+						thumbNailInfo = new ThumbNailInfo(getIconPath(),
+								getIconHeight(), getIconWidth());
+					}
 				}
 				// get a subfolder representation
 				image = new Image(subDirectories[n - 1], true, this,
@@ -741,7 +755,7 @@ public class Folder implements FilenameFilter, Serializable
 	}
 
 	// 1 ..
-	public String getIndexPage(int index)
+	public String getCalculatedIndexPage(int index)
 	{
 		if ((index < 1) || (index > totalIndexes))
 		{
@@ -767,7 +781,7 @@ public class Folder implements FilenameFilter, Serializable
 	{
 		int i = calculateIndexNum(imageNum);
 
-		return getIndexPage(i);
+		return getCalculatedIndexPage(i);
 	}
 
 	/**
@@ -775,7 +789,7 @@ public class Folder implements FilenameFilter, Serializable
 	 */
 	public String getFirstIndexPage()
 	{
-		return getIndexPage(1);
+		return getCalculatedIndexPage(1);
 	}
 
 	/**
@@ -783,7 +797,7 @@ public class Folder implements FilenameFilter, Serializable
 	 */
 	public String getLastIndexPage()
 	{
-		return getIndexPage(totalIndexes);
+		return getCalculatedIndexPage(totalIndexes);
 	}
 
 	/**
@@ -793,7 +807,7 @@ public class Folder implements FilenameFilter, Serializable
 	{
 		int i = calculateIndexNum(imageNum);
 
-		return getIndexPage(i - 1);
+		return getCalculatedIndexPage(i - 1);
 	}
 
 	/**
@@ -803,7 +817,7 @@ public class Folder implements FilenameFilter, Serializable
 	{
 		int i = calculateIndexNum(imageNum);
 
-		return getIndexPage(i + 1);
+		return getCalculatedIndexPage(i + 1);
 	}
 
 	/**
