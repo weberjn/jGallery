@@ -7,11 +7,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 
-
-<link rel="stylesheet" type="text/css" href="${folder.templatePath}/main.css">
-
-
 <head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<link rel="stylesheet" type="text/css" media="screen" href="${folder.templatePath}/main.css" />
+
 
 <title>${folder.name}</title>
 
@@ -39,8 +40,9 @@ ${folder.name}
 
 
 <h1 style="margin-bottom: 0px;">${folder.name}</h1>
-<p style="margin-top: 0pt;"> by ${folder.copyright}</p>
-
+<c:if test="${!empty folder.variables.copyright}"> 
+	<p style="margin-top: 0pt;"> by ${folder.variables.copyright}</p>
+</c:if> 
 
 
 
@@ -49,13 +51,17 @@ ${folder.name}
     <td><img src="${folder.templatePath}/images/shadow-tabl.gif" alt="" /></td>
     <td class="tabm"><table class="sgShadowTab" cellspacing="0"><tr><td>
   
-    Showing ${folder.firstImage}-${folder.lastImage} of ${folder.totalImages}  <c:if test="${!empty folder.parentIndexPage}"> 
-    	| <a href="${folder.parentIndexPage}">Up</a>  
+    Showing ${folder.firstIndexImage}-${folder.lastIndexImage} of ${folder.totalImages} 
+    
+        <c:if test="${!empty folder.previousIndexPage}"> 
+    	<a href="${folder.previousIndexPage}">Previous</a> |  
+  </c:if> 
+
+    
+    <c:if test="${!empty folder.parentIndexPage}"> 
+    	<a href="${folder.parentIndexPage}">Up</a>  
   </c:if>  
     
-    <c:if test="${!empty folder.previousIndexPage}"> 
-    	| <a href="${folder.previousIndexPage}">Previous</a>  
-  </c:if> 
 
 <c:if test="${!empty folder.nextIndexPage}"> 
     	| <a href="${folder.nextIndexPage}">Next</a> 
@@ -86,12 +92,14 @@ ${folder.name}
 				<c:when test="${image.iconPath}"> 
 					<img class="sgPreviewThumb"
 					src="${image.iconPath}" 
-					width="${image.thumbWidth}" height="${image.thumbHeight}">
+					width="${image.thumbWidth}" height="${image.thumbHeight}"
+					alt="" />
 				</c:when> 
 				<c:otherwise> 
 					<img class="sgPreviewThumb"
 					src="${image.thumbPath}" 
-					width="${image.thumbWidth}" height="${image.thumbHeight}" title="click to see large view">
+					width="${image.thumbWidth}" height="${image.thumbHeight}" title="click to see large view"
+					alt="" />
 				</c:otherwise> 
 			</c:choose>  
 		</a>

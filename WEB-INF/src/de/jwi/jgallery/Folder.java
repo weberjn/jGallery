@@ -365,11 +365,6 @@ public class Folder implements FilenameFilter, Serializable
 		return (s == null) ? "" : s;
 	}
 
-	public String getCopyright()
-	{
-		return "(c) Jürgen Weber";
-	}
-
 	public String getIndexJsp()
 	{
 		return indexJsp;
@@ -551,17 +546,17 @@ public class Folder implements FilenameFilter, Serializable
 		}
 	}
 
-	private int firstImageOnIndexPage;
-
-	private int lastImageOnIndexPage;
-
-	public String getFirstImage()
+	public String getFirstIndexImage()
 	{
+		int firstImageOnIndexPage = getImageNumI();
+		
 		return Integer.toString(firstImageOnIndexPage);
 	}
 
-	public String getLastImage()
+	public String getLastIndexImage()
 	{
+		int lastImageOnIndexPage = getImageNumI() + getCurrentImagesPerPage() - 1;
+
 		return Integer.toString(lastImageOnIndexPage);
 	}
 
@@ -583,8 +578,6 @@ public class Folder implements FilenameFilter, Serializable
 		int cols = getColsI();
 		int n = getCurrentImagesPerPage();
 		int i = getImageNumI();
-
-		firstImageOnIndexPage = i;
 
 		List rl = new ArrayList();
 		List cl = null;
@@ -617,8 +610,6 @@ public class Folder implements FilenameFilter, Serializable
 			}
 			n -= r;
 		}
-
-		lastImageOnIndexPage = i - 1;
 
 		return rl;
 	}
@@ -672,7 +663,7 @@ public class Folder implements FilenameFilter, Serializable
 		{
 			totalIndexes++;
 		}
-
+		
 	}
 
 	/**

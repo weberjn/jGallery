@@ -1,9 +1,15 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="${folder.templatePath}/main.css" />
+
+
   <title>${image.label}</title>
   <link rel="stylesheet" type="text/css" href="${folder.templatePath}/main.css"/>
 
@@ -46,19 +52,21 @@ ${image.name}
 		<c:when test="${image.iconPath}"> 
 			<img class="sgPreviewThumb"
 			src="${image.iconPath}" 
-			width="${image.thumbWidth / 2}" height="${image.thumbHeight / 2}">
+			width="${image.thumbWidth / 2}" height="${image.thumbHeight / 2}"
+			alt="" />
 		</c:when> 
 		<c:otherwise> 
 			<img class="sgPreviewThumb"
 			src="${image.thumbPath}" 
-			width="${image.thumbWidth / 2}" height="${image.thumbHeight / 2}" title="click to see large view">
+			width="${image.thumbWidth / 2}" height="${image.thumbHeight / 2}" title="click to see large view"
+			alt="" />
 		</c:otherwise> 
 	</c:choose>  
 	</a>
 	
 </c:forEach>
 
-<br>
+<br />
 
 
 <c:if test="${!empty folder.previousPage}"> 
@@ -77,8 +85,9 @@ ${image.name}
 </div>
   
 <h1 style="margin-bottom: 0px;">${image.label}</h1>
-<p style="margin-top: 0pt;">${folder.copyright}</p>
- 
+<c:if test="${!empty folder.variables.copyright}"> 
+	<p style="margin-top: 0pt;"> by ${folder.variables.copyright}</p>
+</c:if> 
 
 
 
@@ -94,7 +103,7 @@ ${image.name}
     <td class="mm">
   
     <img src="${image.imagePath}" class="sgImage"
- alt="${folder.title}" height="${image.imageHeight}" width="${image.imageWidth}">  
+    	alt="${folder.name}" height="${image.imageHeight}" width="${image.imageWidth}" />  
     
   
     </td>
