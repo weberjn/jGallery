@@ -30,6 +30,7 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Properties;
+import java.util.StringTokenizer;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -49,6 +50,8 @@ import de.jwi.jgallery.GalleryException;
 import de.jwi.jgallery.GalleryNotFoundException;
 import de.jwi.jgallery.WebFolder;
 import de.jwi.jgallery.db.DBManager;
+import de.jwi.servletutil.PathHelper;
+import de.jwi.servletutil.RealPath;
 
 /**
  * @author Jürgen Weber Source file created on 17.02.2004
@@ -77,8 +80,10 @@ public class Controller extends HttpServlet
 
     private HashSet webKeys = new HashSet();
 
+    private Properties dirmapping = null;
+
     private boolean useDataBase = false;
-    
+
     private DBManager dBManager;
 
     private void initDBConnection() throws ServletException
@@ -89,13 +94,11 @@ public class Controller extends HttpServlet
             try
             {
                 context = new InitialContext();
-                if (context == null) 
-                { 
-                    throw new ServletException("Boom - No Context"); 
-                }
+                if (context == null) { throw new ServletException(
+                        "Boom - No Context"); }
                 DataSource ds = (DataSource) context
                         .lookup("java:comp/env/jdbc/jGallery");
-                
+
                 dBManager = new DBManager(ds);
             }
             catch (NamingException e)
@@ -107,7 +110,27 @@ public class Controller extends HttpServlet
 
     public void init() throws ServletException
     {
-        String s = getServletContext().getInitParameter("useDataBase");
+        String s = (String) getServletContext().getInitParameter("dirmappings");
+
+        dirmapping = new Properties();
+
+        if (null != s)
+        {
+            StringTokenizer st = new StringTokenizer(s, ",");
+            while (st.hasMoreTokens())
+            {
+                String s1 = st.nextToken();
+                int p = s1.indexOf('=');
+                if (p > -1)
+                {
+                    String key = s1.substring(0, p);
+                    String val = s1.substring(p + 1);
+                    dirmapping.setProperty(key, val);
+                }
+            }
+        }
+
+        s = getServletContext().getInitParameter("useDataBase");
 
         if (null != s)
         {
@@ -242,7 +265,7 @@ public class Controller extends HttpServlet
         }
 
         folder = new Folder(directory, configuration, version,
-                jgalleryContextPath, folderPath,dBManager);
+                jgalleryContextPath, folderPath, dBManager);
 
         Hashtable folders = getFolders(session);
 
@@ -355,84 +378,22 @@ public class Controller extends HttpServlet
 
         try
         {
-
             if (null == folder)
             {
-                String first = servletPath.substring(1, servletPath.indexOf(
-                        '/', 1));
+                RealPath theRealPath = PathHelper.getHttpRealPath(
+                        getServletContext(), folderPath, dirmapping);
 
-                //
-
-                if (webKeys.contains(first))
+                if (null == theRealPath)
                 {
-                    // remote staff
-                    String remoteBase = webDirectories.getProperty(first);
-
-                    String webPath = servletPath.substring(first.length() + 1);
-
-                    webPath = webPath
-                            .substring(0, webPath.lastIndexOf('/') + 1);
-
-                    folder = createWebFolder(request.getSession(), first,
-                            webPath, remoteBase, contextPath);
-
-                    int x = 5;
-
+                    response.sendError(HttpServletResponse.SC_NOT_FOUND,
+                            request.getRequestURI());
+                    return;
                 }
-                else
-                {
-                    // get the Context that contains folderPath
 
-                    
-                    ServletContext sc1 = getServletContext();
-                    
-                    ServletContext sc2 = sc1.getContext("/galleries/testalbum");
-                    
-                    String xx = sc2.getRealPath("/");
-                    
-                    ServletContext rootContext = getServletContext()
-                    .getContext("/");
-                    
-                    
-                    // Work around for Tomcat bug: use only the potential context part of
-                    // folderPath for getContext
-                    String s =folderPath.substring(0,folderPath.indexOf('/',1));
-                    
-                    ServletContext imageContext = getServletContext()
-                            .getContext(s);
-                    
-                    String relativeFolderPath = folderPath;
-                    
-                    String rootContextRealPath = rootContext.getRealPath("/");
-                    String imageContextRealPath = imageContext.getRealPath("/");
-                    
-                    if (!(imageContextRealPath.equals(rootContextRealPath)))
-                    {
-                        // not found in ROOT context, so folderPath is of the form
-                        // /context/path 
-                        // take only /path as input for getRealPath
-                        
-                        relativeFolderPath = folderPath.substring(folderPath.indexOf('/',1));
-                    }
-                    //folderPath= "/jgalleries/testalbum/"
-                    //requestURI= "/jGallery/jgalleries/testalbum/index.html"
+                folderRealPath = theRealPath.getRealPath();
 
-
-                    // getContext():
-                    // In a security conscious environment, the servlet container may return null
-                    // for a given URL.
-                    // getContext() only works with Tomcat if crossContext="true"
-                    // in <Context> descriptor
-
-                    if (null == imageContext) { throw new GalleryException(
-                            "Cannot access context \"" + folderPath + "\""); }
-
-                    folderRealPath = imageContext.getRealPath(relativeFolderPath);
-
-                    folder = createFolder(request.getSession(), folderPath,
-                            folderRealPath, contextPath);
-
-                }
+                folder = createFolder(request.getSession(), folderPath,
+                        folderRealPath, contextPath);
 
                 folder.loadFolder();
             }
