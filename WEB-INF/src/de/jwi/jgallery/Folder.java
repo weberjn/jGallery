@@ -1285,7 +1285,7 @@ public class Folder implements FilenameFilter, Serializable
 			InputStream is = null;
 			try
 			{
-				is = new FileInputStream(f);
+				is = new FileInputStream(f);																																								
 				captions.load(is);
 			}
 			catch (FileNotFoundException e)
