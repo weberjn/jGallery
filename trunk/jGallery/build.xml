@@ -54,7 +54,7 @@
 	    <zipfileset prefix="${ant.project.name}"
 	    dir="." includes="skins/Spartan/**,skins/Standard/**"/>
 	    <zipfileset prefix="${ant.project.name}"
-	    dir="." includes="build.xml,build.properties,jGallery.xml,jgallery.sql, jGallery.htm,contact.htm"/>
+	    dir="." includes="build.xml,build.properties,jGallery.xml,jgallery.sql, jGallery.htm,contact.htm,statistics.*"/>
 	    <zipfileset prefix="${ant.project.name}"
 	    dir="." includes="COPYING,readme.txt,converted-skins.txt,Changelog.txt"/>
     </zip>
