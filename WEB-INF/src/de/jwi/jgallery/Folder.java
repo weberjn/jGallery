@@ -43,6 +43,8 @@ import de.jwi.jgallery.imageio.ThumbnailWriterFactory;
 public class Folder implements FilenameFilter, Serializable
 {
 
+    
+    private static final String JGALLERYIGNOREFILE = ".jGalleryIgnore";
     private String version;
 
     private static final String GENERATORURL = "http://www.jwi.de/jgallery/";
@@ -764,7 +766,13 @@ public class Folder implements FilenameFilter, Serializable
 
     protected String[] getSubDirectories()
     {
-        return directory.list(new DirectoriesFilter(getThumbsdir()));
+        File f = new File(directory,JGALLERYIGNOREFILE);
+        if (f.exists())
+        {
+            return new String[0];
+        }
+
+        return directory.list(new DirectoriesFilter(getThumbsdir(),JGALLERYIGNOREFILE));
     }
 
     public int setFileName(String pathInfoFileName) throws GalleryException
@@ -873,14 +881,35 @@ public class Folder implements FilenameFilter, Serializable
 
                 String hTMLBase = jgalleryContextPath;
                 parentIndexPage = hTMLBase + "/" + parent + "index.html";
+                
+                // Check, if parent directory is to be ignored
+                
+                File parentFile = directory.getParentFile();
+                if (null!=parentFile)
+                {
+                    File f = new File(parentFile,JGALLERYIGNOREFILE);
+                    if (f.exists())
+                    {
+                        parentIndexPage = "";
+                    }
+                }
+                
             }
             else
             {
                 parentIndexPage = ""; // set to non defined
             }
 
-            imageFiles = directory.list(this);
-
+            File f = new File(directory,JGALLERYIGNOREFILE);
+            if (f.exists())
+            {
+                imageFiles = new String[0];
+            }
+            else
+            {
+                imageFiles = directory.list(this);
+            }
+            
             imageCounters = new int[imageFiles.length];
             Arrays.fill(imageCounters, -1);
 
