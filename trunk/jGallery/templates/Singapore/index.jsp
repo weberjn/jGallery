@@ -126,9 +126,14 @@ ${folder.name}
   </tr>
 </table></div>
   
-
-
 <div id="footer">
+<c:if test="${!empty folder.comment}"> 
+<p>
+${folder.comment}
+</p>
+</c:if>  
+
+
 <p> <a href="${folder.generatorurl}" target="_blank"><small>Powered by ${folder.generator}</small></a></p>
 
 
