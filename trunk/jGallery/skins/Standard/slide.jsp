@@ -93,16 +93,13 @@
 	<table>
 		<tr><td>File size</td><td>${image.fileSize}</td></tr>
 		<tr><td>Original date</td><td>${image.exif.originalDate}</td></tr>
-		<tr><td>Resolution</td><td>${image.exif.resolution}</td></tr>
 		<tr><td>Flash</td><td>${image.exif.flash}</td></tr>
 		<tr><td>Focal length</td><td>${image.exif.focalLength}</td></tr>
 		<tr><td>Exposure time</td><td>${image.exif.exposureTime}</td></tr>
 		<tr><td>Aperture</td><td>${image.exif.aperture}</td></tr>
-		<tr><td>Focus Distance</td><td>${image.exif.focusDistance}</td></tr>
+		<tr><td>ISO</td><td>${image.exif.isoEquivalent}</td></tr>
 		<tr><td>Metering Mode</td><td>${image.exif.meteringMode}</td></tr>
-		<tr><td>Camera make</td><td>${image.exif.cameraMake}</td></tr>
 		<tr><td>Camera model</td><td>${image.exif.cameraModel}</td></tr>
-		<tr><td>Sensor type</td><td>${image.exif.sensorType}</td></tr>
 	</table></div>
 	</td>
 </jg:if>
