@@ -1,3 +1,6 @@
+Version 0.8.5, 2004-08-08
+- added /Statistics page for displaying the hit counters
+
 Version 0.8.4, 2004-07-28
 - changed thumbnail generation from javax.imageio.ImageIO to com.sun.image.codec.jpeg.JPEGImageEncoder, has better quality and is vastly faster
 

@@ -70,7 +70,7 @@ public class Controller extends HttpServlet
 
     private static final String CONFIGFILE = "jGallery.properties";
 
-    private static final String VERSIONCONFIGFILE = "version.properties";
+    static final String VERSIONCONFIGFILE = "version.properties";
 
     private static final String WEBDIRSFILE = "web.properties";
 
