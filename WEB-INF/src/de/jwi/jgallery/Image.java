@@ -172,11 +172,11 @@ public class Image implements Serializable
         String n;
         if (isRepresentsSubdirectory)
         {
-            n = name + "/index.html";
+            n = name + "/index."+folder.getUrlExtention();
         }
         else
         {
-            n = name.substring(0, name.indexOf('.')) + ".html";
+            n = name.substring(0, name.indexOf('.')) + "." + folder.getUrlExtention();
         }
         return folder.getHTMLBase() + n;
     }

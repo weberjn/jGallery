@@ -44,10 +44,10 @@ public class WebFolder extends Folder
     private String baseURL;
     private String remoteKey;
     
-    public WebFolder(String baseURL, ServletContext appContext, Configuration configuration, String version, String remoteKey, String jgalleryContextPath,  
+    public WebFolder(String baseURL, ServletContext appContext, Configuration configuration, ConfigData configData, String remoteKey, String jgalleryContextPath,  
             String folderPath, InputStream fileList) throws GalleryException
     {
-        super(null, appContext, configuration,version, jgalleryContextPath,folderPath,folderPath,null);
+        super(null, appContext, configuration,configData, jgalleryContextPath,folderPath,folderPath,null);
         this.baseURL = baseURL;
         this.remoteKey = remoteKey;
         

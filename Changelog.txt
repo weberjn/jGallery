@@ -1,3 +1,7 @@
+Version 0.8.3, 2004-06-10
+- jGallery now works with an arbitrary extention pattern in  
+<servlet-mapping><url-pattern>
+
 Version 0.8.2, 2004-06-05
 - Bugfix: Image folders within the jGallery context would not work
 - more documentation updates

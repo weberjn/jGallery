@@ -43,6 +43,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 
+import de.jwi.jgallery.ConfigData;
 import de.jwi.jgallery.Configuration;
 import de.jwi.jgallery.Folder;
 import de.jwi.jgallery.GalleryException;
@@ -60,6 +61,8 @@ public class Controller extends HttpServlet
 {
 
     private static String version = "unknown";
+    
+    private static String urlExtention;
 
     private static final String FOLDERS = "folders";
 
@@ -138,7 +141,7 @@ public class Controller extends HttpServlet
             useDataBase = Boolean.valueOf(s).booleanValue();
             initDBConnection();
         }
-
+        
         InputStream is = getServletContext().getResourceAsStream(
                 "/WEB-INF/" + CONFIGFILE);
 
@@ -259,7 +262,11 @@ public class Controller extends HttpServlet
             }
         }
 
-        folder = new Folder(directory, getServletContext(), configuration, version,
+        ConfigData configData = new ConfigData();
+        configData.version = version;
+        configData.urlExtention = urlExtention;
+        
+        folder = new Folder(directory, getServletContext(), configuration, configData,
                 jgalleryContextPath, folderPath, imagePath, dBManager);
 
         Hashtable folders = getFolders(session);
@@ -323,7 +330,11 @@ public class Controller extends HttpServlet
         configuration = new Configuration(configuration);
         configuration.addProperty("thumbnails.create", "false");
 
-        folder = new WebFolder(baseURL, getServletContext(), configuration, version, remoteKey,
+        ConfigData configData = new ConfigData();
+        configData.version = version;
+        configData.urlExtention = urlExtention;        
+        
+        folder = new WebFolder(baseURL, getServletContext(), configuration, configData, remoteKey,
                 jgalleryContextPath, folderPath, wis);
 
         Hashtable folders = getFolders(session);
@@ -362,9 +373,9 @@ public class Controller extends HttpServlet
         String imageName = servletPath
                 .substring(servletPath.lastIndexOf('/') + 1);
 
+        urlExtention = imageName.substring(imageName.lastIndexOf('.')+1);
+        
         // getServletContext().log("folderPath: "+folderPath);
-        
-        
         
         String folderRealPath = null;
 

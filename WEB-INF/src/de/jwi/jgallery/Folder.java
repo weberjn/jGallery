@@ -56,7 +56,7 @@ public class Folder implements FilenameFilter, Serializable
 
     private static final String JGALLERYIGNOREFILE = ".jGalleryIgnore";
 
-    private String version;
+    private ConfigData configData;
 
     private static final String GENERATORURL = "http://www.jwi.de/jgallery/";
 
@@ -155,14 +155,14 @@ public class Folder implements FilenameFilter, Serializable
     private ServletContext appContext;
 
     public Folder(File directory, ServletContext appContext,
-            Configuration configuration, String version,
+            Configuration configuration, ConfigData configData,
             String jgalleryContextPath, String folderPath, String imagePath, DBManager dBManager)
             throws GalleryException
     {
         this.directory = directory;
 
         this.appContext = appContext;
-        this.version = version;
+        this.configData = configData;
 
         this.configuration = configuration;
 
@@ -253,10 +253,12 @@ public class Folder implements FilenameFilter, Serializable
         return directory;
     }
 
-    /*
-     * String getDirectory() { return directory;
-     */
-
+    public String getUrlExtention()
+    {
+        return configData.urlExtention;
+    }
+    
+    
     public String getShowDates()
     {
         return Boolean.toString(isShowDates);
@@ -497,7 +499,7 @@ public class Folder implements FilenameFilter, Serializable
      */
     public String getInternalVersion()
     {
-        return version;
+        return configData.version;
     }
 
     /**
@@ -622,14 +624,16 @@ public class Folder implements FilenameFilter, Serializable
     {
         if ((index < 1) || (index > totalIndexes)) { return ""; }
 
-        String s = getHTMLBase() + "index";
+        StringBuffer sb = new StringBuffer();
+        
+        sb.append(getHTMLBase()).append("index");
         if (index > 1)
         {
-            s += Integer.toString(index - 1);
+            sb.append(Integer.toString(index - 1));
         }
-        s += ".html";
+        sb.append(".").append(configData.urlExtention);
 
-        return s;
+        return sb.toString();
     }
 
     /**
@@ -773,7 +777,7 @@ public class Folder implements FilenameFilter, Serializable
     // 1..
     private String getSlidePage(int n)
     {
-        return getImageHTMLBase(n) + ".html";
+        return getImageHTMLBase(n) + "." + configData.urlExtention;
     }
 
     /**
@@ -861,7 +865,7 @@ public class Folder implements FilenameFilter, Serializable
         {
             //GalleryException
 
-            if ("index.html".equals(s))
+            if (s.equals("index."+configData.urlExtention))
             {
                 indexNum = 1;
             }
@@ -950,7 +954,7 @@ public class Folder implements FilenameFilter, Serializable
                 String parent = sb.toString();
 
                 String hTMLBase = jgalleryContextPath;
-                parentIndexPage = hTMLBase + "/" + parent + "index.html";
+                parentIndexPage = hTMLBase + "/" + parent + "index." + configData.urlExtention;
 
                 // Check, if parent directory is to be ignored
 
