@@ -20,6 +20,18 @@ CAPTIONS
 
 Iterator über einzelne Indexseiten
 
+07.06.2004 -----------------
+Michael Mehrle hat gefunden, daß der Indexiterator in Spartan nicht tut.
+Wenn man die TagTEI auskommentiert, dann tut es.
+<!--  <teiclass>de.jwi.jgallery.tags.IndexIteratorTagTEI</teiclass> -->
+
+Sonst generiert Tomcat
+
+index = (java.lang.Class) _jspx_page_context.findAttribute("index");
+
+und dabei gibt es eine ClassCastException.
+Keine Ahnung warum.
+
 12.05.2004 -----------------
 captions.txt eingebaut.
 

@@ -19,6 +19,7 @@ ${folder.title}
 
 <select style="border: 0px none;" onchange="window.location.href = this.options[this.selectedIndex].value">
    <jg:indexiterator>
+   
 	<option ${index.selected} value="${index.page}">Page ${index.number}</option>
    </jg:indexiterator>	
 </select> 

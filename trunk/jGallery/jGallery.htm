@@ -63,7 +63,10 @@ there is only <a href="http://jakarta.apache.org/">Jakarta Tomcat 5</a>.
 <p>Unpack the downloaded jGallery-XX.zip to $CATALINA_HOME/webapps<br>
 </p>
 <p>Then adapt jGallery.xml and copy it to&nbsp;
-$CATALINA_HOME/conf/Catalina/localhost/</p>
+$CATALINA_HOME/conf/Catalina/localhost/<br>
+</p>
+<p>on <strong>Unix and Linux</strong>: generating thumbnails needs
+AWT, so add&nbsp; -Djava.awt.headless=true to JAVA_OPTS in catalina.sh</p>
 Afterwards restart Tomcat.<br>
 <h3><a name="Quickstart">Quickstart</a></h3>
 For a quick test of jGallery do the following:<br>
@@ -92,6 +95,8 @@ application. Try the Tomcat manager application, to see if jGallery is
 in the list of web applications.</li>
   <li>you get HTTP Status 404: check if your URL has the right text
 case of the folder path</li>
+  <li><br>
+  </li>
 </ul>
 <br>
 <h3><a name="RecommendedSetup">Recommended setup</a></h3>

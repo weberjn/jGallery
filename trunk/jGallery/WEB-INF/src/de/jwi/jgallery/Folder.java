@@ -375,6 +375,12 @@ public class Folder implements FilenameFilter, Serializable
         return jgalleryContextPath + folderPath;
     }
 
+    
+    public String toString()
+    {
+        return getHTMLBase();
+    }    
+    
     private String getImageHTMLBase(int imageNum)
     {
         String image = imageFiles[imageNum - 1];
