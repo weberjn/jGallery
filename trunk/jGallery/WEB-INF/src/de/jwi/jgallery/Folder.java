@@ -77,6 +77,8 @@ public class Folder implements FilenameFilter, Serializable
 	private IThumbnailWriter thumbnailWriter = null;
 
 	private File directory;
+	
+	private List parentFolderList;
 
 	private Configuration configuration;
 
@@ -123,7 +125,9 @@ public class Folder implements FilenameFilter, Serializable
 	private String indexJsp;
 
 	private String slideJsp;
-
+	
+	private String skinPath;
+	
 	private String resPath;
 
 	private String resResourcePath;
@@ -158,6 +162,8 @@ public class Folder implements FilenameFilter, Serializable
 	private String albumPath;
 
 	private String title;
+	
+	private String name;
 
 	private HashMap variables = new HashMap();
 
@@ -252,6 +258,7 @@ public class Folder implements FilenameFilter, Serializable
 
 		// parentlink.galleries=
 
+		skinPath = jgalleryContextPath + "/skins/" + skin;
 		resResourcePath = "/skins/" + skin + "/res";
 		resPath = jgalleryContextPath + "/skins/" + skin + "/res";
 		stylePath = jgalleryContextPath + "/skins/" + skin + "/styles/" + style
@@ -804,6 +811,12 @@ public class Folder implements FilenameFilter, Serializable
 	{
 		return title;
 	}
+	
+	public String getName()
+	{
+		return name;
+	}
+	
 
 	/**
 	 * @return Total number of index pages
@@ -1003,6 +1016,13 @@ public class Folder implements FilenameFilter, Serializable
 		return resPath;
 	}
 
+	public String getSkinPath()
+	{
+		return skinPath;
+	}
+	
+	
+	
 	// 1..
 	private String getSlidePage(int n)
 	{
@@ -1177,6 +1197,7 @@ public class Folder implements FilenameFilter, Serializable
 	{
 		if (!isDirectoryParsed)
 		{
+			calculateParentFolderList(folderPath);
 
 			// "/testalbum/second/"
 
@@ -1253,6 +1274,59 @@ public class Folder implements FilenameFilter, Serializable
 		}
 	}
 
+	public class ParentLink
+	{
+		private String name;
+		private String url;
+		
+		private ParentLink(String name, String url)
+		{
+			this.name = name;
+			this.url = url;
+		}
+		public String getName()
+		{
+			return name;
+		}
+		public String getUrl()
+		{
+			return url;
+		}
+	}
+	
+	private void calculateParentFolderList(String folderPath)
+	{
+		// folderPath is URL part after context
+		// e.g. /galleries/SkinTest/
+		
+		parentFolderList = new ArrayList();
+		
+		String s = folderPath.substring(1,folderPath.length()-1);
+		
+		String hTMLBase = jgalleryContextPath;
+		
+		String[] s1=s.split("/");
+		
+		String p = jgalleryContextPath;
+		
+		StringBuffer sb = new StringBuffer(jgalleryContextPath).append('/').append(s1[0]).append('/');
+		StringBuffer sb1;
+		
+		for (int i=1;i<s1.length;i++)
+		{
+			sb1 = new StringBuffer(sb.toString()).append("index.").append(configData.urlExtention);
+			parentFolderList.add(new ParentLink(s1[i-1],sb1.toString()));
+			sb.append(s1[i]).append('/');
+		}
+		
+		int x=5;
+	}
+	
+	public List getParentFolderList()
+	{
+		return parentFolderList;
+	}
+	
 	protected void endLoad() throws GalleryException
 	{
 		imagesArray = new Image[imageFiles.length];
@@ -1289,6 +1363,16 @@ public class Folder implements FilenameFilter, Serializable
 		if (title.endsWith("/"))
 		{
 			title = title.substring(0, title.lastIndexOf('/'));
+		}
+		
+		int p = title.lastIndexOf('/');
+		if (p>-1)
+		{
+			name = title.substring(p+1);
+		}
+		else
+		{
+			name = title;
 		}
 
 	}

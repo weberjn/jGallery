@@ -171,8 +171,18 @@ public class Configuration implements Serializable
 
 	public IThumbnailWriter getThumbnailWriter()
 	{
-		return thumbnailWriter;
+		IThumbnailWriter writer = this.thumbnailWriter; 
+		
+		if (null == writer)
+		{
+			if (null != parent)
+			{
+				writer = parent.getThumbnailWriter();
+			}
+		}
+		return writer;
 	}
+	
 	public void setThumbnailWriter(IThumbnailWriter thumbnailWriter)
 	{
 		this.thumbnailWriter = thumbnailWriter;
