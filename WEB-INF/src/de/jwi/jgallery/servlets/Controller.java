@@ -36,7 +36,6 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -260,7 +259,7 @@ public class Controller extends HttpServlet
             }
         }
 
-        folder = new Folder(directory, configuration, version,
+        folder = new Folder(directory, getServletContext(), configuration, version,
                 jgalleryContextPath, folderPath, dBManager);
 
         Hashtable folders = getFolders(session);
@@ -324,7 +323,7 @@ public class Controller extends HttpServlet
         configuration = new Configuration(configuration);
         configuration.addProperty("thumbnails.create", "false");
 
-        folder = new WebFolder(baseURL, configuration, version, remoteKey,
+        folder = new WebFolder(baseURL, getServletContext(), configuration, version, remoteKey,
                 jgalleryContextPath, folderPath, wis);
 
         Hashtable folders = getFolders(session);
@@ -364,6 +363,8 @@ public class Controller extends HttpServlet
                 .substring(servletPath.lastIndexOf('/') + 1);
 
         getServletContext().log("folderPath: "+folderPath);
+        
+        
         
         String folderRealPath = null;
 

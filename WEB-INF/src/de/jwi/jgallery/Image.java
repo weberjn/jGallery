@@ -205,7 +205,7 @@ public class Image implements Serializable
 
     public String getThumbHeight()
     {
-        return thumbHeight;
+        return isRepresentsSubdirectory ? folder.getIconHeight() : thumbHeight;
     }
 
     public String getThumbPath()
@@ -220,7 +220,7 @@ public class Image implements Serializable
 
     public String getThumbWidth()
     {
-        return thumbWidth;
+        return isRepresentsSubdirectory ? folder.getIconWidth() : thumbWidth;
     }
 
     /**
