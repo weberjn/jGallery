@@ -1,16 +1,16 @@
-<project name="JGallery" default="compile" basedir=".">
+<project name="jGallery" default="compile" basedir=".">
 
   <property file="build.properties"/>
 
 
-  <property name="src" value="src"/>
   <property name="dist" value="dist"/>
   <property name="webapp" value="${ant.project.name}"/>
-  <property name="apidoc" value="${webapp}/apidoc"/>
-  <property name="docs" value="${webapp}"/>
-  <property name="webinf" value="${webapp}/WEB-INF"/>
-  <property name="lib" value="${webapp}/WEB-INF/lib"/>
-  <property name="build" value="${webapp}/WEB-INF/classes"/>
+  <property name="apidoc" value="apidoc"/>
+  <property name="webinf" value="WEB-INF"/>
+  <property name="lib" value="WEB-INF/lib"/>
+  <property name="build" value="WEB-INF/classes"/>
+  <property name="src" value="WEB-INF/src"/>
+
   
   <property file="${webinf}/version.properties"/>
 
@@ -48,23 +48,16 @@
     <target name="dist" depends="compile">
 
     <zip destfile="${dist}/${ant.project.name}-${version}.zip">
-    <zipfileset  prefix="${ant.project.name}" dir="." includes="${webapp}/**"
-    	excludes="${webapp}/skins/**,${webapp}/WEB-INF/**"/>
-    <zipfileset  prefix="${ant.project.name}" 
-    	dir="." includes="${webapp}/WEB-INF/**"
-    	excludes="${webapp}/WEB-INF/classes/test/**"/>
-    <zipfileset prefix="${ant.project.name}"
-    	dir="." includes="${webapp}/skins/Spartan/**"/>
-    <zipfileset prefix="${ant.project.name}"
-    	dir="." includes="${src}/de/**"/>
-    <zipfileset prefix="${ant.project.name}"
-    	dir="." includes="${src}/imageinfo/**"/>
-    <zipfileset prefix="${ant.project.name}"
-    	dir="." includes="build.xml,build.properties,JGallery.xml"/>
-    <zipfileset prefix="${ant.project.name}"
-    	dir="." includes="COPYING,readme.txt,converted-skins.txt"/>
-	
-  </zip>
+	    <zipfileset  prefix="${ant.project.name}" 
+	    dir="." includes="WEB-INF/**"
+	    excludes="WEB-INF/classes/test/**"/>
+	    <zipfileset prefix="${ant.project.name}"
+	    dir="." includes="skins/Spartan/**"/>
+	    <zipfileset prefix="${ant.project.name}"
+	    dir="." includes="build.xml,build.properties,jGallery.xml,jGallery.htm,contact.htm"/>
+	    <zipfileset prefix="${ant.project.name}"
+	    dir="." includes="COPYING,readme.txt,converted-skins.txt"/>
+    </zip>
     
   </target>
   
