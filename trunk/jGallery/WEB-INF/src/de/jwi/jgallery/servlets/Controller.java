@@ -148,10 +148,6 @@ public class Controller extends HttpServlet
 		InputStream is = getServletContext().getResourceAsStream(
 				"/WEB-INF/" + CONFIGFILE);
 
-		if (null == is)
-		{
-			throw new ServletException("Resource does not exist: " + CONFIGFILE);
-		}
 		try
 		{
 			configuration = new Configuration(is);
