@@ -160,6 +160,8 @@ For any given image /<strong><em>path</em></strong>/<em>animage</em>.jpg
 jGallery will create a html page reachable at <br>
 /jGallery/<strong><em>path</em></strong>/<em>animage</em>.html and the
 thumbnail page will be at /jGallery/<strong><em>path</em></strong>/<em>index</em>.html.<br>
+If jGallery is installed as default context, the /jGallery part is
+omitted.<br>
 <br>
 Example:<br>
 <br>
@@ -187,8 +189,8 @@ If you cannot enable crossContext="true", there is also the possibility
 of specifying a mapping between context name and real path via the
 dirmappings context-param in WEB-INF/web.xml<br>
 <br>
-If you do not like the .html extention, you can use an arbitrary
-extention pattern in&nbsp; web.xml in the Controller
+If you do not like the .html extension, you can use an arbitrary
+extension pattern in&nbsp; web.xml in the Controller
 &lt;servlet-mapping&gt;&lt;url-pattern&gt;.<br>
 <br>
 <span style="font-weight: bold;"></span>
