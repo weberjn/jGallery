@@ -42,6 +42,8 @@ public class Configuration implements Serializable
 	private Properties properties;
 
 	private Configuration parent = null;
+	
+	private IThumbnailWriter thumbnailWriter;
 
 	public Configuration(Configuration parent)
 	{
@@ -167,4 +169,12 @@ public class Configuration implements Serializable
 		}
 	}
 
+	public IThumbnailWriter getThumbnailWriter()
+	{
+		return thumbnailWriter;
+	}
+	public void setThumbnailWriter(IThumbnailWriter thumbnailWriter)
+	{
+		this.thumbnailWriter = thumbnailWriter;
+	}
 }
