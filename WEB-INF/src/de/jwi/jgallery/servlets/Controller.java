@@ -416,6 +416,7 @@ public class Controller extends HttpServlet
 		return folder;
 	}
 
+	
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException
 	{
@@ -475,7 +476,7 @@ public class Controller extends HttpServlet
 
 				String imagePath = folderPath;
 
-				if (contextPath.substring(1).equals(theRealPath.getContext()))
+				if (!"".equals(contextPath) && contextPath.substring(1).equals(theRealPath.getContext()))
 				{
 					// special case for image folders below jGallery's context
 
