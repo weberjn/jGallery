@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="WEB-INF/src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="var" path="TOMCAT5/common/lib/servlet-api.jar"/>
+	<classpathentry kind="var" path="TOMCAT5/common/lib/jsp-api.jar"/>
+	<classpathentry kind="lib" path="WEB-INF/lib/metadata-extractor-2.2.2.jar"/>
+	<classpathentry kind="output" path="WEB-INF/classes"/>
+</classpath>

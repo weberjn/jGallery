@@ -1,0 +1,116 @@
+/*
+ * Combined style sheet for the index pages and the slide pages.
+ */
+
+/*
+ * This style template pops up a color dialog so users can choose background color
+ * The choice is then saved in the project
+ */
+
+<%
+ String pickColor(String title, String defColor) {
+  int intColor = Integer.parseInt(defColor.substring(1), 16);
+  Color c = JColorChooser.showDialog(window, title, new Color(intColor));
+  if (c != null) {
+    Color darker = c.darker();
+    album.put("darker", "#" + Integer.toHexString(darker.getRGB()).substring(2));
+    return "#" + Integer.toHexString(c.getRGB()).substring(2);  
+  }
+  else return defColor;
+ }
+ 
+ if (bgcolor == void) {
+  bgcolor = album.get("bgcolor");
+  if (bgcolor == null) bgcolor = "#ffffff";
+ }
+ bgcolor = pickColor("Select background color", bgcolor);
+ album.put("bgcolor", bgcolor);
+ engine.getUserVariables().put("bgcolor", bgcolor);
+ 
+ if (color == void) {
+  color = album.get("color");
+  if (color == null) color = "#000000";
+ }
+ color = pickColor("Select text color", color);
+ album.put("color", color);
+ engine.getUserVariables().put("color", color);
+ darkerColor = album.get("darker");
+%>
+
+/* Style for all bodies. */
+body {
+	font-family: Verdana, Arial, sans-serif;
+	font-size: 13px;
+	background-color: <%=bgcolor%>;
+	color: <%=color%>;
+	margin: 5;
+}
+
+/* Style for all table cells. */
+td {
+	font-family: Arial, sans-serif;
+	font-size: 10px;
+}
+
+/* Put a border on all generated images */
+.image {
+	border-width: 1;
+	border-color: #888888;
+	border-style: solid;
+	margin: 5;
+}
+
+/* Align the content of the cells on the index pages to the center and bottom. */
+#index td {
+	text-align: center;
+	vertical-align: bottom;
+}
+
+/* Remove the margin under the images on the index pages. */
+#index .image {
+	margin-left: 2;
+	margin-right: 2;
+	margin-bottom: 0;
+}
+
+/* Don't have margins on the slide pages. */
+body#slide {
+	margin: 0;
+}
+
+/* Highlight the image name on the slide pages. */
+#slide .name {
+	font-weight: bold;
+	font-size: 14px;
+}
+
+/* Header */
+h1 {
+	font-size: 30px;
+	font-weight: bold;
+}
+
+/* Custom link styles */
+a:active {
+	text-decoration: none;
+	color: <%=color%>;
+}
+
+a:visited {
+	text-decoration: none;
+	color: <%=darkerColor%>;
+}
+
+a:hover {
+	text-decoration: underline;
+	color: #FFFFFF
+}
+
+a:link {
+	text-decoration: none;
+	color: #CCCCCC
+}
+
+#imageinfo {
+	visibility: hidden;
+}

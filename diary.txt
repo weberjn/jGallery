@@ -1,0 +1,457 @@
+TODO:
+
+Iterator Tag für Subdirectories
+
+Iterator Tag für Parentdirectories, um Navigation nach oben machen zu können: 
+/ first / second / here
+
+Counter Tag -> Datenbank
+User Comments -> Datenbank
+
+I18n Tag
+
+Doku
+
+Bluepro
+
+Iterator über Subdirectories
+
+CAPTIONS
+
+Iterator über einzelne Indexseiten
+
+25.03.2004 -----------------
+
+Tagsüber mit Rémy von Apache rumgemailt, er will einfach nicht kapieren, was ich meine. Na gut, dann muß halt der Workaround, nur den /start Part von den Pfaden zur Bestimmung des Contextes zu nehmen, herhalten.
+
+Schließlich Problem gefunden:
+
+
+Hey Rémy,
+
+confess, you fixed it secretely:  ;-)
+
+in the jakarta-tomcat-5.0.19-src I have, 
+
+in ApplicationContextFacade.java there is 
+
+while (true) {
+                child = (Context) host.findChild(mapuri);
+                if (context != null)
+                    break;
+                int slash = mapuri.lastIndexOf('/');
+                if (slash < 0)
+                    break;
+                mapuri = mapuri.substring(0, slash);
+            }
+	    
+	    
+In the source you sent there is
+
+if (child != null)
+   break;
+   
+   
+Of course (context != null) is always true, else there would be a NPE in 
+if (!context.getCrossContext()).
+
+Well, I did not test it, but I think that should fix the bug I found.
+
+Bonne soirée,
+Jürgen
+
+
+24.03.2004 ----------------- 4h
+jGallery mit mod_jk in Apache eingehängt. Wichtig, daß nicht nur für jGallery selbst sondern auch das Verzeichnis für die Bilder eingehängt wird.
+
+Ganzen Abend rumprobiert, wie ich rausfinden kann, ob /a/b im root context oder context /a ist: Trick ist getContext("/a/b/c.html").getRealPath("/").equals(getContext("/").getRealPath("/"))
+
+
+Bug in Tomcat: bei per XML Files eingehängten Contexten findet er den Context nicht, wenn bei getContext() mehr als der Context path Eintrag im XML übergeben wird.
+Workaround: nur den /anfang Teil für getContext() nehmen. Damit kann ich einen Context ins Apache htdocs legen.
+
+Bug aufgemacht: http://issues.apache.org/bugzilla/show_bug.cgi?id=27925
+getContext() fails for xml-specified contexts
+Bin gespannt, wie sie diesen Bug wieder für invalid erklären.
+
+22.03.2004 ----------------- 3h
+
+Bug gefixed, dass für jedes image eine neue Row angelegt wurde. 
+
+Die alte Tabelle muß so gruppiert werden:
+
+mysql> insert into images1 select id,folder,image,sum(hits) from images group by
+ image;
+
+21.03.2004 ----------------- 5h
+Refactored, JGallery in jGallery umbenannt.
+Überlegt, Skin files nach WEB-INF zu verlagern, aber dann können auch die css und gifs nicht geladen werden.
+
+Nach Counter SQLs recherchiert. Um Atomizität zu erreichen, muß es ein SQL Statement sein: UPDATE table SET column=column+1 WHERE id='n'
+
+Gemäß der Tomcat Doku eingebaut, Datenbank über JNDI zu holen. Ging sehr glatt, einziges Problem war wieder mal mysql Userverwaltung. Aber über MySQL Administrator und mysqladmin reload ging es dann doch.
+
+Counter für Images und Folder eingebaut, Zugriff über EL Variablen, das ist flexibler als über Tags.
+
+11.03.2004 ----------------- 4h
+
+Tomcat 5.0.19 genommen, Bug von gestern immer noch da.
+
+Schließlich gefunden: der Name für IndexCursor taucht im Stringparameter für VariableInfo Konstruktor auf: 
+
+VariableInfo info = new VariableInfo(IndexIteratorTag.CURRENTINDEX,
+"de.jwi.jgallery.tags.IndexCursor", true, VariableInfo.NESTED);
+
+geändert in 
+
+VariableInfo info = new VariableInfo(IndexIteratorTag.CURRENTINDEX,
+IndexIteratorCursor.class.getClass().getName(), true, VariableInfo.NESTED);
+
+	
+
+10.03.2004 ----------------- 4h
+
+Iterator über Index pages gebaut, verwendbar für <select> tag. 
+
+Counter gebaut, ewig rumgemacht, weil in IndexCursor umbenannt hatte und Tomcat trotzdem diesen Code generierte:
+
+  index = (de.jwi.jgallery.tags.IndexCursor) pageContext.findAttribute("index");
+
+Hab es schließlich zurückrenamed.
+
+Der counter Tag wollte sich dann nicht ansprechen lassen, rumgebastelt, ein paarmal Start statt reload für die Web app gedrückt, aber irgendwann tat es dann.
+
+
+create table images (
+    id int not null auto_increment primary key,
+    folder varchar(255),
+    name varchar(50),
+    hits int(11) NOT NULL default '0');
+    
+create table comments(    
+    id int not null auto_increment primary key,
+    image_id int,
+    text text);
+    
+Noch aufgeräumt bei Methoden für Previous/Next
+
+09.03.2004 ----------------- 3h
+
+Projekt http://jgallery.dev.java.net/ angelegt.
+
+Eingebaut, daß version aus build.properties genommen wird.
+
+Doku erweitert.
+
+
+<jg:if test="<%= thumbWidth > thumbHeight %>"
+
+geändert in 
+
+<jg:if test="${thumbWidth < thumbHeight}">
+
+
+User defined Variable eingebaut.
+
+Version 0.7.2
+
+
+08.03.2004 ----------------- 3h
+
+Noch ein wenig mit dem Laden von Web rumgebastelt,
+Sortierungsreihenfolgen eingebaut.
+
+07.03.2004 ----------------- 8h
+
+Mapping umgestellt und in Doku beschrieben.
+
+For any given image /path/animage.jpg JGallery will create a html page reachable at /JGallery/path/animage.html and the thumbnail page will be at /JGallery/path/index.html.
+
+Dazu muß ich das Servlet mapping auf *.html umstellen
+
+bei einer Url von http://localhost:8080/JGallery/testalbum/CRW_9753.html
+
+ist dann
+
+contextPath: /JGallery
+servletPath: /testalbum/CRW_9753.html
+
+requestURI= "/JGallery/testalbum/index.html"
+requestURL= "http://localhost:8080/JGallery/testalbum/index.html"
+servletPath= "/testalbum/index.html"
+
+Sicherheitshalber das ganze mit WLS 8.1 getestet, funktioniert dort genauso. Ist auch in Servlet Spec SRV.4.4 Request Path Elements beschrieben. 
+
+Das ganze scheint auch mit zwei Mappings zu klappen, *.html und /
+Zuerst kommt html, dann /
+Die Spec könnte man so interpretieren, daß das Default Mapping / zuletzt angewendet wird.
+Vermutlich wird dann das Default Servlet auch durch jsps und styles getriggered.
+
+
+Diese Änderung eingebaut, hatte erst nicht geblickt, daß getContext(folderPath) möglich ist und man so den Context für einen Pfad in einer Webapp kriegt.
+
+Generelles Prinzip: FolderPfade immer mit / am Ende.
+
+Exhibition umbenannt in Folder.
+
+Version 0.7
+
+Eingebaut, daß Images auch von Web-Url geladen werden können, dazu Folder in WebFolder abgeleitet. Brauchte dazu aber auch ImageAccessor Klasse um nur noch mit Streams zu arbeiten, aber dadurch wird der Code unübersichtlich.
+
+06.03.2004 ----------------- 5h
+Morgens build.xml geschrieben, das mir dist Version baut. 0.6 hochgeladen auf jwi.de.
+
+VariableReplacer erweitert, so daß er $text.aWord mit <jg:text>aWord</jg:text> ersetzen kann.
+
+Skin "Spartan" geschrieben.
+
+Etwas mit Error Handling rumgebastelt, funktioniert aber nicht richtig.
+
+05.03.2004 -----------------
+Bei Freshmeat Namen JGallery registriert.
+
+04.03.2004 -----------------
+Eingebaut, daß bei Zugriff auf nicht existentes Bild / Verzeichnis Error 404 gesendet wird.
+
+03.03.2004 -----------------
+
+Geschaut, ob es synchronisierungs-Probleme gibt. Eigentlich nicht, Exhibitions hängen an der Session. Schlimmstenfalls könnte es eine Racecondition zwischen den Browserfenstern eines Users geben, dann könnten Exhibition-Objekte unnötig angelegt werden.
+
+Verschiedene JAlbum Skins auf Eignung mit JGallery ausprobiert.
+Basic - genauso wie der ursprüngliche
+Experience - sieht gut aus, mal probieren
+Film - sieht auch gut aus, ohne Java, müßte gehen
+Horizontal - etwas Java, probieren
+Vertical - etwas Java, probieren
+
+Film bearbeitet:
+index ließ sich ohne nacharbeiten zu müssen mit dem VariablesTransformer umsetzen.
+Beim Slide kamen Konstruktionen wie
+<ja:eval>previous.get("imageWidth")</ja:eval> vor.
+Diese habe ich umgesetzt in ${exhibition.previous.imageWidth}
+Noch in thumb-Größe geändert.
+
+Gut, tat dann im Prinzip, sah aber viel zu groß aus.
+
+Horizontal probiert, aber der hat Frames und das klappt ganz schlecht.
+
+
+/JGallery/skins/Experience/styles/Dark.css
+/JGallery/skins/Experience/res/index.gif
+
+Steps to convert Standard skin:
+run it through VariablesTransformer
+
+close all <jg:text> Tags.
+
+replace
+<%= new File(imageDirectory, label+".txt") %>
+with
+
+Im slide tauchte noch ein ../${exhibition.indexPage}, das klappt natürlich nicht, das .. muß weg.
+
+Den Standard schließlich zum laufen gekriegt.
+
+Mit Doku angefangen, Marco Schmieds Seiten als Vorlage genommen.
+
+02.03.2004 ----------------- 2,5h
+
+/JGallery/galleries/testalbum/index.html
+soll testalbum/ aus ROOT Context zeigen (urlpath = /testalbum)
+
+/JGallery/tomcat/thecontext/testalbum/index.html
+soll testalbum/ aus Context thecontext zeigen (urlpath = /thecontext/testalbum)
+
+/JGallery/apache/testalbum/index.html (urlpath = /testalbum)
+soll dirs.properties -> testalbum.realdir zeigen
+
+
+
+http://localhost:8080/JGallery/apache/images/spain/pic/index.html
+urlpath = /images/spain/pic
+dirs.properties: 
+images=D:/Apache/htdocs/images
+
+
+pathInfo= "/testalbum/index.html"
+queryString= null
+pathTranslated= "D:\\eclipse\\workspace\\JGallery\\JGallery\\testalbum\\index.html"
+requestURI= "/JGallery/galleries/testalbum/index.html"
+requestURL= "http://localhost:8080/JGallery/galleries/testalbum/index.html"
+
+
+
+
+01.03.2004 ----------------- 5h
+
+Endlich mit ImageIO hingekriegt, einen Thumbnail zu erzeugen. Habe noch ein Interface ThumbnailWriter eingezogen, um auch den Thumbnail von Marco Schmidt verwenden zu können (der aber com.sun.image.codec.jpeg.* verwendet).
+
+Wow, die dynamische Erzeugung von Thumbnails funktioniert endlich.
+Noch ein komischer Effekt: der Browser zeigt erst eine schlechte Qualität an, man muß erst Reload drücken, damit sie ok ist.
+
+Attribut currentImage im ColIterator wieder in image umbenannt, da bei Indexseiten ja kein anderes Image vorhanden ist. Bei Index- und Slideseiten ist die Semantik von image klar. 
+
+Directory-lokale Konfiguration möglich gemacht. Dazu Konstruktor von Exhibition erweitert.
+
+Tool geschrieben, um JAlbum Skins nach JSP/JGallery zu übersetzen. Klappt überraschend gut.
+
+Dann muß man nur noch von Hand Konstruktionen übersetzen wie:
+<%=(maxThumbHeight+25)*currentRows;%>
+in
+${(exhibition.maxThumbHeight+25)*exhibition.currentRows}
+
+Version 0.6
+
+29.02.2004 ----------------- 5h
+Weiteren Bug gefixed, daß die Navigation von Image auf Index nicht stimmte (wieder wegen Subdirectories).
+
+Exif Daten in eigene Klasse ausgelagert, damit im JSP längerer Zugriffspfad, aber sauberer und brauchen nicht geladen werden, falls nicht gewünscht.
+
+Muß Property-Dateien einführen:
+
+WEB-INF: JGallery.properties: default Werte
+<IMAGEPATH>/properties.txt: Properties pro Exhibition, können defaults überschreiben
+<IMAGEPATH>/captions.txt: Bild Unterschriften
+
+
+Eine Weile rumgesucht, warum InputStream is = getServletContext().getResourceAsStream() nicht funktioniert. Problem war, ich hatte den InputStream auf != null statt == null getestet (!!!!).
+
+Eingebaut, daß einige Parameter aus JGallery.properties kommen, Unterstützung für String, int und boolean Paramter.
+
+Den Skin in Unterverzeichnis gelegt.
+
+
+Abends recherchiert, wie man JPEG Thumbnails erzeugen kann.
+Will neue ImageIO benutzen. 
+
+Weiteren Generator gefunden: http://webphotopublish.sourceforge.net/
+
+2h in ImageIO eingelesen, aber das Setzen einer Qualität scheint mit den vorgegebenen ImageWriteParam nicht zu funktionieren.
+Vielleicht muß ich doch Thumbnail.java benutzen.
+
+Noch Posting (http://groups.google.de/groups?q=ImageWriter+jpeg+quality&hl=de&lr=&ie=UTF-8&oe=UTF-8&scoring=r&as_drrb=b&as_mind=12&as_minm=5&as_miny=2001&as_maxd=29&as_maxm=2&as_maxy=2004&selm=ao327n%24ibrqk%241%40ID-48354.news.dfncis.de&rnum=2)
+Thumbnail.java gefunden, ich glaub das Problem ist, daß ich javax.imageio.plugins.jpeg benutzen muß.
+
+28.02.2004 ----------------- 3,5 h
+
+Subdirectories funktionieren jetzt zusammen mit dem rowiterator. Ich muß aber JAlbum dahingehend ergänzen, daß ich noch einen Extra Iterator für Subdirectories mache, das mit den Foldern weder hübsch noch flexibel.
+
+Einlesen von Bilddaten in Constructor von Image gelegt, tut aber noch nicht, passieren Exceptions. 
+Gefixed, hatte schon im Konstruktor auf Flag isRepresentsSubdirectory zugriffen, das erst später gesetzt wurde.
+
+Imagegrößen für Image+Thumb mit der ImageInfo Klasse eingesetzt, dann kann EXIF nur gelesen werden, falls nötig.
+
+Vielleicht sollte ich die Exif Daten in extra Klasse ans Image gehängt setzen, allerdings würde der Zugriff dann länger: ${currentImage.exif.cameraModel}
+Aber dafür könnte ich lazy loading machen.
+
+27.02.2004 ----------------- 2 h
+
+Exhibitions nicht mehr an Application, sondern an Session gehängt (sonst hat die Application irgendwann alle erreichbaren Bilder dranhängen, bei der Session kommt vielleicht ein Time-Out und der Garbage Collector kann aufräumen).
+
+Die Objekte, die an die Session gehängt werden, müssen serializable sein, sonst kann Tomcat die Session nicht persistieren.
+
+Images auf lazy loading umgestellt, so werden die Images erst untersucht, wenn sie wirklich gebraucht werden, und Tomcat wird nicht durch alle Images eines Verzeichnisses belastet.
+
+25.02.2004 ----------------- 4 h
+
+Morgens mal JGallery auf elisa installiert und es lief auf Anhieb. Matze und KDJ gezeigt. Matze fand Bug, daß Navigation von Bild zu Index manchmal nicht stimmt.
+
+Abends Bug gefixed, war wieder wegen einem Grenzfall bei Integer-Arithmetik (hatte aufgerundet durch +1, das darf aber bei Divisionsrest 0 nicht sein).
+
+Ewig mit den Exif Tags rumgemacht, ich hatte eine Liste der TAGs im Source formatiert, und der formatter hat es immer wieder kaputt gemacht.
+
+Erst vorbereitet, die Exif Tags im Image Objekt per Reflektion zu setzen, das ist zwar elegant, aber wohl nicht wirklich schlau.
+Habe es dann in einer Kette von settern gemacht.
+
+Noch in Falle reingelaufen, daß Aperture erst berechnet werden muß.
+Aber jetzt werden die EXIF Daten des Beispiel Skins angezeigt.
+
+
+24.02.2004 ----------------- 3 h
+
+Das Tag Tutorial von http://java.sun.com/products/jsp/tutorial/TagLibraries16.html geholt, die rowiterator und coliterator dahingehend umgestellt.
+Hauptänderung war am Kontrollfluß, nämlich daß in doStartTag() das erste Bild geholt wird und in doAfterBody() erstmal rausgeschrieben wird, dann erst die Abfrage auf nächste Iteration. Vorher war erst die Abfrage und dann das Rausschreiben, dabei ist es wohl schiefgegangen. Tja, immer erst mal die Online Tutorials befragen, dann die Bücher.
+
+Noch Klasse ColIteratorTagTEI eingebaut, damit die currentImage Variable nur im coliterator Scope gültig ist. 
+
+Berechnung der Indizes für die Indexnavigation korrigiert, um 20:24 tut die Navigation erstmal richtig !!!
+
+JGallery 0.1 läuft richtig!
+
+http://www.geocities.com/marcoschmidt.geo/java-save-jpeg-thumbnail.html#source
+
+Noch ein wenig in Doku von metadata-extractor-2.2.2 eingelesen.
+
+23.02.2004 ----------------- 3 h
+Ganze Zeit am rowiterator und coliterator rumgebastelt, alles ganz umgestellt, so daß rowiterator Zahl Images und current Column-Größe vorhält und coliterator diese Werte per Callback holt.
+
+parent gab es in ColIteratorTag und dessen Basisklasse BodyTagSupport, genommen wurde der der Basisklasse (== null)
+
+Aber das ganz läuft immer noch nicht, es wird ein Bild zu wenig ausgegeben, ich kapier die blöden Tags einfach nicht.
+
+22.02.2004 ----------------- 8 h
+Hab jetzt die Idee, daß alle Links halt absolut werden, egal, da ja sowieso alle Adressen per Variablen eingebunden 
+und generiert werden.
+Der Controller kriegt dann das Default mapping /
+Die Bilder liegen dann in anderen Kontexten, die Templates potentiell auch.
+Damit:
+
+/JGallery/galleries/fasching2003/CRW_0004.html
+referenziert Bilder in
+/galleries/fasching2003/  (in anderem bzw. Default Context)
+Styles sind dann in
+/JGallery/res  (aber potentiell auch in anderen Contexten)
+
+pathInfo= "/testalbum/CRW_9751.jpg"
+
+
+http://localhost:8080/JGallery/testalbum/CRW_9751.html
+contextPath= "/JGallery"
+getServletContext().getRealPath("/")= "D:\\eclipse\\workspace\\JGallery\\JGallery\\"
+
+Das tut dann soweit, Problem ist, daß bei einem Mapping von /* auch die Forwards auf /slide in das Servlet rekursiv reinlaufen.
+
+-> Mapping auf /irgendwas/* nötig, z.B. /JG/*
+
+habe jetzt umgestellt auf <url-pattern>/galleries/*</url-pattern>
+damit url= http://localhost:8080/JGallery/galleries/testalbum/CRW_9751.html
+und damit um 14:31 Das erste Bild wurde richtig dargestellt
+
+Dann getFirstIndexPage() und Freunde implementiert.
+
+
+http://localhost:8080/JGallery/galleries/testalbum/CRW_9748.html
+http://localhost:8080/JGallery/galleries//JGallery/galleries/testalbum/index.html
+
+Mit der index.jsp angefangen, aber da in ja:include reingelaufen. Versuchte, es einfach an jsp:include zu delegieren, aber das klappte nicht. Na gut, dann halt pageContext.include(page).
+
+Lange am rowiterator Tag rumgebastelt, ich habe nicht die richtigen EVAL_BODY_AGAIN zurückgeliefert.
+
+Das mit "Image specific variables only exists within the column iterator for index templates." in coliterator ist ein wenig konfus, ich werde es so machen, daß es ein current image mit allen Daten fuer Slides (imageNum) und ein Iterator spezifisches image (currentImage) gibt.
+
+OK, alles so umgestellt, daß Zugriffe über ${exhibition.XXX}, ${image.XXX} und ${currentImage.XXX} gehen, damit ist das Ganze logischer als bei JAlbum.
+Tat recht bald, aber jetzt funktionieren dir Row/Column Iteratoren nicht mehr richtig.
+
+21.02.2004 ----------------- 7 h
+Variablenverarbeitung eingebaut, ${sowieso} tut jetzt, Abbildung von slides/imgxxx.hmtl 
+auf richtiges Image funkt auch.
+Aber dann in Problem der relativen Links aus Controller Servlet heraus hereingelaufen, wie damals in IntBas.
+Vermutlich muß ich mapping auf *.html machen und request.getServletPath() auswerten, der sieht nämlich so aus:  "/JGallery/testalbum/res/index.html"
+Dann müssen die Bilder und CSS wirklich real unter /JGallery/testalbum/ liegen.
+
+
+18.02.2004 ----------------- 5 h
+In Servlet-JSP Forwarding eingelesen, klappt gut, auch mit Attribut-Uebergabe
+
+Named variables als ${product} werden bei Tomcat nicht gefunden, im Gegensatz zur Spec.
+Bug bei Bugzilla aufgemacht.
+
+IF/Then Tags geschrieben, mit richtiger Verschachtelung über Stack auf zugehöriger Page.
+
+17.02.2004 ----------------- 2,5 h
+Mit JGallery angefangen, JGallery von Spanier gefunden bei Sourceforge, aber es ist nur 
+einfache JSP. Ich will aber die Templates von JAlbum weitestgehend verwenden können.
+Mit Controller-Servlet angefangen. Direktory eingelesen.
+Bei Aufruf von 
+http://localhost:8080/JGallery/JGallery/albums/5/6.html wird der Rest (albums/5/6.html) 
+in PathInfo uebergeben. Damit kann fuer den Benutzer die URL wie bei JAlbum aussehen.
