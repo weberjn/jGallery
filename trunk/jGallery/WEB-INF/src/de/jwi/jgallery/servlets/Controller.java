@@ -79,6 +79,8 @@ public class Controller extends HttpServlet
     private HashSet webKeys = new HashSet();
 
     private Properties dirmapping = null;
+    
+    private String dataSource = null;
 
     private boolean useDataBase = false;
 
@@ -95,7 +97,7 @@ public class Controller extends HttpServlet
                 if (context == null) { throw new ServletException(
                         "Boom - No Context"); }
                 DataSource ds = (DataSource) context
-                        .lookup("java:comp/env/jdbc/jGallery");
+                        .lookup(dataSource);
 
                 dBManager = new DBManager(ds);
             }
@@ -108,6 +110,8 @@ public class Controller extends HttpServlet
 
     public void init() throws ServletException
     {
+        dataSource = (String) getServletContext().getInitParameter("dataSource");
+        
         String s = (String) getServletContext().getInitParameter("dirmappings");
 
         dirmapping = new Properties();

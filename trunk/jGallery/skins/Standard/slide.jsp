@@ -70,9 +70,9 @@
 </jg:else>
 
 <!-- Always display comment below image (if exists) -->
-<jg:if exists="${image.exif.comment}">
+<jg:if exists="${image.comment}">
 	<br>
-	<div class="name">${image.exif.comment}</div>
+	<div class="name">${image.comment}</div>
 </jg:if>
 <jg:else>
 	<!-- Try to extract the comment from a file carrying the same base name as this image -->

@@ -21,16 +21,19 @@ package de.jwi.jgallery;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Properties;
 
 import de.jwi.jgallery.db.DBManager;
 import de.jwi.jgallery.imageio.IThumbnailWriter;
@@ -44,6 +47,10 @@ public class Folder implements FilenameFilter, Serializable
 {
 
     
+    
+
+private static final String FOLDER_KEY = "folder";
+private static final String CAPTIONSFILE = "captions.txt";
     private static final String JGALLERYIGNOREFILE = ".jGalleryIgnore";
     private String version;
 
@@ -68,6 +75,8 @@ public class Folder implements FilenameFilter, Serializable
     private Configuration configuration;
 
     protected String[] imageFiles;
+    
+    private Properties captions = new Properties();
 
     private int[] imageCounters;
 
@@ -220,6 +229,15 @@ public class Folder implements FilenameFilter, Serializable
         return Boolean.toString(isShowImageNum);
     }
 
+    public String getComment()
+    {
+        String s = captions.getProperty(FOLDER_KEY);
+        return (s==null) ? "" : s;
+    }
+    
+        
+    
+    
     public String getCopyright()
     {
         return "(c) Jürgen Weber";
@@ -278,6 +296,11 @@ public class Folder implements FilenameFilter, Serializable
             checkAndCreateThumb(n - 1);
             imagesArray[n - 1] = new Image(imageFiles[n - 1], false, this,
                     makeImageAccessor(imageFiles[n - 1]));
+            String s = captions.getProperty(imageFiles[n - 1]);
+            if (s!=null)
+            {
+                imagesArray[n - 1].setComment(s);
+            }
         }
         return imagesArray[n - 1];
     }
@@ -387,11 +410,11 @@ public class Folder implements FilenameFilter, Serializable
     }
 
     /**
-     * @return Name and version of JGallery
+     * @return Name and version of jGallery
      */
     public String getGenerator()
     {
-        return "JGallery " + getInternalVersion();
+        return "jGallery " + getInternalVersion();
     }
 
     public String getGeneratorurl()
@@ -908,6 +931,22 @@ public class Folder implements FilenameFilter, Serializable
             else
             {
                 imageFiles = directory.list(this);
+            }
+            
+            f = new File(directory,CAPTIONSFILE);
+            InputStream is = null;
+            try
+            {
+                is = new FileInputStream(f);
+                captions.load(is);
+            }
+            catch (FileNotFoundException e)
+            {
+                // ignore, no captions
+            }
+            catch (IOException e)
+            {
+                throw new GalleryException(e.getMessage(),e);
             }
             
             imageCounters = new int[imageFiles.length];

@@ -20,6 +20,9 @@ CAPTIONS
 
 Iterator über einzelne Indexseiten
 
+12.05.2004 -----------------
+captions.txt eingebaut.
+
 02.05.2004 -----------------
 Eingebaut, daß folder als Parent folder ignoriert wird, falls dort .jGalleryIgnore existiert.
 02.05.2004 -----------------
