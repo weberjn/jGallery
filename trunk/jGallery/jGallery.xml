@@ -5,7 +5,7 @@
 -->
 
 
-<Context path="/jGallery" docBase="D:/eclipse/workspace/jGallery/jGallery"
+<Context path="/jGallery" docBase="jGallery"
         crossContext="true" debug="9" >
 
 
@@ -55,7 +55,7 @@
     </parameter>
     <parameter>
      <name>password</name>
-     <value>jg055al</value>
+     <value>yourpassword</value>
     </parameter>
 
     <parameter>

@@ -6,7 +6,6 @@
   <meta http-equiv="content-type" content="text/html;CHARSET=iso-8859-1">
 </head>
 <body lang="en">
-
 <h1>jGallery<br>
 </h1>
 <p>jGallery is a web application to display image galleries. Contrary
@@ -53,27 +52,10 @@ there is only <a href="http://jakarta.apache.org/">Jakarta Tomcat 5</a>.
 <p>
 </p>
 <h4>For Tomcat 5:</h4>
-<p>Unpack the downloaded jGallery-XX.zip to a folder of your liking and
-you'll get a folder structure like this:<br>
+<p>Unpack the downloaded jGallery-XX.zip to $CATALINA_HOME/webapps<br>
 </p>
-<p><img style="width: 162px; height: 147px;" alt="Folderstructure"
- src="folderstructure.gif"><br>
-</p>
-The inner jGallery is the web application, you have to tell Tomcat
-where it is. This is described in Tomca<span style="font-weight: bold;"></span><strong></strong>t
-user guide in section Deployer, there in <em>Context descriptors</em>.<br>
-<br>
-Basically you have to copy the jGallery.xml file found in the jGallery
-folder to <br>
-<br>
-$CATALINA_HOME/conf/[enginename]/[hostname]/<br>
-<br>
-&nbsp;(on my
-machine this is
-/jakarta-tomcat-5.0.18/conf/Catalina/localhost/) and adapt
-the docBase attribute to the real path of the web application (that is
-the parent directory of WEB-INF).<br>
-<br>
+<p>Then adapt jGallery.xml and copy it to&nbsp;
+$CATALINA_HOME/conf/Catalina/localhost/</p>
 Afterwards restart Tomcat.<br>
 <h3><a name="how_jGallery_finds_its_images">URI Addresses of generated
 HTML pages</a></h3>
@@ -82,11 +64,6 @@ For any given image /<strong><em>path</em></strong>/<em>animage</em>.jpg
 jGallery will create a html page reachable at <br>
 /jGallery/<strong><em>path</em></strong>/<em>animage</em>.html and the
 thumbnail page will be at /jGallery/<strong><em>path</em></strong>/<em>index</em>.html.<br>
-<br>
-If you install jGallery as default context, the /jGallery part will
-lack and the above scenario changes to /<strong><em>path</em></strong>/<em>animage</em>.html
-and /<strong><em>path</em></strong>/<em>index.html.</em><br>
-<br>
 <br>
 Example:<br>
 <br>
@@ -99,74 +76,22 @@ http://localhost:8080/<span style="color: rgb(102, 102, 204);">jsp-examples</spa
 <br>
 jGallery will create an html page at <br>
 <br>
-http://localhost:8080/<span style="color: rgb(102, 102, 204);">jsp-examples</span>/<span
+http://localhost:8080/jGallery/<span style="color: rgb(102, 102, 204);">jsp-examples</span>/<span
  style="color: rgb(0, 153, 0);">jsp2/jspx/textRotate</span>.html<br>
 <br>
-and a thumbnail page at <br>
+and an index page at <br>
 <br>
-http://localhost:8080/<span style="color: rgb(102, 102, 204);">jsp-examples</span>/<span
+http://localhost:8080/jGallery/<span style="color: rgb(102, 102, 204);">jsp-examples</span>/<span
  style="color: rgb(0, 153, 0);">jsp2/jspx/</span>index.html<br>
 <br>
+For this to work directly, crossContext="true" must be in the
+jGallery.xml above.<br>
+<br>
+If you cannot enable crossContext="true", there is also the possibility
+of specifying a mapping between context name and real path via the
+dirmappings context-param in WEB-INF/web.xml<br>
+<br>
 <span style="font-weight: bold;"></span>
-<h4>Images served by another server</h4>
-There is a special case for images that are not below the Tomcat
-hierarchy, but are served by Apache or even might be on another
-webserver. If the browser requests a page at /jGallery/<strong><em>folder/path</em></strong>/<em>anotherimage</em>.html
-jGallery will get the real location of the images from a file
-/jGallery/WEB-INF/web.properties.<br>
-This file must contain an entry <strong><em>folder=URL</em></strong>
-to describe where the images are.<br>
-<br>
-Be careful not to use <strong><em>folder </em></strong>keys that
-might be Tomcat ressources, too.<br>
-<br>
-For jGallery to be able to generate in index.html page, there must be a
-file images.txt in the images folder.<br>
-<br>
-In order to get image dimensions and Exif information for images served
-in this way, jGallery first reads images.txt for this web folder via
-the net (!) and then each image. Information about the images is cached
-in /jGallery/WEB-INF/cache/* so a given image is only read once.&nbsp;
-It is assumed that an image with a given name does not change.<br>
-<br>
-Example:<br>
-<br>
-With web.properties containing an entrie <br>
-<br>
-<strong><em></em></strong><span style="color: rgb(102, 102, 204);">myApacheImages</span>=<span
- style="color: rgb(0, 153, 0);">http://localhost:80/images/</span><br>
-<br>
-and the browser requesting <br>
-<br>
-/jGallery/<strong><em></em></strong><span
- style="color: rgb(102, 102, 204);">myApacheImages</span>/holiday2004/CRW_9081.html<br>
-<br>
-jGallery generates a html page that references the image at <br>
-<br>
-<span style="color: rgb(0, 153, 0);">http://</span><span
- style="color: rgb(0, 153, 0);">localhost:80/images/</span>holiday2004/CRW_9081.jpg<br>
-<br>
-A request to <br>
-<br>
-/jGallery/<strong><em></em></strong><span
- style="color: rgb(102, 102, 204);">myApacheImages</span>/holiday2004/index.html<br>
-<br>
-would display a thumbnail page with all images listed in <br>
-<br>
-<span style="color: rgb(0, 153, 0);">http://</span><span
- style="color: rgb(0, 153, 0);">localhost:80/images/</span>holiday2004/images.txt<br>
-<br>
-It is also possible to reference a remote folder on the same machine
-with a file url, e.g.<br>
-<br>
-myApacheFiles=file:///D:/apache/htdocs/images<br>
-<br>
-In that case there needs to be another entry&nbsp; key<span
- style="font-weight: bold;">.url</span> to get the URL the web server
-serves this folder with, e.g.<br>
-<br>
-myApacheFiles<span style="font-weight: bold;">.url</span>=http://myserver/images<br>
-<p></p>
 <h3><a name="Configuration">Configuration</a></h3>
 <p>
 On startup jGallery reads properties from
@@ -175,8 +100,8 @@ These can be overridden with properties jGallery.properties in an image
 folder. This file is read on the first access of the image folder, once
 for each HTTP session. </p>
 <br>
-<table style="text-align: left; width: 100%;" border="0" cellspacing="2"
- cellpadding="2">
+<table style="text-align: left; width: 100%;" border="0" cellpadding="2"
+ cellspacing="2">
   <tbody>
     <tr>
       <td style="vertical-align: top; text-align: justify; width: 25%;">skin<br>
@@ -335,7 +260,7 @@ jGallery</li>
 </ul>
 <a name="postcard"></a>And, if you want to thank me, <a
  href="contact.htm#postcard">send me a picture postcard.</a><br>
-<p class="lastmod">Last modification 2004-03-06</p>
+<p class="lastmod">Last modification 2004-05-03</p>
 <p class="copyright">Copyright &copy; 2004 <a href="contact.htm">J&uuml;rgen
 Weber</a></p>
 </body>
