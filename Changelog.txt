@@ -1,3 +1,8 @@
+Version 2005-02-06
+- the folder comment line can also be put into jGallery.properties now
+  e.g. folder=my great beach holidy
+- textEncoding is now dynamic (and can be overridden with textEncoding variable
+  in jGallery.properties 
 
 Version 0.9.2,2005-01-09
 - Fixed a bug that prevented jGallery from running as default context
