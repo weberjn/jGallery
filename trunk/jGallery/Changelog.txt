@@ -1,4 +1,9 @@
-Version 2005-02-06
+2005-03-27
+- jGallery parameters from WEB-INF/jGallery.properties can now be overwritten
+  with context InitParameters (which can come from web.xml or in Tomcat's case from a context.xml).  
+
+
+2005-02-06
 - the folder comment line can also be put into jGallery.properties now
   e.g. folder=my great beach holidy
 - textEncoding is now dynamic (and can be overridden with textEncoding variable

@@ -69,8 +69,6 @@ public class Controller extends HttpServlet
 
 	private static final String FOLDERS = "folders";
 
-	private static final String CONFIGURATION = "configuration";
-
 	private static final String CONFIGFILE = "jGallery.properties";
 
 	static final String VERSIONCONFIGFILE = "version.properties";
@@ -119,9 +117,9 @@ public class Controller extends HttpServlet
 	{
 		ServletContext context = getServletContext();
 
-		dataSource = (String) context.getInitParameter("dataSource");
+		dataSource = context.getInitParameter("dataSource");
 
-		String s = (String) context.getInitParameter("dirmappings");
+		String s = context.getInitParameter("dirmappings");
 
 		dirmapping = new Properties();
 
@@ -155,7 +153,7 @@ public class Controller extends HttpServlet
 		{
 			configuration = new Configuration(is);
 
-			s = (String) context.getInitParameter("thumbnailWriter");
+			s = context.getInitParameter("thumbnailWriter");
 
 			Object o = Class.forName(s).newInstance();
 
@@ -178,6 +176,25 @@ public class Controller extends HttpServlet
 			}
 		}
 
+		
+		// Parameters from the config file in WEB-INF can be overridden from parameters 
+		// in the context configuration
+		
+		Configuration configurationFromContext = null;
+		Enumeration en = context.getInitParameterNames();
+		while (en.hasMoreElements())
+		{
+			if (configurationFromContext == null)
+			{
+				configuration = configurationFromContext = new Configuration(configuration);
+			}
+			s = (String)en.nextElement();
+			String s1 = context.getInitParameter(s);
+			configurationFromContext.addProperty(s,s1);
+		}
+		
+		
+		
 		is = context.getResourceAsStream("/WEB-INF/" + WEBDIRSFILE);
 
 		if (null != is)
@@ -187,9 +204,9 @@ public class Controller extends HttpServlet
 				webDirectories = new Properties();
 				webDirectories.load(is);
 
-				for (Enumeration e = webDirectories.keys(); e.hasMoreElements();)
+				for (en = webDirectories.keys(); en.hasMoreElements();)
 				{
-					webKeys.add(e.nextElement());
+					webKeys.add(en.nextElement());
 				}
 
 			}
