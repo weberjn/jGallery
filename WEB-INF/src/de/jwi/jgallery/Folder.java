@@ -1330,14 +1330,14 @@ public class Folder implements FilenameFilter, Serializable
 	{
 		if (folderCounter == -1)
 		{
-			if ((null != dBManager) && this.configData.doCount)
-			{
-				// increment counter only once per Session
+			// increment counter only once per Session
 
+			if (null != dBManager) 
+			{
 				try
 				{
 					folderCounter = dBManager
-							.getAndIncFolderCounter(folderPath);
+							.getAndIncFolderCounter(folderPath,this.configData.doCount);
 				}
 				catch (SQLException e)
 				{
@@ -1364,7 +1364,7 @@ public class Folder implements FilenameFilter, Serializable
 
 		int c = imageCounters[imageNum - 1];
 
-		if ((null != dBManager) && this.configData.doCount)
+		if (null != dBManager) 
 		{
 			// increment counter only once per Session
 
@@ -1373,7 +1373,7 @@ public class Folder implements FilenameFilter, Serializable
 				try
 				{
 					c = dBManager.getAndIncImageCounter(folderPath,
-							imageFiles[imageNum - 1]);
+							imageFiles[imageNum - 1],this.configData.doCount);
 
 					imageCounters[imageNum - 1] = c;
 
