@@ -61,13 +61,16 @@ public class Image implements Serializable
     private String comment;
 
     private EXIFInfo exif;
+    
+    private ThumbNailInfo thumbNailInfo;
 
     Image(String name, boolean isRepresentsSubdirectory, Folder folder,
-            IImageAccessor imageAccessor) throws GalleryException
+            IImageAccessor imageAccessor,ThumbNailInfo thumbNailInfo) throws GalleryException
     {
         this.name = name;
         this.folder = folder;
         this.isRepresentsSubdirectory = isRepresentsSubdirectory;
+        this.thumbNailInfo = thumbNailInfo;
 
         lastModified = imageAccessor.getLastModified();
 
@@ -183,7 +186,7 @@ public class Image implements Serializable
 
     public String getIconPath()
     {
-        return isRepresentsSubdirectory ? folder.getIconPath() : "";
+        return isRepresentsSubdirectory ? thumbNailInfo.getThumbPath() : "";
     }
 
     public String getImagePath()
@@ -193,7 +196,7 @@ public class Image implements Serializable
 
     public String getThumbHeight()
     {
-        return isRepresentsSubdirectory ? folder.getIconHeight() : thumbHeight;
+        return isRepresentsSubdirectory ? thumbNailInfo.getThumbHeight() : thumbHeight;
     }
 
     public String getThumbPath()
@@ -204,7 +207,7 @@ public class Image implements Serializable
 
     public String getThumbWidth()
     {
-        return isRepresentsSubdirectory ? folder.getIconWidth() : thumbWidth;
+        return isRepresentsSubdirectory ? thumbNailInfo.getThumbWidth() : thumbWidth;
     }
 
     /**

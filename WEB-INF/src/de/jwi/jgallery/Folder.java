@@ -41,8 +41,6 @@ import java.util.Properties;
 import javax.servlet.ServletContext;
 
 import de.jwi.jgallery.db.DBManager;
-import de.jwi.jgallery.imageio.ImageIOThumbnailWriter;
-import de.jwi.jgallery.toolkit.ToolkitThumbnailWriter;
 
 /**
  * @author Juergen Weber Source file created on 17.02.2004
@@ -94,6 +92,12 @@ public class Folder implements FilenameFilter, Serializable
 
 	private String iconHeight;
 
+	private final int FOLDER_ICON_RANDOM = 0;
+
+	private final int FOLDER_ICON_ICON = 1;
+
+	private int folderIconStyle = FOLDER_ICON_RANDOM;
+
 	protected String folderPath;
 
 	protected String imagePath;
@@ -101,6 +105,7 @@ public class Folder implements FilenameFilter, Serializable
 	protected String jgalleryContextPath;
 
 	private String parentIndexPage;
+
 	private String parentlink;
 
 	private Hashtable images = new Hashtable();
@@ -111,7 +116,7 @@ public class Folder implements FilenameFilter, Serializable
 
 	private int imageNum; // Number of the current image
 
-	private String skin = "Standard" ; // Name (and folder) of skin
+	private String skin = "Standard"; // Name (and folder) of skin
 
 	private String indexJsp;
 
@@ -191,10 +196,10 @@ public class Folder implements FilenameFilter, Serializable
 
 	private void readConfiguration() throws GalleryException
 	{
-		cols = configuration.getInt("index.columns",cols);
+		cols = configuration.getInt("index.columns", cols);
 		rows = configuration.getInt("index.rows", rows);
 
-		skin = configuration.getString("skin",skin);
+		skin = configuration.getString("skin", skin);
 		indexJsp = "/skins/" + skin + "/index.jsp";
 		slideJsp = "/skins/" + skin + "/slide.jsp";
 
@@ -217,40 +222,51 @@ public class Folder implements FilenameFilter, Serializable
 		{
 			sortingOrder = ImageComparator.SORTNONE;
 		}
-		else 
+		else
 		{
 			sortingOrder = ImageComparator.SORTNONE;
-		}		
+		}
 
-		isShowImageNum = configuration.getBoolean("showImageNum", isShowImageNum);
+		isShowImageNum = configuration.getBoolean("showImageNum",
+				isShowImageNum);
 
-		thumbsdir = configuration.getString("thumbnails.dir",thumbsdir);
+		folderIconStyle = FOLDER_ICON_RANDOM;
 
-		isCreateThumbs = configuration.getBoolean("thumbnails.create",isCreateThumbs);
+		s = configuration.getString("foldericon.style");
+		if ("icon".equalsIgnoreCase(s))
+		{
+			folderIconStyle = FOLDER_ICON_ICON;
+		}
+
+		thumbsdir = configuration.getString("thumbnails.dir", thumbsdir);
+
+		isCreateThumbs = configuration.getBoolean("thumbnails.create",
+				isCreateThumbs);
 
 		thumbSize = configuration.getInt("thumbnails.size", thumbSize);
-		thumbQuality = configuration.getFloat("thumbnails.quality",thumbQuality);
+		thumbQuality = configuration.getFloat("thumbnails.quality",
+				thumbQuality);
 
 
 		// parentlink.galleries=
-		
+
 		resResourcePath = "/skins/" + skin + "/res";
 		resPath = jgalleryContextPath + "/skins/" + skin + "/res";
 		stylePath = jgalleryContextPath + "/skins/" + skin + "/styles/" + style
 				+ ".css";
 
 		s = configuration.getString("parentlink");
-		if (s==null)
+		if (s == null)
 		{
-			String s1=folderPath.substring(1,folderPath.indexOf('/',1));
-			s = configuration.getString("parentlink."+s1);
+			String s1 = folderPath.substring(1, folderPath.indexOf('/', 1));
+			s = configuration.getString("parentlink." + s1);
 		}
-		
-		if (s!=null)
+
+		if (s != null)
 		{
 			parentlink = s;
 		}
-		
+
 		setIconDimensions();
 
 		configuration.getUserVariables(variables);
@@ -325,6 +341,64 @@ public class Folder implements FilenameFilter, Serializable
 		return new FileImageAccessor(name, this);
 	}
 
+	private ThumbNailInfo makeThumbNailInfoFromRandom(String name)
+			throws GalleryException
+	{
+		File f = new File(getDirectory(), name + "/" + getThumbsdir());
+		String subImages[] = f.list(new FilenameFilter()
+		{
+			public boolean accept(File dir, String name)
+			{
+				String n = name.toLowerCase();
+				File f1 = new File(dir, name);
+				if (!(n.endsWith("jpg") || n.endsWith("jpeg")))
+				{
+					return false;
+				}
+				return !f1.isDirectory();
+			};
+		});
+		int n = (int) (Math.random() * subImages.length);
+
+		File f1 = new File(f, subImages[n]);
+
+		InputStream is = null;
+		try
+		{
+			is = new FileInputStream(f1);
+		}
+		catch (FileNotFoundException e)
+		{
+			// guaranteed that file exists
+		}
+		ImageInfo ii = new ImageInfo();
+
+		ii.setInput(is);
+
+		if (!ii.check())
+		{
+			throw new GalleryException("Not a supported image file format.");
+		}
+
+		String thumbWidth = Integer.toString(ii.getWidth());
+		String thumbHeight = Integer.toString(ii.getHeight());
+
+		try
+		{
+			is.close();
+		}
+		catch (IOException e1)
+		{
+			// NOP
+		}
+
+		ThumbNailInfo info = new ThumbNailInfo(getImageBasePath() + name + "/"
+				+ getThumbsdir() + "/" + subImages[n], thumbWidth, thumbHeight);
+
+		return info;
+
+	}
+
 	public Image getSubDirOrImage(int n) throws GalleryException
 	{
 		Image image;
@@ -337,9 +411,20 @@ public class Folder implements FilenameFilter, Serializable
 			}
 			else
 			{
+				ThumbNailInfo thumbNailInfo = null;
+
+				if (folderIconStyle == FOLDER_ICON_ICON)
+				{
+					thumbNailInfo = new ThumbNailInfo(getIconPath(),
+							getIconHeight(), getIconWidth());
+				}
+				else
+				{
+					thumbNailInfo = makeThumbNailInfoFromRandom(subDirectories[n - 1]);
+				}
 				// get a subfolder representation
 				image = new Image(subDirectories[n - 1], true, this,
-						makeImageAccessor(subDirectories[n - 1]));
+						makeImageAccessor(subDirectories[n - 1]), thumbNailInfo);
 			}
 		}
 		else
@@ -357,7 +442,7 @@ public class Folder implements FilenameFilter, Serializable
 			// create the thumb first, as it is needed in the Image constructor
 			checkAndCreateThumb(n - 1);
 			imagesArray[n - 1] = new Image(imageFiles[n - 1], false, this,
-					makeImageAccessor(imageFiles[n - 1]));
+					makeImageAccessor(imageFiles[n - 1]), null);
 			String s = captions.getProperty(imageFiles[n - 1]);
 			if (s != null)
 			{
@@ -1018,7 +1103,10 @@ public class Folder implements FilenameFilter, Serializable
 			}
 			if ("".equals(parentIndexPage))
 			{
-				parentIndexPage = parentlink!=null ? parentlink : ""; // set to non defined
+				parentIndexPage = parentlink != null ? parentlink : ""; // set
+				// to
+				// non
+				// defined
 			}
 
 			File f = new File(directory, JGALLERYIGNOREFILE);
