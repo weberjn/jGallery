@@ -30,6 +30,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.ServletContext;
+
 
 
 /**
@@ -42,10 +44,10 @@ public class WebFolder extends Folder
     private String baseURL;
     private String remoteKey;
     
-    public WebFolder(String baseURL, Configuration configuration, String version, String remoteKey, String jgalleryContextPath,  
+    public WebFolder(String baseURL, ServletContext appContext, Configuration configuration, String version, String remoteKey, String jgalleryContextPath,  
             String folderPath, InputStream fileList) throws GalleryException
     {
-        super(null,configuration,version, jgalleryContextPath,folderPath,null);
+        super(null, appContext, configuration,version, jgalleryContextPath,folderPath,null);
         this.baseURL = baseURL;
         this.remoteKey = remoteKey;
         

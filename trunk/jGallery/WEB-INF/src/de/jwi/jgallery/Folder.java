@@ -19,6 +19,8 @@ package de.jwi.jgallery;
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston
  */
 
+import imageinfo.ImageInfo;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,6 +37,8 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Properties;
 
+import javax.servlet.ServletContext;
+
 import de.jwi.jgallery.db.DBManager;
 import de.jwi.jgallery.imageio.IThumbnailWriter;
 import de.jwi.jgallery.imageio.ThumbnailWriterFactory;
@@ -46,12 +50,12 @@ import de.jwi.jgallery.imageio.ThumbnailWriterFactory;
 public class Folder implements FilenameFilter, Serializable
 {
 
-    
-    
+    private static final String FOLDER_KEY = "folder";
 
-private static final String FOLDER_KEY = "folder";
-private static final String CAPTIONSFILE = "captions.txt";
+    private static final String CAPTIONSFILE = "captions.txt";
+
     private static final String JGALLERYIGNOREFILE = ".jGalleryIgnore";
+
     private String version;
 
     private static final String GENERATORURL = "http://www.jwi.de/jgallery/";
@@ -75,7 +79,7 @@ private static final String CAPTIONSFILE = "captions.txt";
     private Configuration configuration;
 
     protected String[] imageFiles;
-    
+
     private Properties captions = new Properties();
 
     private int[] imageCounters;
@@ -83,6 +87,10 @@ private static final String CAPTIONSFILE = "captions.txt";
     private int folderCounter = -1;
 
     String[] subDirectories;
+
+    private String iconWidth;
+
+    private String iconHeight;
 
     protected String folderPath;
 
@@ -105,6 +113,10 @@ private static final String CAPTIONSFILE = "captions.txt";
     private String slideJsp;
 
     private String resPath;
+    private String resResourcePath;
+    
+
+    private File resFolder;
 
     private String stylePath;
 
@@ -139,12 +151,16 @@ private static final String CAPTIONSFILE = "captions.txt";
 
     private DBManager dBManager;
 
-    public Folder(File directory, Configuration configuration, String version,
+    private ServletContext appContext;
+
+    public Folder(File directory, ServletContext appContext,
+            Configuration configuration, String version,
             String jgalleryContextPath, String folderPath, DBManager dBManager)
             throws GalleryException
     {
         this.directory = directory;
 
+        this.appContext = appContext;
         this.version = version;
 
         this.configuration = configuration;
@@ -202,11 +218,31 @@ private static final String CAPTIONSFILE = "captions.txt";
         thumbSize = configuration.getInt("thumbnail.size");
         thumbQuality = configuration.getFloat("thumbnail.quality");
 
+        resResourcePath = "/skins/" + skin + "/res";
         resPath = jgalleryContextPath + "/skins/" + skin + "/res";
         stylePath = jgalleryContextPath + "/skins/" + skin + "/styles/" + style
                 + ".css";
 
+        setIconDimensions();
+
         configuration.getUserVariables(variables);
+    }
+
+    private void setIconDimensions()
+    {
+        InputStream is = appContext
+                .getResourceAsStream(resResourcePath + "/folder.gif");
+        if (null != is)
+        {
+
+            ImageInfo ii = new ImageInfo();
+            ii.setInput(is);
+            if (ii.check())
+            {
+                iconWidth = Integer.toString(ii.getWidth());
+                iconHeight = Integer.toString(ii.getHeight());
+            }
+        }
     }
 
     File getDirectory()
@@ -232,12 +268,9 @@ private static final String CAPTIONSFILE = "captions.txt";
     public String getComment()
     {
         String s = captions.getProperty(FOLDER_KEY);
-        return (s==null) ? "" : s;
+        return (s == null) ? "" : s;
     }
-    
-        
-    
-    
+
     public String getCopyright()
     {
         return "(c) Jürgen Weber";
@@ -297,7 +330,7 @@ private static final String CAPTIONSFILE = "captions.txt";
             imagesArray[n - 1] = new Image(imageFiles[n - 1], false, this,
                     makeImageAccessor(imageFiles[n - 1]));
             String s = captions.getProperty(imageFiles[n - 1]);
-            if (s!=null)
+            if (s != null)
             {
                 imagesArray[n - 1].setComment(s);
             }
@@ -653,6 +686,16 @@ private static final String CAPTIONSFILE = "captions.txt";
         return getResPath() + "/folder.gif";
     }
 
+    String getIconWidth()
+    {
+        return iconWidth;
+    }
+
+    String getIconHeight()
+    {
+        return iconHeight;
+    }
+
     public String getThumbsdir()
     {
         return thumbsdir;
@@ -789,13 +832,11 @@ private static final String CAPTIONSFILE = "captions.txt";
 
     protected String[] getSubDirectories()
     {
-        File f = new File(directory,JGALLERYIGNOREFILE);
-        if (f.exists())
-        {
-            return new String[0];
-        }
+        File f = new File(directory, JGALLERYIGNOREFILE);
+        if (f.exists()) { return new String[0]; }
 
-        return directory.list(new DirectoriesFilter(getThumbsdir(),JGALLERYIGNOREFILE));
+        return directory.list(new DirectoriesFilter(getThumbsdir(),
+                JGALLERYIGNOREFILE));
     }
 
     public int setFileName(String pathInfoFileName) throws GalleryException
@@ -894,7 +935,7 @@ private static final String CAPTIONSFILE = "captions.txt";
 
             if (parts.length > 2) // [0] is empty, [1..n-2] are parents, [n-1] is current
             {
-                for (int i = 1; i < parts.length-1; i++)
+                for (int i = 1; i < parts.length - 1; i++)
                 {
                     level = i;
                     sb.append(parts[i]);
@@ -904,26 +945,26 @@ private static final String CAPTIONSFILE = "captions.txt";
 
                 String hTMLBase = jgalleryContextPath;
                 parentIndexPage = hTMLBase + "/" + parent + "index.html";
-                
+
                 // Check, if parent directory is to be ignored
-                
+
                 File parentFile = directory.getParentFile();
-                if (null!=parentFile)
+                if (null != parentFile)
                 {
-                    File f = new File(parentFile,JGALLERYIGNOREFILE);
+                    File f = new File(parentFile, JGALLERYIGNOREFILE);
                     if (f.exists())
                     {
                         parentIndexPage = "";
                     }
                 }
-                
+
             }
             else
             {
                 parentIndexPage = ""; // set to non defined
             }
 
-            File f = new File(directory,JGALLERYIGNOREFILE);
+            File f = new File(directory, JGALLERYIGNOREFILE);
             if (f.exists())
             {
                 imageFiles = new String[0];
@@ -932,8 +973,8 @@ private static final String CAPTIONSFILE = "captions.txt";
             {
                 imageFiles = directory.list(this);
             }
-            
-            f = new File(directory,CAPTIONSFILE);
+
+            f = new File(directory, CAPTIONSFILE);
             InputStream is = null;
             try
             {
@@ -946,9 +987,9 @@ private static final String CAPTIONSFILE = "captions.txt";
             }
             catch (IOException e)
             {
-                throw new GalleryException(e.getMessage(),e);
+                throw new GalleryException(e.getMessage(), e);
             }
-            
+
             imageCounters = new int[imageFiles.length];
             Arrays.fill(imageCounters, -1);
 
@@ -964,7 +1005,6 @@ private static final String CAPTIONSFILE = "captions.txt";
                     .createThumbnailWriter();
         }
 
-        
         imagesArray = new Image[imageFiles.length];
 
         // if sorting is wished for, need to load all images first
@@ -996,7 +1036,10 @@ private static final String CAPTIONSFILE = "captions.txt";
         isDirectoryParsed = true;
 
         title = folderPath.substring(folderPath.indexOf('/') + 1);
-
+        if (title.endsWith("/"))
+        {
+            title=title.substring(0,title.lastIndexOf('/'));
+        }
 
     }
 
@@ -1025,7 +1068,7 @@ private static final String CAPTIONSFILE = "captions.txt";
 
     public String getCounter()
     {
-        
+
         if (folderCounter == -1)
         {
             if (null != dBManager)
@@ -1044,8 +1087,8 @@ private static final String CAPTIONSFILE = "captions.txt";
                 }
             }
         }
-        String s = folderCounter> -1 ? Integer.toString(folderCounter) : "";
-        
+        String s = folderCounter > -1 ? Integer.toString(folderCounter) : "";
+
         return s;
     }
 
@@ -1053,7 +1096,7 @@ private static final String CAPTIONSFILE = "captions.txt";
     {
         // trigger first putting folder into DB
         getCounter();
-        
+
         String s = name.substring(0, name.indexOf('.'));
 
         Integer theImage = (Integer) images.get(s);
