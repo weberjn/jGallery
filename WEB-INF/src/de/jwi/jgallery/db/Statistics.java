@@ -24,6 +24,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,9 +37,16 @@ import javax.sql.DataSource;
  */
 public class Statistics
 {
-
+	private static NumberFormat numberInstance = NumberFormat.getNumberInstance();
+	static
+	{
+		numberInstance.setMaximumFractionDigits(1);	
+	}
+	
 	public class FolderInfo
 	{
+		
+		
 		public String toString()
 		{
 
@@ -62,9 +70,15 @@ public class Statistics
 		{
 			this.name = name;
 			this.hits = hits;
-			this.max = max;
-			this.min = min;
-			this.avg = avg;
+			this.max = (max != null) ? max : "0";
+			this.min = (min != null) ? min : "0";
+			this.avg = (avg != null) ? avg : "0";
+			
+			
+			
+			float f = Float.parseFloat(this.avg);
+			this.avg = numberInstance.format(f);
+			
 			this.baseUrl = baseUrl;
 		}
 
@@ -123,10 +137,12 @@ public class Statistics
 		{
 			Statement stmt = conn.createStatement();
 
-			query = "select folder, f.hits as folderhits, "
-					+ "max(i.hits) as maxhits, min(i.hits) as minhits, avg(i.hits) as avghits "
-					+ "from images i, folders f where f.id = i.folderid group by f.id "
-					+ "order by f.hits desc";
+			query = "select folder, f.hits as folderhits, " +
+					"max(i.hits) as maxhits, min(i.hits) as minhits, " +
+					"avg(i.hits) as avghits " +
+					"from folders f left join images i on (f.id = i.folderid) " +
+					"group by f.id order by f.hits desc;";
+			
 			ResultSet rs = stmt.executeQuery(query);
 
 			String baseUrl = request.getContextPath();

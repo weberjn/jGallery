@@ -106,6 +106,7 @@ public class Folder implements FilenameFilter, Serializable
 	protected String jgalleryContextPath;
 
 	private String parentIndexPage;
+	private String parentlink;
 
 	private Hashtable images = new Hashtable();
 
@@ -232,6 +233,8 @@ public class Folder implements FilenameFilter, Serializable
 
 		s = configuration.getString("thumbnails.method");
 
+		// parentlink.galleries=
+		
 		thumbnailGenerationMethod = "imageio".equals(s)
 				? THUMBNAILIMAGEIO
 				: THUMBNAILTOOLKIT;
@@ -241,6 +244,18 @@ public class Folder implements FilenameFilter, Serializable
 		stylePath = jgalleryContextPath + "/skins/" + skin + "/styles/" + style
 				+ ".css";
 
+		s = configuration.getString("parentlink");
+		if (s==null)
+		{
+			String s1=folderPath.substring(1,folderPath.indexOf('/',1));
+			s = configuration.getString("parentlink."+s1);
+		}
+		
+		if (s!=null)
+		{
+			parentlink = s;
+		}
+		
 		setIconDimensions();
 
 		configuration.getUserVariables(variables);
@@ -1017,9 +1032,9 @@ public class Folder implements FilenameFilter, Serializable
 				}
 
 			}
-			else
+			if ("".equals(parentIndexPage))
 			{
-				parentIndexPage = ""; // set to non defined
+				parentIndexPage = parentlink!=null ? parentlink : ""; // set to non defined
 			}
 
 			File f = new File(directory, JGALLERYIGNOREFILE);
