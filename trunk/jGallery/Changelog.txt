@@ -1,4 +1,6 @@
-TODO: fix unclosed InputStreams on thumbnail load
+
+Version 0.9.1, 2004-12-28
+- Through some subversion misconfiguration PathHelper was an old version and jGallery would not recognize folders below the jGallery context (especially the demo) 
 
 2004-12-27
 - ported singapore.sourceforge.net's standard template, included as template "Singapore"
