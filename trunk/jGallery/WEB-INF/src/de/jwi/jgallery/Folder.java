@@ -121,13 +121,13 @@ public class Folder implements FilenameFilter, Serializable
 
 	private int imageNum; // Number of the current image
 
-	private String skin = "Standard"; // Name (and folder) of skin
+	private String template = "Standard"; // Name (and folder) of template
 
 	private String indexJsp;
 
 	private String slideJsp;
 
-	private String skinPath;
+	private String templatePath;
 
 	private String resPath;
 
@@ -204,12 +204,12 @@ public class Folder implements FilenameFilter, Serializable
 	private int sortingOrder = ImageComparator.SORTNONE;
 
 
-	private Configuration readSkinConfiguration(String skinConfigFile,
+	private Configuration readTemplateConfiguration(String templateConfigFile,
 			Configuration c)
 	{
 		Configuration c1 = c;
 
-		InputStream is = appContext.getResourceAsStream(skinConfigFile);
+		InputStream is = appContext.getResourceAsStream(templateConfigFile);
 
 		if (is != null)
 		{
@@ -238,17 +238,17 @@ public class Folder implements FilenameFilter, Serializable
 
 	private void readConfiguration() throws GalleryException
 	{
-		skin = configuration.getString("skin", skin);
-		String skinConfig = "/skins/" + skin + "/skin.properties";
+		template = configuration.getString("template", template);
+		String templateConfig = "/template/" + template + "/template.properties";
 
-		// Skin Configurations cannot be overridden
-		configuration = readSkinConfiguration(skinConfig, configuration);
+		// Template Configurations cannot be overridden
+		configuration = readTemplateConfiguration(templateConfig, configuration);
 
 		cols = configuration.getInt("index.columns", cols);
 		rows = configuration.getInt("index.rows", rows);
 
-		indexJsp = "/skins/" + skin + "/index.jsp";
-		slideJsp = "/skins/" + skin + "/slide.jsp";
+		indexJsp = "/templates/" + template + "/index.jsp";
+		slideJsp = "/templates/" + template + "/slide.jsp";
 
 
 		style = configuration.getString("style", style);
@@ -298,10 +298,10 @@ public class Folder implements FilenameFilter, Serializable
 
 		// parentlink.galleries=
 
-		skinPath = jgalleryContextPath + "/skins/" + skin;
-		resResourcePath = "/skins/" + skin + "/res";
-		resPath = jgalleryContextPath + "/skins/" + skin + "/res";
-		stylePath = jgalleryContextPath + "/skins/" + skin + "/styles/" + style
+		templatePath = jgalleryContextPath + "/templates/" + template;
+		resResourcePath = "/templates/" + template + "/res";
+		resPath = jgalleryContextPath + "/templates/" + template + "/res";
+		stylePath = jgalleryContextPath + "/templates/" + template + "/styles/" + style
 				+ ".css";
 
 		s = configuration.getString("parentlink");
@@ -829,11 +829,11 @@ public class Folder implements FilenameFilter, Serializable
 	}
 
 	/**
-	 * @return Name of current skin
+	 * @return Name of current template
 	 */
-	public String getSkin()
+	public String getTemplate()
 	{
-		return skin;
+		return template;
 	}
 
 	/**
@@ -892,7 +892,7 @@ public class Folder implements FilenameFilter, Serializable
 
 	/**
 	 * @return Define as user defined variable to explicitly set a language for
-	 *         a multilingual skin (ISO two character language code)
+	 *         a multilingual template (ISO two character language code)
 	 */
 	public String getLanguage()
 	{
@@ -1056,9 +1056,9 @@ public class Folder implements FilenameFilter, Serializable
 		return resPath;
 	}
 
-	public String getSkinPath()
+	public String getTemplatePath()
 	{
-		return skinPath;
+		return templatePath;
 	}
 
 
@@ -1339,7 +1339,7 @@ public class Folder implements FilenameFilter, Serializable
 	private void calculateParentFolderList(String folderPath)
 	{
 		// folderPath is URL part after context
-		// e.g. /galleries/SkinTest/
+		// e.g. /galleries/TemplateTest/
 
 		parentFolderList = new ArrayList();
 

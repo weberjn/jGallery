@@ -19,7 +19,7 @@ the online demo</a>.<br>
 </p>
 <p>jGallery consists of a controller that reads in the image
 information and JSPs that generate the HTML pages. There are different
-sets of templates (skins) that define the generated
+sets of templates that define the generated
 pages. jGallery's templates are to a high degree compatible with <a
  href="http://www.datadosen.se/jalbum/">JAlbum</a>'s skins. Get them at
 <a href="http://jrepository.engblom.org/">http://jrepository.engblom.org/</a>.<br>
@@ -185,17 +185,17 @@ for each HTTP session. </p>
  cellspacing="2">
   <tbody>
     <tr>
-      <td style="vertical-align: top; text-align: justify; width: 25%;">skin<br>
+      <td style="vertical-align: top; text-align: justify; width: 25%;">template<br>
       </td>
-      <td style="vertical-align: top;">skin is the name of the folder
-to use for index and slide templates in jGallery/skins/<br>
+      <td style="vertical-align: top;">template is the name of the folder
+to use for index and slide templates in jGallery/template/<br>
       </td>
     </tr>
     <tr>
       <td style="vertical-align: top; text-align: justify; width: 25%;">style<br>
       </td>
       <td style="vertical-align: top;">style+".css" is the name of the
-CSS to use in jGallery/skins/&lt;selected skin&gt;/styles/<br>
+CSS to use in jGallery/templates/&lt;selected template&gt;/styles/<br>
       </td>
     </tr>
     <tr>
@@ -303,7 +303,7 @@ After collecting this information, the Controller Servlet puts the
 Folder and currently selected Image as attributes <span
  style="font-style: italic;">folder </span>and <span
  style="font-style: italic;">image </span>into the ServletRequest
-object and forwards to the index.jsp or slide.jsp of the active skin.
+object and forwards to the index.jsp or slide.jsp of the active template.
 In the JSPs the <span style="font-style: italic;">folder </span>and <span
  style="font-style: italic;">image </span>attributes are available as
 JSP 2.0 EL variables, e.g. ${image.exif.cameraModel}. The JSP engine
@@ -313,7 +313,7 @@ request.getAttribute("image").getExif().getCameraModel().<br>
 <h3><a name="Architecture">Variables</a></h3>
 TODO<br>
 <h3><a name="Adapting_a_JAlbum_skin">Porting a JAlbum skin</a></h3>
-<p>A skin consists of JSP 2.0 files. In order to make porting JAlbum
+<p>A template consists of JSP 2.0 files. In order to make porting JAlbum
 skins as easy as possible, jGallery uses variables of same name and
 semantic as JAlbum, but variables can only be referenced from an
 object. jGallery calls pages with the current Folder and Image
@@ -334,7 +334,7 @@ scriptlets, the skin can be ported almost automatically.<br>
 <p>Steps to do:
 </p>
 <ul>
-  <li>unpack the skin to /jGallery/skins</li>
+  <li>unpack the skin to /jGallery/templates</li>
   <li>for index.htt and slide.htt run <code>java
 de.jwi.jgallery.util.VariablesTransformer &lt;htt file&gt;</code></li>
   <li>replace the Scriptlets. Simple things like <code>&lt;%=
