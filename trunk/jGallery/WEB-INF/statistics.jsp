@@ -40,7 +40,9 @@
 
 
 <tr>
-<td class="row-left">${folder.name}</td>
+
+
+<td class="row-left"><a href="${folder.URL}" title="${folder.URL}">${folder.name}</a></td>
 
 <td class="row-center">${folder.hits}</td>
 

@@ -91,7 +91,7 @@ public class StatisticsController extends HttpServlet {
 			throws IOException, ServletException {
 
 		try {
-			List l = statistics.getStatistics();
+			List l = statistics.getStatistics(request);
 			request.setAttribute("statistics", l);
 		} catch (SQLException e) {
 			throw new ServletException(e.getMessage(),e);
@@ -105,7 +105,7 @@ public class StatisticsController extends HttpServlet {
 		
 		request.setAttribute("serverInfo", getServletContext().getServerInfo());
 
-		String forward = "/statistics.jsp";
+		String forward = "/WEB-INF/statistics.jsp";
 
 		RequestDispatcher requestDispatcher = getServletContext()
 				.getRequestDispatcher(forward);

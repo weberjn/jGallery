@@ -31,4 +31,5 @@ import java.io.Serializable;
 public final class ConfigData implements Serializable {
 	public String version;
 	public String urlExtention;
+	public boolean doCount;
 }

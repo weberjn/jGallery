@@ -1,3 +1,4 @@
+
 package de.jwi.jgallery.db;
 
 /*
@@ -26,97 +27,124 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
 
 /**
  * @author Jürgen Weber Source file created on 08.08.2004
- *
+ *  
  */
-public class Statistics {
+public class Statistics
+{
 
 	public class FolderInfo
 	{
-		public String toString() {
-			
+		public String toString()
+		{
+
 			return name + " " + hits + " " + max + " " + avg;
 		}
-		String name;
-		String hits;
-		String max;
-		String min;
-		String avg;
+
+		private String name;
+
+		private String hits;
+
+		private String max;
+
+		private String min;
+
+		private String avg;
 		
-		public FolderInfo(String name, String hits, String max,String min, String avg) {
-			super();
+		private String baseUrl;
+
+		public FolderInfo(String name, String hits, String max, String min,
+				String avg, String baseUrl)
+		{
 			this.name = name;
 			this.hits = hits;
 			this.max = max;
 			this.min = min;
 			this.avg = avg;
+			this.baseUrl = baseUrl;
+		}
+
+
+		public String getURL()
+		{
+			return baseUrl + name + "index.html?nocount=true";
 		}
 		
-		public String getAvg() {
+		
+		public String getAvg()
+		{
 			return avg;
 		}
-		public String getName() {
+
+		public String getName()
+		{
 			return name;
 		}
-		
-		public String getHits() {
+
+		public String getHits()
+		{
 			return hits;
 		}
 
-		
-		public String getMax() {
+
+		public String getMax()
+		{
 			return max;
 		}
-		
-		public String getMin() {
+
+		public String getMin()
+		{
 			return min;
 		}
 
 	}
-	
+
 	private DataSource dataSource;
 
-    public Statistics(DataSource dataSource)
-    {
-        this.dataSource = dataSource;
-    }
+	public Statistics(DataSource dataSource)
+	{
+		this.dataSource = dataSource;
+	}
 
-    public List getStatistics() throws SQLException
-    {
-        String query;
-        Connection conn = dataSource.getConnection();
-        int counter = 0;
+	public List getStatistics(HttpServletRequest request) throws SQLException
+	{
+		String query;
+		Connection conn = dataSource.getConnection();
+		int counter = 0;
 
-        List l = new ArrayList();
-        FolderInfo fi;
-        
-        if (conn != null)
-        {
-            Statement stmt = conn.createStatement();
+		List l = new ArrayList();
+		FolderInfo fi;
 
-            query = "select folder, f.hits as folderhits, "
-            	+ "max(i.hits) as maxhits, min(i.hits) as minhits, avg(i.hits) as avghits "
-            	+ "from images i, folders f where f.id = i.folderid group by f.id "
-				+ "order by f.hits desc";
-            ResultSet rs = stmt.executeQuery(query);
+		if (conn != null)
+		{
+			Statement stmt = conn.createStatement();
 
-            while (rs.next()) 
-            {
-            	fi = new FolderInfo(rs.getString("folder"),rs.getString("folderhits"),
-            			rs.getString("maxhits"),rs.getString("minhits"),
-            			rs.getString("avghits"));
-            	
-    			l.add(fi);
-    		}
-            
-            conn.close();
-        }
+			query = "select folder, f.hits as folderhits, "
+					+ "max(i.hits) as maxhits, min(i.hits) as minhits, avg(i.hits) as avghits "
+					+ "from images i, folders f where f.id = i.folderid group by f.id "
+					+ "order by f.hits desc";
+			ResultSet rs = stmt.executeQuery(query);
 
-        return l;
-    }
-	
-	
+			String baseUrl = request.getContextPath();
+				
+			while (rs.next())
+			{
+				fi = new FolderInfo(rs.getString("folder"), rs
+						.getString("folderhits"), rs.getString("maxhits"), rs
+						.getString("minhits"), rs.getString("avghits"),baseUrl);
+				
+				l.add(fi);
+			}
+
+			conn.close();
+		}
+
+		return l;
+	}
+
+
 }

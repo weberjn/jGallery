@@ -1,3 +1,6 @@
+Version 0.8.7, 2004-09-05
+- added URL parameter nocount=true, this prevents hit counting, useful for calling from statistics page. Added links to folders from statistics page.
+
 Version 0.8.5, 2004-08-08
 - added /Statistics page for displaying the hit counters
 
