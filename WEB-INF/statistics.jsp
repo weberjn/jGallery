@@ -3,14 +3,14 @@
 <html>
 <head>
   <title>jGallery - Statistics</title>
-  <link rel="stylesheet" type="text/css" href="statistics.css" />
+  <link rel="stylesheet" type="text/css" href="${context}/statistics.css" />
 </head>
 
 
 
 
 <body bgcolor="#FFFFFF">
-<h3>jGallery - Statistics for ${date} ${time}</h3>
+<h3>jGallery - Statistics for  ${date} ${time}</h3>
 
 
 <p>
@@ -19,11 +19,14 @@
 <table border="1" cellpadding="3" cellspacing="0">
 <tbody>
 <tr>
-<td colspan="3" class="title">
+<td colspan="4" class="title"></td>
 
 </tr>
 <tr>
 <td class="header-center"><small>Folder</small>&nbsp;
+</td>
+
+<td class="header-center"><small>details</small>&nbsp;
 </td>
 
 <td class="header-center"><small>hits</small>&nbsp;
@@ -41,6 +44,8 @@
 
 
 <td class="row-left"><a href="${folder.URL}" title="${folder.URL}">${folder.name}</a></td>
+
+<td class="row-center"><a href="${folder.detailsTO}">Image hits</a></td>
 
 <td class="row-center">${folder.hits}</td>
 

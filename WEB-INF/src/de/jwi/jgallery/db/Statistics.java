@@ -26,7 +26,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
@@ -54,6 +56,8 @@ public class Statistics
 		}
 
 		private String name;
+		
+		private String id;
 
 		private String hits;
 
@@ -65,10 +69,13 @@ public class Statistics
 		
 		private String baseUrl;
 
-		public FolderInfo(String name, String hits, String max, String min,
-				String avg, String baseUrl)
+		private String servletURL;
+		
+		public FolderInfo(String name, String id, String hits, String max, String min,
+				String avg, String baseUrl, String servletURL)
 		{
 			this.name = name;
+			this.id = id;
 			this.hits = hits;
 			this.max = (max != null) ? max : "0";
 			this.min = (min != null) ? min : "0";
@@ -80,6 +87,7 @@ public class Statistics
 			this.avg = numberInstance.format(f);
 			
 			this.baseUrl = baseUrl;
+			this.servletURL = servletURL;
 		}
 
 
@@ -88,6 +96,16 @@ public class Statistics
 			return baseUrl + name + "index.html?nocount=true";
 		}
 		
+		public String getDetailsTO()
+		{
+			return servletURL + "/to/"+id;
+		}
+
+		public String getDetailsTN()
+		{
+			return servletURL + "/tn/"+id;
+		}
+
 		
 		public String getAvg()
 		{
@@ -97,6 +115,11 @@ public class Statistics
 		public String getName()
 		{
 			return name;
+		}
+
+		public String getId()
+		{
+			return id;
 		}
 
 		public String getHits()
@@ -116,6 +139,31 @@ public class Statistics
 		}
 
 	}
+	
+	public class ImageInfo
+	{
+		private String name;
+		private String hits;
+		private String url;
+		public ImageInfo(String name, String hits, String url)
+		{
+			this.name = name;
+			this.hits = hits;
+			this.url = url;
+		}
+		public String getHits()
+		{
+			return hits;
+		}
+		public String getName()
+		{
+			return name;
+		}
+		public String getUrl()
+		{
+			return url;
+		}
+	}
 
 	private DataSource dataSource;
 
@@ -124,7 +172,7 @@ public class Statistics
 		this.dataSource = dataSource;
 	}
 
-	public List getStatistics(HttpServletRequest request) throws SQLException
+	public List getStatistics(HttpServletRequest request, String self) throws SQLException
 	{
 		String query;
 		Connection conn = dataSource.getConnection();
@@ -137,7 +185,7 @@ public class Statistics
 		{
 			Statement stmt = conn.createStatement();
 
-			query = "select folder, f.hits as folderhits, " +
+			query = "select folder, f.id, f.hits as folderhits, " +
 					"max(i.hits) as maxhits, min(i.hits) as minhits, " +
 					"avg(i.hits) as avghits " +
 					"from folders f left join images i on (f.id = i.folderid) " +
@@ -149,9 +197,9 @@ public class Statistics
 				
 			while (rs.next())
 			{
-				fi = new FolderInfo(rs.getString("folder"), rs
-						.getString("folderhits"), rs.getString("maxhits"), rs
-						.getString("minhits"), rs.getString("avghits"),baseUrl);
+				fi = new FolderInfo(rs.getString("folder"), rs.getString("id"),
+						rs.getString("folderhits"), rs.getString("maxhits"), rs
+						.getString("minhits"), rs.getString("avghits"),baseUrl,self);
 				
 				l.add(fi);
 			}
@@ -162,5 +210,63 @@ public class Statistics
 		return l;
 	}
 
+	public Map getFolderStatistics(String id, HttpServletRequest request, String self) throws SQLException
+	{
+		String query;
+		Connection conn = dataSource.getConnection();
+		int counter = 0;
+
+		List l = new ArrayList();
+		Map h = new HashMap();
+		ImageInfo ii;
+
+		if (conn != null)
+		{
+			Statement stmt = conn.createStatement();
+
+			query = "select folder " +
+			"from folders " +
+			"where id='" + id +
+			"';";
+	
+			ResultSet rs = stmt.executeQuery(query);
+
+			String folder = null;
+			if (rs.next())
+			{
+				folder = rs.getString("folder");
+			}
+			
+			h.put("folder",folder);
+			
+			query = "select image as name, hits " +
+					"from images " +
+					"where folderid='" + id +
+					"' order by hits desc;";
+			
+			rs = stmt.executeQuery(query);
+
+			String baseUrl = request.getContextPath();
+				
+			while (rs.next())
+			{
+				String name = rs.getString("name");
+				int p=-1;
+				if ((p=name.indexOf('.'))>-1)
+				{
+					name = name.substring(0,p);
+				}
+				ii = new ImageInfo(name, rs.getString("hits"),baseUrl+folder+name+".html?nocount=true");
+				
+				l.add(ii);
+			}
+
+			conn.close();
+		}
+
+		h.put("images",l);
+		
+		return h;
+	}
 
 }

@@ -32,7 +32,7 @@ CREATE TABLE folders (
 
 CREATE TABLE images (
   id int(11) NOT NULL auto_increment,
-  folder int(11) NOT NULL default '0',
+  folderid int(11) NOT NULL default '0',
   image varchar(50) default NULL,
   hits int(11) NOT NULL default '0',
   PRIMARY KEY  (id)

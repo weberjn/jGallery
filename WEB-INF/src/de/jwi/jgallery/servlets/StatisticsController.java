@@ -1,3 +1,4 @@
+
 package de.jwi.jgallery.servlets;
 
 import java.io.IOException;
@@ -6,6 +7,7 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.naming.Context;
@@ -43,66 +45,101 @@ import de.jwi.jgallery.db.Statistics;
  * @author Jürgen Weber Source file created on 08.08.2004
  *  
  */
-public class StatisticsController extends HttpServlet {
+public class StatisticsController extends HttpServlet
+{
 
 	private Statistics statistics;
-	
+
 	private static String version = "unknown";
-	
-	public void init() throws ServletException {
+
+	public void init() throws ServletException
+	{
 		String dataSource = (String) getServletContext().getInitParameter(
 				"dataSource");
 
 		Context context;
-		try {
+		try
+		{
 			context = new InitialContext();
-			if (context == null) {
+			if (context == null)
+			{
 				throw new ServletException("Boom - No Context");
 			}
 			DataSource ds = (DataSource) context.lookup(dataSource);
 
 			statistics = new Statistics(ds);
-		} catch (NamingException e) {
+		}
+		catch (NamingException e)
+		{
 			throw new ServletException(e.getMessage(), e);
 		}
-		
+
 		try
-        {
-            InputStream is = getServletContext().getResourceAsStream(
-                    "/WEB-INF/" + Controller.VERSIONCONFIGFILE);
+		{
+			InputStream is = getServletContext().getResourceAsStream(
+					"/WEB-INF/" + Controller.VERSIONCONFIGFILE);
 
-            Properties versionProperties = new Properties();
-            versionProperties.load(is);
+			Properties versionProperties = new Properties();
+			versionProperties.load(is);
 
-            String s = versionProperties.getProperty("version");
-            if (null != s)
-            {
-                version = s;
-            }
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace(System.err); // TODO
-        }
-		
+			String s = versionProperties.getProperty("version");
+			if (null != s)
+			{
+				version = s;
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace(System.err); // TODO
+		}
+
 	}
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws IOException, ServletException {
+			throws IOException, ServletException
+	{
 
-		try {
-			List l = statistics.getStatistics(request);
-			request.setAttribute("statistics", l);
-		} catch (SQLException e) {
-			throw new ServletException(e.getMessage(),e);
+		String self = null;
+		String contextPath = null;
+
+		contextPath = request.getContextPath();
+		String servletPath = request.getServletPath();
+
+		String pathInfo = request.getPathInfo();
+
+		self = contextPath + servletPath;
+
+		
+		if (pathInfo != null
+				&& (pathInfo.startsWith("/to/") || pathInfo.startsWith("/to/")))
+		{
+			doGetDetail(request,response, self);
+			return;
 		}
 
+
+		try
+		{
+			List l = statistics.getStatistics(request, self);
+			request.setAttribute("statistics", l);
+		}
+		catch (SQLException e)
+		{
+			throw new ServletException(e.getMessage(), e);
+		}
+
+
+		request.setAttribute("self", self);
+		
+		request.setAttribute("context", contextPath);
+
 		Date d = new Date();
-		request.setAttribute("date", DateFormat.getDateInstance(DateFormat.FULL).format(d));
+		request.setAttribute("date", DateFormat
+				.getDateInstance(DateFormat.FULL).format(d));
 		request.setAttribute("time", DateFormat.getTimeInstance().format(d));
-		
+
 		request.setAttribute("version", version);
-		
+
 		request.setAttribute("serverInfo", getServletContext().getServerInfo());
 
 		String forward = "/WEB-INF/statistics.jsp";
@@ -112,5 +149,43 @@ public class StatisticsController extends HttpServlet {
 
 		requestDispatcher.forward(request, response);
 
+	}
+
+	public void doGetDetail(HttpServletRequest request,
+			HttpServletResponse response,String self) throws IOException, ServletException
+	{
+		boolean withThumbs = false;
+		String pathInfo = request.getPathInfo();
+		withThumbs = pathInfo.startsWith("/tn/");
+		
+		String id = pathInfo.substring(4);
+		
+		try
+		{
+			Map m = statistics.getFolderStatistics(id, request, self);
+			request.setAttribute("statistics", m.get("images"));
+			request.setAttribute("folder", m.get("folder"));
+		}
+		catch (SQLException e)
+		{
+			throw new ServletException(e.getMessage(), e);
+		}
+
+		Date d = new Date();
+		request.setAttribute("date", DateFormat
+				.getDateInstance(DateFormat.FULL).format(d));
+		request.setAttribute("time", DateFormat.getTimeInstance().format(d));
+
+		request.setAttribute("self", self);
+		
+		request.setAttribute("context", request.getContextPath());
+		
+		String forward = "/WEB-INF/statisticsdet.jsp";
+
+		RequestDispatcher requestDispatcher = getServletContext()
+				.getRequestDispatcher(forward);
+
+		requestDispatcher.forward(request, response);
+		
 	}
 }
