@@ -86,6 +86,11 @@
 </jg:rowiterator>
 </table>
 
+<jg:if exists="${folder.comment}">
+<p>
+${folder.comment}
+</jg:if>
+
 <!-- Include footer.inc from image directory if present -->
 <jsp:include page="footer.inc" />
 

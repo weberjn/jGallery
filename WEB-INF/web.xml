@@ -9,8 +9,14 @@
 
     <context-param>
     	<param-name>useDataBase</param-name>
-	<param-value>false</param-value>
+	<param-value>true</param-value>
     </context-param>
+
+    <context-param>
+    	<param-name>dataSource</param-name>
+	<param-value>java:comp/env/jdbc/jGallery</param-value>
+    </context-param>
+
     
     <resource-ref>
       <description>DB Connection</description>
