@@ -40,11 +40,11 @@ import java.util.Properties;
 import javax.servlet.ServletContext;
 
 import de.jwi.jgallery.db.DBManager;
-import de.jwi.jgallery.imageio.IThumbnailWriter;
-import de.jwi.jgallery.imageio.ThumbnailWriterFactory;
+import de.jwi.jgallery.imageio.ImageIOThumbnailWriter;
+import de.jwi.jgallery.toolkit.ToolkitThumbnailWriter;
 
 /**
- * @author Jürgen Weber Source file created on 17.02.2004
+ * @author Juergen Weber Source file created on 17.02.2004
  *  
  */
 public class Folder implements FilenameFilter, Serializable
@@ -59,7 +59,12 @@ public class Folder implements FilenameFilter, Serializable
     private ConfigData configData;
 
     private static final String GENERATORURL = "http://www.jwi.de/jgallery/";
+    
+    private static final int THUMBNAILTOOLKIT = 0;
+    private static final int THUMBNAILIMAGEIO = 1;
 
+    private int thumbnailGenerationMethod = THUMBNAILTOOLKIT;
+    
     private String thumbsdir = "thumbs";
 
     private float thumbQuality;
@@ -174,6 +179,8 @@ public class Folder implements FilenameFilter, Serializable
         this.dBManager = dBManager;
 
         readConfiguration();
+        
+        createThumbnailWriter();
     }
 
     public HashMap getVariables()
@@ -218,9 +225,13 @@ public class Folder implements FilenameFilter, Serializable
 
         isCreateThumbs = configuration.getBoolean("thumbnails.create");
 
-        thumbSize = configuration.getInt("thumbnail.size");
-        thumbQuality = configuration.getFloat("thumbnail.quality");
-
+        thumbSize = configuration.getInt("thumbnails.size");
+        thumbQuality = configuration.getFloat("thumbnails.quality");
+        
+        s = configuration.getString("thumbnails.method");
+        
+       	thumbnailGenerationMethod = "imageio".equals(s) ? THUMBNAILIMAGEIO : THUMBNAILTOOLKIT;
+        
         resResourcePath = "/skins/" + skin + "/res";
         resPath = jgalleryContextPath + "/skins/" + skin + "/res";
         stylePath = jgalleryContextPath + "/skins/" + skin + "/styles/" + style
@@ -231,6 +242,19 @@ public class Folder implements FilenameFilter, Serializable
         configuration.getUserVariables(variables);
     }
 
+    
+    private void createThumbnailWriter() 
+    {
+    	if (THUMBNAILIMAGEIO == thumbnailGenerationMethod)
+    	{
+    		thumbnailWriter =  new ImageIOThumbnailWriter();
+    	}
+    	else
+    	{
+    		thumbnailWriter =  new ToolkitThumbnailWriter();
+    	}
+    }
+    
     private void setIconDimensions()
     {
         InputStream is = appContext
@@ -358,9 +382,12 @@ public class Folder implements FilenameFilter, Serializable
         File thumb = new File(directory, thumbsdir + "/" + imageFiles[n]);
         File original = new File(directory, imageFiles[n]);
         long l1, l2;
+        
         if (thumb.exists()
                 && ((l1 = thumb.lastModified()) > (l2 = original.lastModified()))) { return; }
 
+        // if thumb is older than image, then recreate thumb
+        
         try
         {
             thumbnailWriter.write(original, thumb, thumbQuality, thumbSize);
@@ -1009,12 +1036,6 @@ public class Folder implements FilenameFilter, Serializable
 
     protected void endLoad() throws GalleryException
     {
-        if (isCreateThumbs && (null == thumbnailWriter))
-        {
-            thumbnailWriter = ThumbnailWriterFactory.getInstance()
-                    .createThumbnailWriter();
-        }
-
         imagesArray = new Image[imageFiles.length];
 
         // if sorting is wished for, need to load all images first

@@ -36,6 +36,8 @@ import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
 
+import de.jwi.jgallery.IThumbnailWriter;
+
 /**
  * @author Jürgen Weber
  * Source file created on 29.02.2004
@@ -64,7 +66,7 @@ implements IThumbnailWriter, Serializable
                 BufferedImage.TYPE_INT_RGB);
         Graphics2D graphics2D = thumbImage.createGraphics();
         graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-                RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                RenderingHints.VALUE_INTERPOLATION_BICUBIC);
         graphics2D.drawImage(image, 0, 0, thumbWidth, thumbHeight, null);
 
         // Find a jpeg writer

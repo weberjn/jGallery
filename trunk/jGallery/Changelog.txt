@@ -1,3 +1,6 @@
+Version 0.8.4, 2004-07-28
+- changed thumbnail generation from javax.imageio.ImageIO to com.sun.image.codec.jpeg.JPEGImageEncoder, has better quality and is vastly faster
+
 2004-07-17
 - Images would not be counted, fixed.
 
@@ -9,7 +12,7 @@ Version 0.8.3, 2004-06-10
 <servlet-mapping><url-pattern>
 
 Version 0.8.2, 2004-06-05
-- Bugfix: Image folders within the jGallery context would not work
+- Bugfix: Image folders below the jGallery context would not work
 - more documentation updates
 
 Version 0.8.1, 2004-06-04
