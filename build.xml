@@ -50,7 +50,7 @@
     <zip destfile="${dist}/${ant.project.name}-${version}.zip">
 	    <zipfileset  prefix="${ant.project.name}" 
 	    dir="." includes="WEB-INF/**"
-	    excludes="WEB-INF/classes/test/**"/>
+	    excludes="jGallery.properties,web.xml,WEB-INF/classes/test/**"/>
 	    <zipfileset prefix="${ant.project.name}"
 	    dir="." includes="skins/Spartan/**,skins/Standard/**"/>
 	    <zipfileset prefix="${ant.project.name}"

@@ -69,15 +69,15 @@ public class Folder implements FilenameFilter, Serializable
 
 	private String thumbsdir = "thumbs";
 
-	private float thumbQuality;
+	private float thumbQuality = 0.98f;
 
-	private int thumbSize;
+	private int thumbSize = 150;
 
 	private boolean isDirectoryParsed = false;
 
 	private boolean isProcessSubdirectories = true;
 
-	private boolean isCreateThumbs = false;
+	private boolean isCreateThumbs = true;
 
 	private IThumbnailWriter thumbnailWriter = null;
 
@@ -116,7 +116,7 @@ public class Folder implements FilenameFilter, Serializable
 
 	private int imageNum; // Number of the current image
 
-	private String skin; // Name (and folder) of skin
+	private String skin = "Standard" ; // Name (and folder) of skin
 
 	private String indexJsp;
 
@@ -128,19 +128,19 @@ public class Folder implements FilenameFilter, Serializable
 
 	private String stylePath;
 
-	private String style;
+	private String style = "Black";
 
 	private int level;
 
-	private int cols; // 	Number of image columns on index pages
+	private int cols = 2; // 	Number of image columns on index pages
 
 	private int currentCols;
 
 	private int currentRows;
 
-	private int rows; // 	Max number of image rows on index pages
+	private int rows = 3; // 	Max number of image rows on index pages
 
-	private boolean isShowImageNum;
+	private boolean isShowImageNum = true;
 
 	private boolean isShowDates = true;
 
@@ -195,14 +195,14 @@ public class Folder implements FilenameFilter, Serializable
 
 	private void readConfiguration() throws GalleryException
 	{
-		cols = configuration.getInt("index.columns");
-		rows = configuration.getInt("index.rows");
+		cols = configuration.getInt("index.columns",cols);
+		rows = configuration.getInt("index.rows", rows);
 
-		skin = configuration.getString("skin");
+		skin = configuration.getString("skin",skin);
 		indexJsp = "/skins/" + skin + "/index.jsp";
 		slideJsp = "/skins/" + skin + "/slide.jsp";
 
-		style = configuration.getString("style");
+		style = configuration.getString("style", style);
 
 		String s = configuration.getString("sortingOrder");
 		if ("filedate".equals(s))
@@ -221,15 +221,19 @@ public class Folder implements FilenameFilter, Serializable
 		{
 			sortingOrder = ImageComparator.SORTNONE;
 		}
+		else 
+		{
+			sortingOrder = ImageComparator.SORTNONE;
+		}		
 
-		isShowImageNum = configuration.getBoolean("showImageNum");
+		isShowImageNum = configuration.getBoolean("showImageNum", isShowImageNum);
 
-		thumbsdir = configuration.getString("thumbnails.dir");
+		thumbsdir = configuration.getString("thumbnails.dir",thumbsdir);
 
-		isCreateThumbs = configuration.getBoolean("thumbnails.create");
+		isCreateThumbs = configuration.getBoolean("thumbnails.create",isCreateThumbs);
 
-		thumbSize = configuration.getInt("thumbnails.size");
-		thumbQuality = configuration.getFloat("thumbnails.quality");
+		thumbSize = configuration.getInt("thumbnails.size", thumbSize);
+		thumbQuality = configuration.getFloat("thumbnails.quality",thumbQuality);
 
 		s = configuration.getString("thumbnails.method");
 

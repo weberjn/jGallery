@@ -1,3 +1,4 @@
+
 package de.jwi.jgallery;
 
 /*
@@ -32,112 +33,138 @@ import java.util.Properties;
 
 
 /**
- * @author Jürgen Weber
- * Source file created on 29.02.2004
- *
+ * @author Jürgen Weber Source file created on 29.02.2004
+ *  
  */
 public class Configuration implements Serializable
 {
-    
-    private Properties properties;
 
-    private Configuration parent = null;
+	private Properties properties;
 
-    public Configuration(Configuration parent)
-    {
-        this.parent=parent;
-        properties = new Properties(); 
-    }
-    
-    public void addProperty(String key,String val)
-    {
-        properties.put(key,val);
-    }
-    
-    public Configuration(InputStream is,Configuration parent)
-    throws IOException
-    {
-        this.parent=parent;
-        
-        properties = new Properties(); 
-        
-        properties.load(is);
-    }
-    
-    public String toString()
-    {
-        return properties.toString();
-    }
-    
-    public Configuration(InputStream is)
-    throws IOException
-    {
-        this(is,null);
-    }
-    
-    public int getInt(String key)
-    {
-        String s = getString(key);
-        return Integer.parseInt(s);
-    }
+	private Configuration parent = null;
 
-    
-    public float getFloat(String key)
-    {
-        String s = getString(key);
-        return Float.parseFloat(s);
-    }
-    
-    
-    public boolean getBoolean(String key)
-    {
-        String s = getString(key);
-        
-        return Boolean.valueOf(s).booleanValue();
-    }
-    
-    public String getString(String key)
-    {
-        String val = properties.getProperty(key);
-        if (null==val)
-        {
-            if (null!=parent)
-            {
-                val=parent.getString(key);
-            }
-        }
-        return val;
-    }
-    
-    /**
-     * Add all entries of this Configuration starting with variable (e.g. variable.copyright) 
-     * to a map, but only if they do not exist, yet. This has the effect of variables of 
-     * parent Configurations overwriting this Configuration's variables.
-     * @param map the map
-     */
-    void getUserVariables(Map map) throws GalleryException
-    {
-        for (Enumeration e = properties.propertyNames(); e.hasMoreElements(); ) 
-        {
-            String key = (String)e.nextElement();
-            if (key.startsWith("variable."))
-            {
-                String name = key.substring(key.indexOf('.')+1);
-                if (name.length()<1)
-                {
-                    throw new GalleryException("invalid variable entry: "+key);
-                }
-                if (!map.containsKey(name))
-                {
-                    map.put(name,properties.getProperty(key));
-                }
-            }
+	public Configuration(Configuration parent)
+	{
+		this.parent = parent;
+		properties = new Properties();
+	}
 
-        } 
-        if (null!=parent)
-        {
-            parent.getUserVariables(map);
-        }
-    }
-    
+	public void addProperty(String key, String val)
+	{
+		properties.put(key, val);
+	}
+
+	public Configuration(InputStream is, Configuration parent)
+			throws IOException
+	{
+		this.parent = parent;
+
+		properties = new Properties();
+
+		if (is != null)
+		{
+			properties.load(is);
+		}
+	}
+
+	public String toString()
+	{
+		return properties.toString();
+	}
+
+	public Configuration(InputStream is) throws IOException
+	{
+		this(is, null);
+	}
+
+	public int getInt(String key, int defaultValue)
+	{
+		String s = getString(key);
+		if (s==null)
+		{
+			return defaultValue;
+		}
+		return Integer.parseInt(s);
+	}
+
+
+	public float getFloat(String key, float defaultValue)
+	{
+		String s = getString(key);
+		if (s==null)
+		{
+			return defaultValue;
+		}
+		
+		return Float.parseFloat(s);
+	}
+
+
+	public boolean getBoolean(String key, boolean defaultValue)
+	{
+		String s = getString(key);
+		if (s==null)
+		{
+			return defaultValue;
+		}
+		
+		return Boolean.valueOf(s).booleanValue();
+	}
+
+	public String getString(String key)
+	{
+		return getString(key,null);
+	}
+	
+	public String getString(String key, String defaultValue)
+	{
+		String val = properties.getProperty(key);
+		if (null == val)
+		{
+			if (null != parent)
+			{
+				val = parent.getString(key);
+			}
+		}
+		if (val == null)
+		{
+			val = defaultValue;
+		}
+		return val;
+	}
+
+	/**
+	 * Add all entries of this Configuration starting with variable (e.g.
+	 * variable.copyright) to a map, but only if they do not exist, yet. This
+	 * has the effect of variables of parent Configurations overwriting this
+	 * Configuration's variables.
+	 * 
+	 * @param map
+	 *            the map
+	 */
+	void getUserVariables(Map map) throws GalleryException
+	{
+		for (Enumeration e = properties.propertyNames(); e.hasMoreElements();)
+		{
+			String key = (String) e.nextElement();
+			if (key.startsWith("variable."))
+			{
+				String name = key.substring(key.indexOf('.') + 1);
+				if (name.length() < 1)
+				{
+					throw new GalleryException("invalid variable entry: " + key);
+				}
+				if (!map.containsKey(name))
+				{
+					map.put(name, properties.getProperty(key));
+				}
+			}
+
+		}
+		if (null != parent)
+		{
+			parent.getUserVariables(map);
+		}
+	}
+
 }
