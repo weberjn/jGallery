@@ -2,6 +2,8 @@ TODO: fix unclosed InputStreams on thumbnail load
 
 2004-12-26
 - renamed the term "skin" to "template"
+- some more fixes in XP template
+- fixed some more unclosed InputStreams
 
 2004-12-21
 - jGallery successfully tested with WebLogic Server 9.0b

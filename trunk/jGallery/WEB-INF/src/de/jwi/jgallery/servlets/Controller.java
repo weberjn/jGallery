@@ -419,8 +419,6 @@ public class Controller extends HttpServlet
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException
 	{
-		response.setContentType("text/html");
-
 		String pathInfo = request.getPathInfo();
 		String queryString = request.getQueryString();
 		String pathTranslated = request.getPathTranslated();
