@@ -1,5 +1,8 @@
 TODO: fix unclosed InputStreams on thumbnail load
 
+2004-12-21
+- jGallery successfully tested with WebLogic Server 9.0b
+
 2004-12-20
 - added public List for parent > links 
 
