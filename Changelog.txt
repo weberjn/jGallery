@@ -1,3 +1,6 @@
+2004-07-17
+- Images would not be counted, fixed.
+
 2004-06-16
 - minor enhancement to Exif tag handling, changed Standard skin to display more focused exif data
 

@@ -106,7 +106,7 @@
 
 </tr>
 </table>
-<jg:if exists="${folder.counter}">
+<jg:if exists="${image.counter}">
 		<small>image viewed ${image.counter} times</small>
 	</jg:if>
 </center>
