@@ -64,7 +64,9 @@
 					<img src="${image.iconPath}" width="${image.thumbWidth}" height="${image.thumbHeight}" border=0><br>
 				</jg:if>
 				<jg:else>
-					<img class="image" src="${image.thumbPath}" width="${image.thumbWidth}" height="${image.thumbHeight}" border=0><br>
+					<img class="image" src="${image.thumbPath}" width="${image.thumbWidth}" height="${image.thumbHeight}"
+					title="click to see large view"
+					border="0"><br>
 				</jg:else>
 				<small>${image.label}</small>
 			</a>

@@ -35,11 +35,11 @@
 <td class="navigation" width="20%">
 
 <!-- Index button -->
-<a href="${folder.indexPage}"><img src="${folder.resPath}/index.gif" border=0 alt="<jg:text>indexPage</jg:text>"></a>
+<a href="${folder.indexPage}"><img src="${folder.resPath}/index.gif" border=0 alt="<jg:text>indexPage</jg:text>" title="<jg:text>indexPage</jg:text>"></a>
 
 <!-- Previous button -->
 <jg:if exists="${folder.previousPage}">
-	<a href="${folder.previousPage}"><img src="${folder.resPath}/previous.gif" alt="<jg:text>previousPage</jg:text>" border=0></a>
+	<a href="${folder.previousPage}"><img src="${folder.resPath}/previous.gif" alt="<jg:text>previousPage</jg:text>" title="<jg:text>previousPage</jg:text>" border=0></a>
 </jg:if>
 <jg:else>
 	<img src="${folder.resPath}/previous_disabled.gif" alt="<jg:text>atFirstPage</jg:text>">
@@ -47,10 +47,12 @@
 
 <!-- Next button -->
 <jg:if exists="${folder.nextPage}">
-	<a href="${folder.nextPage}"><img src="${folder.resPath}/next.gif" alt="<jg:text>nextPage</jg:text>" border=0></a>
+	<a href="${folder.nextPage}"><img src="${folder.resPath}/next.gif" alt="<jg:text>nextPage</jg:text>" 
+	title="<jg:text>nextPage</jg:text>" border=0></a>
 </jg:if>
 <jg:else>
 	<img src="${folder.resPath}/next_disabled.gif" alt="<jg:text>atLastPage</jg:text>">
+	
 </jg:else>
 
 </td>
