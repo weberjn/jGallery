@@ -1,4 +1,4 @@
-package de.jwi.jgallery.imageio;
+package de.jwi.jgallery;
 
 /*
  * jGallery - Java web application to display image galleries
