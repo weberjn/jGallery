@@ -32,7 +32,7 @@ import java.io.InputStream;
  * Source file created on 07.03.2004
  *  
  */
-public class FileImageAccessor implements ImageAccessor
+public class FileImageAccessor implements IImageAccessor
 {
 
     private String name;

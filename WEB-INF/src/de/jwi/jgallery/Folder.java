@@ -33,7 +33,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 
 import de.jwi.jgallery.db.DBManager;
-import de.jwi.jgallery.imageio.ThumbnailWriter;
+import de.jwi.jgallery.imageio.IThumbnailWriter;
 import de.jwi.jgallery.imageio.ThumbnailWriterFactory;
 
 /**
@@ -59,7 +59,7 @@ public class Folder implements FilenameFilter, Serializable
 
     private boolean isCreateThumbs = false;
 
-    private ThumbnailWriter thumbnailWriter = null;
+    private IThumbnailWriter thumbnailWriter = null;
 
     private File directory;
 
@@ -238,7 +238,7 @@ public class Folder implements FilenameFilter, Serializable
         return image;
     }
 
-    protected ImageAccessor makeImageAccessor(String name)
+    protected IImageAccessor makeImageAccessor(String name)
     {
         return new FileImageAccessor(name, this);
     }
@@ -754,8 +754,8 @@ public class Folder implements FilenameFilter, Serializable
 
     public boolean accept(File dir, String name)
     {
-        return name.toString().endsWith(".jpg")
-                | name.toString().endsWith(".jpeg");
+        String s = name.toLowerCase();
+        return s.endsWith(".jpg") | s.endsWith(".jpeg");
     }
 
     public static final int INDEX = 1, SLIDE = 2;
