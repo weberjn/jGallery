@@ -114,12 +114,12 @@ public class Controller extends HttpServlet
 		}
 	}
 
+
 	public void init() throws ServletException
 	{
 		ServletContext context = getServletContext();
-		
-		dataSource = (String) context
-				.getInitParameter("dataSource");
+
+		dataSource = (String) context.getInitParameter("dataSource");
 
 		String s = (String) context.getInitParameter("dirmappings");
 
@@ -149,22 +149,33 @@ public class Controller extends HttpServlet
 			initDBConnection();
 		}
 
-		InputStream is = context.getResourceAsStream(
-				"/WEB-INF/" + CONFIGFILE);
+		InputStream is = context.getResourceAsStream("/WEB-INF/" + CONFIGFILE);
 
 		try
 		{
 			configuration = new Configuration(is);
-			
-			s = (String) context.getInitParameter("thumbnailWriter"); 
-			
+
+			s = (String) context.getInitParameter("thumbnailWriter");
+
 			Object o = Class.forName(s).newInstance();
-			
-			configuration.setThumbnailWriter((IThumbnailWriter)o);
+
+			configuration.setThumbnailWriter((IThumbnailWriter) o);
 		}
 		catch (Exception e)
 		{
 			throw new ServletException(e.getMessage());
+		}
+
+		if (is != null)
+		{
+			try
+			{
+				is.close();
+			}
+			catch (IOException e)
+			{
+				throw new ServletException(e.getMessage());
+			}
 		}
 
 		is = context.getResourceAsStream("/WEB-INF/" + WEBDIRSFILE);
@@ -188,10 +199,22 @@ public class Controller extends HttpServlet
 			}
 		}
 
+		if (is != null)
+		{
+			try
+			{
+				is.close();
+			}
+			catch (IOException e)
+			{
+				throw new ServletException(e.getMessage());
+			}
+		}
+
+
 		try
 		{
-			is = context.getResourceAsStream(
-					"/WEB-INF/" + VERSIONCONFIGFILE);
+			is = context.getResourceAsStream("/WEB-INF/" + VERSIONCONFIGFILE);
 
 			Properties versionProperties = new Properties();
 			versionProperties.load(is);
@@ -206,6 +229,19 @@ public class Controller extends HttpServlet
 		{
 			e.printStackTrace(System.err); // TODO
 		}
+
+		if (is != null)
+		{
+			try
+			{
+				is.close();
+			}
+			catch (IOException e)
+			{
+				throw new ServletException(e.getMessage());
+			}
+		}
+
 	}
 
 	public static String getVersion()
@@ -235,7 +271,8 @@ public class Controller extends HttpServlet
 	}
 
 	private Folder createFolder(HttpSession session, String folderPath,
-			String imagePath, String folderRealPath, String jgalleryContextPath, boolean doCount)
+			String imagePath, String folderRealPath,
+			String jgalleryContextPath, boolean doCount)
 			throws GalleryException
 	{
 		// No need to synchronize access to the Folders because they are per
@@ -267,6 +304,7 @@ public class Controller extends HttpServlet
 			{
 				throw new GalleryException(e.getMessage());
 			}
+
 			try
 			{
 				Configuration conf = new Configuration(is, configuration);
@@ -275,6 +313,20 @@ public class Controller extends HttpServlet
 			catch (IOException e)
 			{
 				throw new GalleryException(e.getMessage());
+			}
+			finally
+			{
+				if (is != null)
+				{
+					try
+					{
+						is.close();
+					}
+					catch (IOException e)
+					{
+						throw new GalleryException(e.getMessage());
+					}
+				}
 			}
 		}
 

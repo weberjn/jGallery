@@ -30,6 +30,7 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author Jürgen Weber
@@ -204,6 +205,19 @@ public class Image implements Serializable
         return folder.getThumbsPath() + "/" + name;
     }
 
+    public String getThumbBound()
+    {
+    	int h = Integer.parseInt(isRepresentsSubdirectory ? thumbNailInfo.getThumbHeight() : thumbHeight);
+    	int w = Integer.parseInt(isRepresentsSubdirectory ? thumbNailInfo.getThumbWidth() : thumbWidth);
+    	
+        return Integer.toString(Math.max(h,w));
+    }
+
+    
+    public List getNeighbourImages() throws GalleryException
+    {
+    	return folder.getNeighbourImages(this);
+    }
 
     public String getThumbWidth()
     {

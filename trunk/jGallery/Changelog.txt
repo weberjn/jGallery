@@ -1,3 +1,12 @@
+2004-12-08
+- fixed some unclose InputStreams
+
+Version 0.9, 2004-12-03
+- removed timecheck in creating thumbs
+- implemented Folder.getNeighbourImages() to use in JSTL 
+- ported MinimumBlue skin from singapore.sourceforge.net, this skin is done totally in JSTL 
+
+
 Version 0.8.9b, 2004-11-21
 - fixed NPE for selecting random image when there weren't thumbnails, yet. 
 

@@ -32,10 +32,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Properties;
 
 import javax.servlet.ServletContext;
@@ -357,14 +359,14 @@ public class Folder implements FilenameFilter, Serializable
 				return !f1.isDirectory();
 			};
 		});
-		
+
 		if (subImages == null)
 		{
 			// no thumbnails created yet
-			
+
 			return null;
 		}
-		
+
 		int n = (int) (Math.random() * subImages.length);
 
 		File f1 = new File(f, subImages[n]);
@@ -488,23 +490,114 @@ public class Folder implements FilenameFilter, Serializable
 		File original = new File(directory, imageFiles[n]);
 		long l1, l2;
 
-		if (thumb.exists()
-				&& ((l1 = thumb.lastModified()) > (l2 = original.lastModified())))
+		if (!thumb.exists())
 		{
-			return;
+			try
+			{
+				thumbnailWriter.write(original, thumb, thumbQuality, thumbSize);
+			}
+			catch (IOException e)
+			{
+				throw new GalleryException("Error creating thumbnail" + thumb
+						+ " :" + e.getMessage());
+			}
+		}
+	}
+
+	private int firstImageOnIndexPage;
+
+	private int lastImageOnIndexPage;
+
+	public String getFirstImage()
+	{
+		return Integer.toString(firstImageOnIndexPage);
+	}
+
+	public String getLastImage()
+	{
+		return Integer.toString(lastImageOnIndexPage);
+	}
+
+
+	public List getImages() throws GalleryException
+	{
+		return getImages(false);
+	}
+
+	// return all images of a page as List(rows) of List(images)
+	public List getImageRows() throws GalleryException
+	{
+		return getImages(true);
+	}
+
+
+	private List getImages(boolean inRows) throws GalleryException
+	{
+		int cols = getColsI();
+		int n = getCurrentImagesPerPage();
+		int i = getImageNumI();
+
+		firstImageOnIndexPage = i;
+
+		List rl = new ArrayList();
+		List cl = null;
+
+		while (n > 0)
+		{
+			int r = Math.min(n, cols);
+
+			if (inRows)
+			{
+				cl = new ArrayList(r);
+			}
+			for (int j = 0; j < r; j++)
+			{
+				Image img = getImage(i);
+				if (inRows)
+				{
+					cl.add(img);
+				}
+				else
+				{
+					rl.add(img);
+				}
+				i++;
+			}
+
+			if (inRows)
+			{
+				rl.add(cl);
+			}
+			n -= r;
 		}
 
-		// if thumb is older than image, then recreate thumb
+		lastImageOnIndexPage = i - 1;
 
-		try
+		return rl;
+	}
+
+	List getNeighbourImages(Image image) throws GalleryException
+	{
+		String baseName = image.getName();
+
+		Integer imgnum = (Integer) images.get(baseName.substring(0, baseName
+				.indexOf('.')));
+
+		int i = imgnum.intValue();
+
+		int neighbourThumbCount = 3;
+
+		int a = Math.max(i - neighbourThumbCount, 0);
+		int b = Math.min(i + neighbourThumbCount, imagesArray.length - 1);
+
+		List l = new ArrayList(b - a + 1);
+
+		for (i = a; i <= b; i++)
 		{
-			thumbnailWriter.write(original, thumb, thumbQuality, thumbSize);
+			l.add(getImage(i + 1));
 		}
-		catch (IOException e)
-		{
-			throw new GalleryException("Error creating thumbnail" + thumb
-					+ " :" + e.getMessage());
-		}
+
+		return l;
 	}
 
 	public String getHTMLBase()
@@ -973,7 +1066,7 @@ public class Folder implements FilenameFilter, Serializable
 		String s1 = s.toLowerCase();
 		return s1.endsWith(".jpg") | s1.endsWith(".jpeg");
 	}
-	
+
 	public boolean accept(File dir, String name)
 	{
 		return isJPEGExtension(name);
