@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE taglib
+  PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.2//EN"
+         "http://java.sun.com/dtd/web-jsptaglibrary_1_2.dtd">
+
+<taglib>
+
+  <tlib-version>1.0</tlib-version>
+  <jsp-version>1.2</jsp-version>
+  <short-name>controls</short-name>
+  <description>
+    JSP tag library containing logic tags for JGallery.
+  </description>
+
+
+  <tag>
+
+    <name>if</name>
+    <tag-class>de.jwi.jgallery.tags.IfTag</tag-class>
+    <body-content>JSP</body-content>
+
+    <attribute>
+      <name>exists</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+
+    <attribute>
+      <name>test</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+    </attribute>
+    
+  </tag>
+
+  <tag>
+    <name>else</name>
+    <tag-class>de.jwi.jgallery.tags.ElseTag</tag-class>
+    <body-content>JSP</body-content>
+  </tag>
+
+   
+    <tag>
+    <name>text</name>
+    <tag-class>de.jwi.jgallery.tags.TextTag</tag-class>
+    <body-content>JSP</body-content>
+  </tag>
+
+  <tag>
+    <name>rowiterator</name>
+    <tag-class>de.jwi.jgallery.tags.RowIteratorTag</tag-class>
+    <body-content>JSP</body-content>
+  </tag>
+
+  <tag>
+    <name>coliterator</name>
+    <tag-class>de.jwi.jgallery.tags.ColIteratorTag</tag-class>
+    <body-content>JSP</body-content>
+    <teiclass>de.jwi.jgallery.tags.ColIteratorTagTEI</teiclass>
+  </tag>
+
+  <tag>
+    <name>indexiterator</name>
+    <tag-class>de.jwi.jgallery.tags.IndexIteratorTag</tag-class>
+    <body-content>JSP</body-content>
+    <teiclass>de.jwi.jgallery.tags.IndexIteratorTagTEI</teiclass>
+  </tag>
+
+
+  <tag>
+    <name>counter</name>
+    <tag-class>de.jwi.jgallery.tags.CounterTag</tag-class>
+    <body-content>JSP</body-content>
+  </tag>
+
+  
+  <tag>
+    <name>test</name>
+    <tag-class>de.jwi.jgallery.tags.TestTag</tag-class>
+    <bodycontent>EMPTY</bodycontent>
+  </tag>
+  
+  
+</taglib>

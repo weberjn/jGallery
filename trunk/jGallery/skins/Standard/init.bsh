@@ -1,0 +1,4 @@
+//int i=3/0;
+int foo = 34;
+//engine.blaj();
+//throw new se.datadosen.jalbum.OperationAbortedException("Teststopp");

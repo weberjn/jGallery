@@ -1,0 +1,11 @@
+Name: standard
+Version: 1.0
+Author: David Ekholm
+
+This is a plain skin with original JAlbum look.
+Use this skin as a base for your own skins by copying this directory and renaming it to something smart.
+Take care to study how I make use of the template language of JAlbum in the template files
+index.htt and slide.htt and how I've made several color and font variations to this skin
+by the use of style sheets.
+
+Special feature: Uses dynamic html to pop up camera information on slide pages when requested.

@@ -1,0 +1,79 @@
+<project name="JGallery" default="compile" basedir=".">
+
+  <property file="build.properties"/>
+
+
+  <property name="src" value="src"/>
+  <property name="dist" value="dist"/>
+  <property name="webapp" value="${ant.project.name}"/>
+  <property name="apidoc" value="${webapp}/apidoc"/>
+  <property name="docs" value="${webapp}"/>
+  <property name="webinf" value="${webapp}/WEB-INF"/>
+  <property name="lib" value="${webapp}/WEB-INF/lib"/>
+  <property name="build" value="${webapp}/WEB-INF/classes"/>
+  
+  <property file="${webinf}/version.properties"/>
+
+  
+  <path id="project.class.path">
+    <pathelement location="${TOMCAT5}/common/lib/servlet-api.jar"/>
+    <pathelement location="${TOMCAT5}/common/lib/jsp-api.jar"/>    
+    <fileset dir="${lib}">
+    	<include name="*.jar"/>
+    </fileset>
+   </path>
+  
+ 
+  <target name="init">
+    <mkdir dir="${build}"/>
+    <mkdir dir="${dist}"/>
+    
+  </target>
+
+
+  <target name="clean">
+    <delete dir="${build}"/>
+    <delete dir="${dist}/"/>
+  </target>
+
+ 
+  <target name="compile" depends="init">
+    <javac destdir="${build}" debug="true">
+    	 <src path="${src}"/>
+	    <classpath refid="project.class.path"/>
+    </javac>
+  </target>
+  
+      
+    <target name="dist" depends="compile">
+
+    <zip destfile="${dist}/${ant.project.name}-${version}.zip">
+    <zipfileset  prefix="${ant.project.name}" dir="." includes="${webapp}/**"
+    	excludes="${webapp}/skins/**,${webapp}/WEB-INF/**"/>
+    <zipfileset  prefix="${ant.project.name}" 
+    	dir="." includes="${webapp}/WEB-INF/**"
+    	excludes="${webapp}/WEB-INF/classes/test/**"/>
+    <zipfileset prefix="${ant.project.name}"
+    	dir="." includes="${webapp}/skins/Spartan/**"/>
+    <zipfileset prefix="${ant.project.name}"
+    	dir="." includes="${src}/de/**"/>
+    <zipfileset prefix="${ant.project.name}"
+    	dir="." includes="${src}/imageinfo/**"/>
+    <zipfileset prefix="${ant.project.name}"
+    	dir="." includes="build.xml,build.properties,JGallery.xml"/>
+    <zipfileset prefix="${ant.project.name}"
+    	dir="." includes="COPYING,readme.txt,converted-skins.txt"/>
+	
+  </zip>
+    
+  </target>
+  
+  
+  <target name="javadoc" depends="compile">
+    <javadoc sourcepath="${src}" destdir="${apidoc}" 
+    windowtitle="${ant.project.name} API" packagenames="de/*">
+      <classpath refid="project.class.path"/>
+    </javadoc>
+  </target>
+  
+</project>

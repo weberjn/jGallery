@@ -1,0 +1,94 @@
+
+<%
+  import se.datadosen.util.*;
+  // If meta.properties exists in the image directory and contains
+  // an alternative title, use it instead of the directory name
+  File propsFile = new File(imageDirectory, "meta.properties");
+  if (propsFile.exists()) {
+    Properties props = IO.readPropertyFile(propsFile);
+    String newTitle = props.get("title");
+    if (newTitle != null) title = newTitle;
+  }
+
+%>
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=$textEncoding" />
+<title><%=title%></title>
+<link href="$stylePath" rel=stylesheet>
+</head>
+
+<body id="index">
+
+<table width="100%">
+<tr class="head">
+<td class="number" width="10%">
+<ja:if exists="totalIndexes">$indexNum/$totalIndexes</ja:if>
+</td>
+<td></td>
+<td class="navigation" width="20%">
+
+<!-- Link to parent index, if any -->
+<ja:if exists="parentIndexPage">
+<a href="$parentIndexPage"><img src="$resPath/up.gif" border=0 alt="$text.up"></a>
+</ja:if>
+
+<!-- Create navigation buttons if more than one index page -->
+<ja:if exists="totalIndexes">
+	<!-- Previous button -->
+	<ja:if exists="previousIndexPage">
+		<a href="$previousIndexPage"><img src="$resPath/previous.gif" alt="$text.previousPage" border=0></a>
+	</ja:if>
+	<ja:else>
+		<img src="$resPath/previous_disabled.gif" alt="$text.atFirstPage">
+	</ja:else>
+
+	<!-- Next button -->
+	<ja:if exists="nextIndexPage">
+		<a href="$nextIndexPage"><img src="$resPath/next.gif" alt="$text.nextPage" border=0></a>
+	</ja:if>
+	<ja:else>
+		<img src="$resPath/next_disabled.gif" alt="$text.atLastPage">
+	</ja:else>
+</ja:if>
+
+</td>
+</tr>
+</table>
+
+<!-- Include header.inc from image directory if present -->
+<ja:include page="header.inc" />
+
+<h1><%=title%></h1>
+<!-- Iterate through images and produce an index table -->
+<table>
+<ja:rowiterator>
+	<tr>
+	<ja:coliterator>
+		<td width="$maxThumbWidth" valign="bottom">
+			<a href="$closeupPath">
+				<ja:if exists="iconPath">
+					<!-- No frames around icons like folders and movie files -->
+					<img src="$iconPath" width="$thumbWidth" height="$thumbHeight" border=0><br>
+				</ja:if>
+				<ja:else>
+					<img class="image" src="$thumbPath" width="$thumbWidth" height="$thumbHeight" border=0><br>
+				</ja:else>
+				<small>$label</small>
+			</a>
+		</td>
+	</ja:coliterator>
+	</tr>
+</ja:rowiterator>
+</table>
+
+<!-- Include footer.inc from image directory if present -->
+<ja:include page="footer.inc" />
+
+<p>
+	<a href="http://www.datadosen.se/jalbum" target="_blank"><small>$generator</small></a>
+</p>
+</body>
+</html>

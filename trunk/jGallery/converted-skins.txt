@@ -1,0 +1,42 @@
+Always copy the skin folder to ..../JGallery/skins/
+
+--------------------------------------------------------------------------
+
+Camera Geek:
+
+renamed Camera Geek to CameraGeek
+
+ran index.htt and slide.htt through de.jwi.jgallery.utils.VariablesTransformer and renamed the .htt.jsp files to .jsp
+
+index.jsp:
+
+searched for <% 
+
+replaced 
+
+<%=1.5 * maxThumbWidth%>
+
+with
+
+${ 1.5 * maxThumbWidth}
+
+slide.jsp:
+
+replaced 
+
+"../${folder.indexPage}"
+
+with
+
+"${folder.indexPage}"
+
+replaced 
+
+<ja:if exists="copyright">Copyright: $copyright</ja:if>
+
+with 
+
+ <jg:if exists="${folder.variables[\"copyright\"]}">
+ Copyright: ${folder.variables["copyright"]}</jg:if>
+
+--------------------------------------------------------------------------
