@@ -63,7 +63,8 @@
     <name>indexiterator</name>
     <tag-class>de.jwi.jgallery.tags.IndexIteratorTag</tag-class>
     <body-content>JSP</body-content>
-    <teiclass>de.jwi.jgallery.tags.IndexIteratorTagTEI</teiclass>
+  <!--  <teiclass>de.jwi.jgallery.tags.IndexIteratorTagTEI</teiclass> -->
+  
   </tag>
 
 

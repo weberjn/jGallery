@@ -42,7 +42,7 @@ public class IndexIteratorTagTEI extends TagExtraInfo
     {
         VariableInfo info = new VariableInfo(IndexIteratorTag.CURRENTINDEX,
                 IndexIteratorCursor.class.getClass().getName(), true, VariableInfo.NESTED);
-        VariableInfo[] infos = { info};
+        VariableInfo[] infos = { info };
         return infos;
     }
 }

@@ -81,7 +81,7 @@ public class IndexIteratorTag extends BodyTagSupport
             cursor = new IndexIteratorCursor();
             
             updateCursor();
-            pageContext.getRequest().setAttribute(CURRENTINDEX, cursor);
+            pageContext.setAttribute(CURRENTINDEX, cursor);
 
             index--;
 
@@ -109,7 +109,7 @@ public class IndexIteratorTag extends BodyTagSupport
         if (index > 0)
         {
             updateCursor();
-            pageContext.getRequest().setAttribute(CURRENTINDEX, cursor);
+            pageContext.setAttribute(CURRENTINDEX, cursor);
 
             index--;
 
