@@ -47,7 +47,7 @@ public class WebFolder extends Folder
     public WebFolder(String baseURL, ServletContext appContext, Configuration configuration, String version, String remoteKey, String jgalleryContextPath,  
             String folderPath, InputStream fileList) throws GalleryException
     {
-        super(null, appContext, configuration,version, jgalleryContextPath,folderPath,null);
+        super(null, appContext, configuration,version, jgalleryContextPath,folderPath,folderPath,null);
         this.baseURL = baseURL;
         this.remoteKey = remoteKey;
         

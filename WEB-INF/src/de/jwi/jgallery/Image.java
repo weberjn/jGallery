@@ -188,7 +188,7 @@ public class Image implements Serializable
 
     public String getImagePath()
     {
-        return folder.getFolderPath() + "/" + name;
+        return folder.getImageBasePath() + "/" + name;
     }
 
     public String getThumbHeight()

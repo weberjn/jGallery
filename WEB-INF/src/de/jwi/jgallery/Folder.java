@@ -93,6 +93,7 @@ public class Folder implements FilenameFilter, Serializable
     private String iconHeight;
 
     protected String folderPath;
+    protected String imagePath;
 
     protected String jgalleryContextPath;
 
@@ -155,7 +156,7 @@ public class Folder implements FilenameFilter, Serializable
 
     public Folder(File directory, ServletContext appContext,
             Configuration configuration, String version,
-            String jgalleryContextPath, String folderPath, DBManager dBManager)
+            String jgalleryContextPath, String folderPath, String imagePath, DBManager dBManager)
             throws GalleryException
     {
         this.directory = directory;
@@ -167,6 +168,8 @@ public class Folder implements FilenameFilter, Serializable
 
         this.jgalleryContextPath = jgalleryContextPath;
         this.folderPath = folderPath;
+        this.imagePath = imagePath;
+        
 
         this.dBManager = dBManager;
 
@@ -726,10 +729,6 @@ public class Folder implements FilenameFilter, Serializable
         return sb.toString();
     }
 
-    public String getThumbsPath()
-    {
-        return folderPath + thumbsdir;
-    }
 
     /**
      * @return Path to get back to the top of a multi directory level album
@@ -742,11 +741,13 @@ public class Folder implements FilenameFilter, Serializable
     /**
      * @return Path to the image that is shown in slides
      */
+    /* TODO
+
     public String getImagePath()
     {
         return imageNum > 0 ? folderPath + imageFiles[imageNum - 1] : "";
     }
-
+*/
     /**
      * @return Path to the selected style file
      */
@@ -1065,6 +1066,17 @@ public class Folder implements FilenameFilter, Serializable
         return folderPath;
     }
 
+    public String getImageBasePath()
+    {
+        return imagePath;
+    }    
+    
+    public String getThumbsPath()
+    {
+        return getImageBasePath() + thumbsdir;
+    }
+    
+    
     public String getCounter()
     {
         if (folderCounter == -1)
