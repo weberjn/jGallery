@@ -9,7 +9,7 @@
 
     <context-param>
     	<param-name>useDataBase</param-name>
-	<param-value>false</param-value>
+	<param-value>true</param-value>
     </context-param>
 
     <context-param>
@@ -63,7 +63,7 @@
     
     <servlet-mapping>
         <servlet-name>StatisticsController</servlet-name>
-	<url-pattern>/Statistics</url-pattern>
+	<url-pattern>/Statistics/*</url-pattern>
     </servlet-mapping>
     
     <!--
