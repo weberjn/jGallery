@@ -1,18 +1,6 @@
 <%@ taglib uri="http://www.jwi.de/jGallery/taglib" prefix="jg" %>
 
 
-<% /*
-  import se.datadosen.util.*;
-  // If meta.properties exists in the image directory and contains
-  // an alternative title, use it instead of the directory name
-  File propsFile = new File(imageDirectory, "meta.properties");
-  if (propsFile.exists()) {
-    Properties props = IO.readPropertyFile(propsFile);
-    String newTitle = props.get("title");
-    if (newTitle != null) title = newTitle;
-  }
-*/
-%>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
 <html>

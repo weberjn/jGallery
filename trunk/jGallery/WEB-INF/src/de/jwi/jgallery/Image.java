@@ -44,15 +44,8 @@ public class Image implements Serializable
 
     private Folder folder;
 
-    private String closeupPath = "";
-
-    private String fileName = "";
 
     private String fileSize = "";
-
-    private String imagePath = "";
-
-    private String thumbPath = "";
 
     private String thumbWidth;
 
@@ -78,7 +71,7 @@ public class Image implements Serializable
 
         lastModified = imageAccessor.getLastModified();
 
-        setFileDate(DateFormat.getDateInstance().format(new Date(lastModified)));
+        fileDate = DateFormat.getDateInstance().format(new Date(lastModified));
 
         InputStream imageInputStream;
 
@@ -174,11 +167,6 @@ public class Image implements Serializable
         return name;
     }
 
-    public void setFileName(String fileName)
-    {
-        this.fileName = fileName;
-    }
-
     public String getCloseupPath()
     {
         String n;
@@ -213,10 +201,6 @@ public class Image implements Serializable
         return folder.getThumbsPath() + "/" + name;
     }
 
-    public void setThumbPath(String thumbPath)
-    {
-        this.thumbPath = thumbPath;
-    }
 
     public String getThumbWidth()
     {
@@ -252,25 +236,6 @@ public class Image implements Serializable
         this.folder = folder;
     }
 
-    public void setCloseupPath(String closeupPath)
-    {
-        this.closeupPath = closeupPath;
-    }
-
-    public void setImageHeight(String imageHeight)
-    {
-        this.imageHeight = imageHeight;
-    }
-
-    public void setImagePath(String imagePath)
-    {
-        this.imagePath = imagePath;
-    }
-
-    public void setImageWidth(String imageWidth)
-    {
-        this.imageWidth = imageWidth;
-    }
 
     public void setName(String name)
     {
@@ -280,11 +245,6 @@ public class Image implements Serializable
     public String getFileDate()
     {
         return fileDate;
-    }
-
-    public void setFileDate(String fileDate)
-    {
-        this.fileDate = fileDate;
     }
 
     public EXIFInfo getExif()
