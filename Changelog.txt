@@ -1,3 +1,6 @@
+2004-06-16
+- minor enhancement to Exif tag handling, changed Standard skin to display more focused exif data
+
 Version 0.8.3, 2004-06-10
 - jGallery now works with an arbitrary extention pattern in  
 <servlet-mapping><url-pattern>

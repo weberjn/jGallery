@@ -42,15 +42,7 @@ import com.drew.metadata.exif.ExifDirectory;
 public class EXIFInfo implements Serializable
 {
 
-    private static String[] exposureMeteringMethods = { "unknown", // 0
-            "average", // 1
-            "center weighted average", // 2
-            "spot", // 3
-            "multi-spot", // 4
-            "multi-segment", // 5
-            "partial" // 6
-    };
-
+    
     // EXIF Data
 
     private String imageWidth; //	Width of image in Pixels
@@ -85,7 +77,7 @@ public class EXIFInfo implements Serializable
 
     private String focusDistance;
 
-    private int meteringMode;
+    private String meteringMode;
 
     private String cameraMake;
 
@@ -152,12 +144,17 @@ public class EXIFInfo implements Serializable
         return aperture;
     }
 
-    private void setAperture(float apertureApex)
+    private void setAperture(String aperture)
+    {
+        this.aperture = aperture;
+    }    
+    
+ /*   private void setAperture(float apertureApex)
     {
         double fStop = Math.pow(ROOTTWO, apertureApex);
         this.aperture = decimalFormatter.format(fStop);
     }
-
+*/
     public String getCameraMake()
     {
         return cameraMake;
@@ -240,17 +237,10 @@ public class EXIFInfo implements Serializable
 
     public String getMeteringMode()
     {
-        if ((meteringMode > 0) && (meteringMode < 6))
-        {
-            return exposureMeteringMethods[meteringMode];
-        }
-        else
-        {
-            return "other";
-        }
+    	return meteringMode;
     }
 
-    private void setMeteringMode(int meteringMode)
+    private void setMeteringMode(String meteringMode)
     {
         this.meteringMode = meteringMode;
     }
@@ -371,22 +361,21 @@ public class EXIFInfo implements Serializable
 
         setResolution(exifDirectory.getString(ExifDirectory.TAG_X_RESOLUTION));
         
-        setFlash(exifDirectory.getString(ExifDirectory.TAG_FLASH));
-
-        setFocalLength(exifDirectory.getString(ExifDirectory.TAG_FOCAL_LENGTH));
+        setFlash(exifDirectory.getDescription(ExifDirectory.TAG_FLASH));
+        
+        setFocalLength(exifDirectory.getDescription(ExifDirectory.TAG_FOCAL_LENGTH));
 
         setIsoEquivalent(exifDirectory
-                .getString(ExifDirectory.TAG_ISO_EQUIVALENT));
+                .getDescription(ExifDirectory.TAG_ISO_EQUIVALENT));
 
-        setExposureTime(exifDirectory
-                .getString(ExifDirectory.TAG_EXPOSURE_TIME));
+        setExposureTime(exifDirectory.getDescription(ExifDirectory.TAG_EXPOSURE_TIME));
 
-        setAperture(exifDirectory.getFloat(ExifDirectory.TAG_APERTURE));
+        setAperture(exifDirectory.getDescription(ExifDirectory.TAG_APERTURE));
 
         setFocusDistance(exifDirectory
                 .getString(ExifDirectory.TAG_SUBJECT_DISTANCE));
 
-        setMeteringMode(exifDirectory.getInt(ExifDirectory.TAG_METERING_MODE));
+        setMeteringMode(exifDirectory.getDescription(ExifDirectory.TAG_METERING_MODE));
 
         setCameraMake(exifDirectory.getString(ExifDirectory.TAG_MAKE));
 
