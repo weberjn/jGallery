@@ -528,6 +528,7 @@ public class Controller extends HttpServlet
 		}
 		catch (GalleryException e)
 		{
+			e.printStackTrace(System.err);
 			throw new ServletException(e.getMessage());
 			//            request.setAttribute("javax.servlet.error.exception",e);
 			//          forward = "/errorpage.jsp";

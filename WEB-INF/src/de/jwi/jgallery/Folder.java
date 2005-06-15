@@ -46,9 +46,9 @@ import de.jwi.jgallery.db.DBManager;
 
 /**
  * @author Juergen Weber Source file created on 17.02.2004
- *  
+ * 
  */
-public class Folder implements FilenameFilter, Serializable
+public class Folder implements Serializable
 {
 
 	private static final String FOLDER_KEY = "folder";
@@ -123,7 +123,7 @@ public class Folder implements FilenameFilter, Serializable
 	private String template = "Standard"; // Name (and folder) of template
 
 	private String textEncoding = "iso-8859-1";
-	
+
 	private String indexJsp;
 
 	private String slideJsp;
@@ -140,26 +140,26 @@ public class Folder implements FilenameFilter, Serializable
 
 	private int level;
 
-	private int cols = 2; // 	Number of image columns on index pages
+	private int cols = 2; // Number of image columns on index pages
 
 	private int currentCols;
 
 	private int currentRows;
 
-	private int rows = 3; // 	Max number of image rows on index pages
+	private int rows = 3; // Max number of image rows on index pages
 
 	private boolean isShowImageNum = true;
 
 	private boolean isShowDates = true;
 
-	private int totalIndexes; //	Total number of index pages
+	private int totalIndexes; // Total number of index pages
 
-	private int totalAlbumImages; //	Total number of images in an album
+	private int totalAlbumImages; // Total number of images in an album
 
 	// (subdirectory images included)
-	private int totalImages; //	Total number of images in a directory
+	private int totalImages; // Total number of images in a directory
 
-	private int indexNum; //  	The number of the current index page
+	private int indexNum; // The number of the current index page
 
 	private String albumPath;
 
@@ -240,7 +240,8 @@ public class Folder implements FilenameFilter, Serializable
 	private void readConfiguration() throws GalleryException
 	{
 		template = configuration.getString("template", template);
-		String templateConfig = "/templates/" + template + "/template.properties";
+		String templateConfig = "/templates/" + template
+				+ "/template.properties";
 
 		// Template Configurations cannot be overridden
 		configuration = readTemplateConfiguration(templateConfig, configuration);
@@ -253,7 +254,7 @@ public class Folder implements FilenameFilter, Serializable
 
 
 		style = configuration.getString("style", style);
-		
+
 		textEncoding = configuration.getString("textEncoding", textEncoding);
 
 		String s = configuration.getString("sortingOrder");
@@ -304,8 +305,8 @@ public class Folder implements FilenameFilter, Serializable
 		templatePath = jgalleryContextPath + "/templates/" + template;
 		resResourcePath = "/templates/" + template + "/res";
 		resPath = jgalleryContextPath + "/templates/" + template + "/res";
-		stylePath = jgalleryContextPath + "/templates/" + template + "/styles/" + style
-				+ ".css";
+		stylePath = jgalleryContextPath + "/templates/" + template + "/styles/"
+				+ style + ".css";
 
 		s = configuration.getString("parentlink");
 		if (s == null)
@@ -365,12 +366,12 @@ public class Folder implements FilenameFilter, Serializable
 	public String getComment()
 	{
 		String s = captions.getProperty(FOLDER_KEY);
-		
-		if (s!=null)
+
+		if (s != null)
 		{
 			return s;
 		}
-		
+
 		s = configuration.getString(FOLDER_KEY);
 		return (s == null) ? "" : s;
 	}
@@ -509,7 +510,8 @@ public class Folder implements FilenameFilter, Serializable
 			// create the thumb first, as it is needed in the Image constructor
 			checkAndCreateThumb(n - 1);
 			imagesArray[n - 1] = new Image(imageFiles[n - 1], false, this,
-					makeImageAccessor(imageFiles[n - 1]), null);
+			makeImageAccessor(imageFiles[n - 1]), null);
+			
 			String s = captions.getProperty(imageFiles[n - 1]);
 			if (s != null)
 			{
@@ -559,14 +561,14 @@ public class Folder implements FilenameFilter, Serializable
 	public String getFirstIndexImage()
 	{
 		int firstImageOnIndexPage = getImageNumI();
-		
+
 		return Integer.toString(firstImageOnIndexPage);
 	}
 
 	public String getLastIndexImage()
 	{
-		int n = Math.min(getCurrentImagesPerPage(),imagesArray.length);
-		int lastImageOnIndexPage = getImageNumI() + n - 1; 
+		int n = Math.min(getCurrentImagesPerPage(), imagesArray.length);
+		int lastImageOnIndexPage = getImageNumI() + n - 1;
 
 		return Integer.toString(lastImageOnIndexPage);
 	}
@@ -587,7 +589,7 @@ public class Folder implements FilenameFilter, Serializable
 	private List getImages(boolean inRows) throws GalleryException
 	{
 		int cols = getColsI();
-		int n = Math.min(getCurrentImagesPerPage(),imagesArray.length);
+		int n = Math.min(getCurrentImagesPerPage(), imagesArray.length);
 		int i = getImageNumI();
 
 		List rl = new ArrayList();
@@ -603,7 +605,7 @@ public class Folder implements FilenameFilter, Serializable
 			}
 			for (int j = 0; j < r; j++)
 			{
-				Image img = getImage(i);
+				Image img = getSubDirOrImage(i); // getImage(i);
 				if (inRows)
 				{
 					cl.add(img);
@@ -674,7 +676,7 @@ public class Folder implements FilenameFilter, Serializable
 		{
 			totalIndexes++;
 		}
-		
+
 	}
 
 	/**
@@ -1128,10 +1130,6 @@ public class Folder implements FilenameFilter, Serializable
 		return s1.endsWith(".jpg") | s1.endsWith(".jpeg");
 	}
 
-	public boolean accept(File dir, String name)
-	{
-		return isJPEGExtension(name);
-	}
 
 	public static final int INDEX = 1, SLIDE = 2;
 
@@ -1161,7 +1159,7 @@ public class Folder implements FilenameFilter, Serializable
 
 		if (s.startsWith("index"))
 		{
-			//GalleryException
+			// GalleryException
 
 			if (s.equals("index." + configData.urlExtention))
 			{
@@ -1289,14 +1287,21 @@ public class Folder implements FilenameFilter, Serializable
 			}
 			else
 			{
-				imageFiles = directory.list(this);
+				imageFiles = directory.list(new FilenameFilter()
+				{
+					public boolean accept(File dir, String name)
+					{
+						File f1 = new File(dir, name);
+						return (f1.isDirectory() && !thumbsdir.equals(name)) | isJPEGExtension(name);
+					};
+				});
 			}
 
 			f = new File(directory, CAPTIONSFILE);
 			InputStream is = null;
 			try
 			{
-				is = new FileInputStream(f);																																								
+				is = new FileInputStream(f);
 				captions.load(is);
 			}
 			catch (FileNotFoundException e)
