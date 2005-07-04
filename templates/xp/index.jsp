@@ -87,9 +87,13 @@ ${folder.name}
         <img class="borderTR" src="${folder.templatePath}/images/slide-tr.gif" alt="" />
         
         <table><tr><td>
+		<c:if test="${image.representsSubdirectory}">
+			<a href="${image.closeupPath}">${image.name}</a>
+		</c:if> 
+
           	<a href="${image.closeupPath}">
 			<c:choose> 
-				<c:when test="${image.iconPath}"> 
+				<c:when test="${image.iconPath}">
 					<img class="sgPreviewThumb"
 					src="${image.iconPath}" 
 					width="${image.thumbWidth}" height="${image.thumbHeight}"

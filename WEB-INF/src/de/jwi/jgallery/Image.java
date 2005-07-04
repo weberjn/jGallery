@@ -242,7 +242,9 @@ public class Image implements Serializable
 
 	public String getThumbPath()
 	{
-		return folder.getThumbsPath() + "/" + name;
+		return isRepresentsSubdirectory ? thumbNailInfo.getThumbPath() : folder.getThumbsPath() + "/" + name;
+		
+//		return folder.getThumbsPath() + "/" + name;
 	}
 
 	public String getThumbBound()
@@ -339,6 +341,11 @@ public class Image implements Serializable
 		String rc = folder.getImageCounter(name);
 
 		return rc;
+	}
+
+	public boolean getRepresentsSubdirectory()
+	{
+		return isRepresentsSubdirectory;
 	}
 
 }
