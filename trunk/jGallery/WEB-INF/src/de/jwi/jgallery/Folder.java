@@ -399,27 +399,42 @@ public class Folder implements Serializable
 	private ThumbNailInfo makeThumbNailInfoFromRandom(String name)
 			throws GalleryException
 	{
-		File f = new File(getDirectory(), name + "/" + getThumbsdir());
-		String subImages[] = f.list(new FilenameFilter()
+		File f = null;
+		String subImages[] = null;
+		
+		for (int i = 0; i < 2; i++)
 		{
-			public boolean accept(File dir, String name)
+			f = new File(getDirectory(), name + "/" + getThumbsdir());
+			subImages = f.list(new FilenameFilter()
 			{
-				File f1 = new File(dir, name);
-				if (!isJPEGExtension(name))
+				public boolean accept(File dir, String name)
 				{
-					return false;
-				}
-				return !f1.isDirectory();
-			};
-		});
+					File f1 = new File(dir, name);
+					if (!isJPEGExtension(name))
+					{
+						return false;
+					}
+					return !f1.isDirectory();
+				};
+			});
 
-		if (subImages == null)
-		{
-			// no thumbnails created yet
+			if (subImages == null)
+			{
+				Folder subFolder = new Folder(new File(directory, name),
+						appContext, configuration, configData,
+						jgalleryContextPath, folderPath + "/" + name, imagePath
+								+ "/" + name, dBManager);
 
-			return null;
+				subFolder.loadFolder();
+
+				// no thumbnails created yet
+
+			}
+			else
+			{
+				break;
+			}
 		}
-
 		int n = (int) (Math.random() * subImages.length);
 
 		File f1 = new File(f, subImages[n]);
@@ -469,7 +484,7 @@ public class Folder implements Serializable
 			if (n > subDirectories.length)
 			{
 				// get an image
-				image = getImage(n - subDirectories.length);
+				image = getImage(n);
 			}
 			else
 			{
@@ -493,6 +508,8 @@ public class Folder implements Serializable
 				// get a subfolder representation
 				image = new Image(subDirectories[n - 1], true, this,
 						makeImageAccessor(subDirectories[n - 1]), thumbNailInfo);
+
+				imagesArray[n - 1] = image;
 			}
 		}
 		else
@@ -508,10 +525,14 @@ public class Folder implements Serializable
 		if (null == imagesArray[n - 1])
 		{
 			// create the thumb first, as it is needed in the Image constructor
-			checkAndCreateThumb(n - 1);
+
+			if (isJPEGExtension(imageFiles[n - 1]))
+			{
+				checkAndCreateThumb(n - 1);
+			}
 			imagesArray[n - 1] = new Image(imageFiles[n - 1], false, this,
-			makeImageAccessor(imageFiles[n - 1]), null);
-			
+					makeImageAccessor(imageFiles[n - 1]), null);
+
 			String s = captions.getProperty(imageFiles[n - 1]);
 			if (s != null)
 			{
@@ -1105,7 +1126,9 @@ public class Folder implements Serializable
 	 */
 	public String getPreviousPage()
 	{
-		return imageNum > 1 ? getSlidePage(imageNum - 1) : "";
+		return imageNum > 1 + subDirectories.length
+				? getSlidePage(imageNum - 1)
+				: "";
 	}
 
 	/**
@@ -1151,11 +1174,6 @@ public class Folder implements Serializable
 				.substring(1) : pathInfoFileName;
 		String s1;
 		int n = 0;
-
-		if (null == subDirectories)
-		{
-			subDirectories = getSubDirectories();
-		}
 
 		if (s.startsWith("index"))
 		{
@@ -1292,9 +1310,13 @@ public class Folder implements Serializable
 					public boolean accept(File dir, String name)
 					{
 						File f1 = new File(dir, name);
-						return (f1.isDirectory() && !thumbsdir.equals(name)) | isJPEGExtension(name);
+						return (f1.isDirectory() && !thumbsdir.equals(name))
+								| isJPEGExtension(name);
+						// return isJPEGExtension(name);
 					};
 				});
+
+				subDirectories = getSubDirectories();
 			}
 
 			f = new File(directory, CAPTIONSFILE);
@@ -1388,11 +1410,13 @@ public class Folder implements Serializable
 		{
 			for (int i = 0; i < imageFiles.length; i++)
 			{
-				getImage(i + 1);
+				// getImage(i + 1);
+				getSubDirOrImage(i + 1);
 			}
 			Comparator c = new ImageComparator(sortingOrder);
 
-			Arrays.sort(imagesArray, c);
+			Arrays.sort(imagesArray, subDirectories.length, imagesArray.length,
+					c);
 
 			for (int i = 0; i < imageFiles.length; i++)
 			{
@@ -1403,8 +1427,9 @@ public class Folder implements Serializable
 
 		for (int i = 0; i < imageFiles.length; i++)
 		{
-			images.put(imageFiles[i].substring(0, imageFiles[i].indexOf('.')),
-					new Integer(i + 1));
+			String s = isJPEGExtension(imageFiles[i]) ? imageFiles[i]
+					.substring(0, imageFiles[i].indexOf('.')) : imageFiles[i];
+			images.put(s, new Integer(i + 1));
 
 		}
 		calculateVariables();
