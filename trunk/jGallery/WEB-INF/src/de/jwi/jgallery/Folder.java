@@ -1461,7 +1461,7 @@ public class Folder implements Serializable
 		}
 		else
 		{
-			return totalImages + subDirectories.length - (indexNum - 1) * rows
+			return totalImages /* + subDirectories.length */ - (indexNum - 1) * rows
 					* cols;
 		}
 	}
