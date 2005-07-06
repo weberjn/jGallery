@@ -1,4 +1,4 @@
-<%@ taglib uri="http://www.jwi.de/jGallery/taglib" prefix="jg" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
 <html>
@@ -29,31 +29,40 @@
 <table width="100%">
 <tr class="head">
 <td class="number" width="10%">${folder.imageNum}/${folder.totalImages}</td>
-<td class="date" width="20%"><jg:if exists="${image.exif.originalDate}">${image.exif.originalDate}</jg:if><jg:else>${image.fileDate}</jg:else></td>
+<td class="date" width="20%">
+<c:choose> 
+	<c:when test="${!empty image.exif.originalDate}">${image.exif.originalDate}
+	</c:when> 
+	<c:otherwise>${image.fileDate}</c:otherwise>
+</c:choose>
+</td>
 <td class="name">${image.label}</td>
 
 <td class="navigation" width="20%">
 
 <!-- Index button -->
-<a href="${folder.indexPage}"><img src="${folder.resPath}/index.gif" border=0 alt="<jg:text>indexPage</jg:text>" title="<jg:text>indexPage</jg:text>"></a>
+<a href="${folder.indexPage}"><img src="${folder.resPath}/index.gif" border=0 alt="index Page" title="index Page"></a>
 
 <!-- Previous button -->
-<jg:if exists="${folder.previousPage}">
-	<a href="${folder.previousPage}"><img src="${folder.resPath}/previous.gif" alt="<jg:text>previousPage</jg:text>" title="<jg:text>previousPage</jg:text>" border=0></a>
-</jg:if>
-<jg:else>
-	<img src="${folder.resPath}/previous_disabled.gif" alt="<jg:text>atFirstPage</jg:text>">
-</jg:else>
+<c:choose> 
+	<c:when test="${!empty folder.previousPage}">
+	<a href="${folder.previousPage}"><img src="${folder.resPath}/previous.gif" alt="previous Page" title="previous Page" border=0></a>
+	</c:when> 
+	<c:otherwise>
+	<img src="${folder.resPath}/previous_disabled.gif" alt="at first page">
+</c:otherwise>
+</c:choose>
 
 <!-- Next button -->
-<jg:if exists="${folder.nextPage}">
-	<a href="${folder.nextPage}"><img src="${folder.resPath}/next.gif" alt="<jg:text>nextPage</jg:text>" 
-	title="<jg:text>nextPage</jg:text>" border=0></a>
-</jg:if>
-<jg:else>
-	<img src="${folder.resPath}/next_disabled.gif" alt="<jg:text>atLastPage</jg:text>">
-	
-</jg:else>
+<c:choose> 
+	<c:when test="${!empty folder.nextPage}">
+	<a href="${folder.nextPage}"><img src="${folder.resPath}/next.gif" alt="next Page" 
+	title="next Page" border=0></a>
+	</c:when> 
+	<c:otherwise>
+	<img src="${folder.resPath}/next_disabled.gif" alt="at last page">
+	</c:otherwise>
+</c:choose>
 
 </td>
 </tr>
@@ -62,34 +71,38 @@
 <table><tr valign="TOP"><td>
 
 <!-- Image, maybe with link to original -->
-<jg:if exists="${image.originalPath}">
+<c:choose> 
+	<c:when test="${!empty image.originalPath}">
 	<a href="${image.originalPath}">
-		<img src="${image.imagePath}" width="${image.imageWidth}" height="${image.imageHeight}" border=0 alt="<jg:text>originalImage</jg:text>">
+		<img src="${image.imagePath}" width="${image.imageWidth}" height="${image.imageHeight}" border=0 alt="original image">
 	</a>
-</jg:if>
-<jg:else>
+	</c:when> 
+	<c:otherwise>
 	<img src="${image.imagePath}" width="${image.imageWidth}" height="${image.imageHeight}">
-</jg:else>
+</c:otherwise>
+</c:choose>
 
 <!-- Always display comment below image (if exists) -->
-<jg:if exists="${image.comment}">
+<c:choose> 
+	<c:when test="${!empty image.comment}">
 	<br>
 	<div class="name">${image.comment}</div>
-</jg:if>
-<jg:else>
+</c:when> 
+	<c:otherwise>
 	<!-- Try to extract the comment from a file carrying the same base name as this image -->
 	<br>
 	<div class="name">
 		<jsp:include page="${image.label}.txt" />
 	</div>
-</jg:else>
+</c:otherwise>
+</c:choose>
 
 </td>
 
 <!-- Image info button if camera information exists -->
-<jg:if exists="${image.exif.flash}">
+<c:if test="${!empty image.exif.flash}">
 	<td>
-	<a href="javascript:toggleInfo()"><img src="${folder.resPath}/camera.gif" alt="<jg:text>cameraInfo</jg:text>" border=0></a>
+	<a href="javascript:toggleInfo()"><img src="${folder.resPath}/camera.gif" alt="text>camera info" border=0></a>
 	<br>
 	<div class="imageinfo" id="imageinfo" STYLE="visibility:hidden;">
 	<table>
@@ -104,13 +117,13 @@
 		<tr><td>Camera model</td><td>${image.exif.cameraModel}</td></tr>
 	</table></div>
 	</td>
-</jg:if>
+</c:if>
 
 </tr>
 </table>
-<jg:if exists="${image.counter}">
+<c:if test="${!empty image.counter}">
 		<small>image viewed ${image.counter} times</small>
-	</jg:if>
+	</c:if>
 </center>
 <a href="${folder.generatorurl}" target="_blank"><small>${folder.generator}</small></a>
 

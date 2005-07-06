@@ -26,6 +26,7 @@ import javax.servlet.jsp.tagext.BodyContent;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
 import de.jwi.jgallery.Folder;
+import de.jwi.jgallery.PageIndex;
 
 /**
  * @author Juergen Weber 
@@ -43,7 +44,7 @@ public class IndexIteratorTag extends BodyTagSupport
 
     private Folder folder;
 
-    private IndexIteratorCursor cursor;
+    private PageIndex cursor;
 
     private void updateCursor()
     {
@@ -78,7 +79,7 @@ public class IndexIteratorTag extends BodyTagSupport
 
         if (index > 0)
         {
-            cursor = new IndexIteratorCursor();
+            cursor = new PageIndex();
             
             updateCursor();
             pageContext.setAttribute(CURRENTINDEX, cursor);

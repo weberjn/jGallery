@@ -33,7 +33,7 @@
     <context-param>
     	<description>separate with commas</description>
     	<param-name>dirmappings</param-name>
-		<param-value>/=D:/temp/jg</param-value>
+		<param-value>/x=D:/temp/jg</param-value>
     </context-param>
 
     <servlet>

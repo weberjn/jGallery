@@ -1,4 +1,4 @@
-<%@ taglib uri="http://www.jwi.de/jGallery/taglib" prefix="jg" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
@@ -14,15 +14,15 @@
 
 
 <!-- Previous Slide -->
-<jg:if exists="${folder.previousPage}">
+<c:if test="${!empty folder.previousPage}">
 	<a href="${folder.previousPage}">&lt;&lt;</a>
-</jg:if>
+</c:if>
 
 <!-- Next Slide -->
-<jg:if exists="${folder.nextPage}">
+<c:if test="${!empty folder.nextPage}">
 	<a href="${folder.nextPage}">
 	&gt;&gt;</a>
-</jg:if>
+</c:if>
 
 <center>
 <table>

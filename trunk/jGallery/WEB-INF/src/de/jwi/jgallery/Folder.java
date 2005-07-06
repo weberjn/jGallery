@@ -401,7 +401,7 @@ public class Folder implements Serializable
 	{
 		File f = null;
 		String subImages[] = null;
-		
+
 		for (int i = 0; i < 2; i++)
 		{
 			f = new File(getDirectory(), name + "/" + getThumbsdir());
@@ -594,6 +594,32 @@ public class Folder implements Serializable
 		return Integer.toString(lastImageOnIndexPage);
 	}
 
+
+	public List getPageIndexes()
+	{
+		List l = new ArrayList();
+
+		if (totalIndexes > 1)
+		{
+			for (int i = 0; i < totalIndexes; i++)
+			{
+				String page = getCalculatedIndexPage(i);
+				String number = Integer.toString(i);
+				String selected = getIndexNum().equals(number)
+						? "selected"
+						: "";
+
+				PageIndex p = new PageIndex();
+				p.setPage(page);
+				p.setNumber(number);
+				p.setSelected(selected);
+
+				l.add(p);
+			}
+		}
+
+		return l;
+	}
 
 	public List getImages() throws GalleryException
 	{
@@ -1461,8 +1487,8 @@ public class Folder implements Serializable
 		}
 		else
 		{
-			return totalImages /* + subDirectories.length */ - (indexNum - 1) * rows
-					* cols;
+			return totalImages /* + subDirectories.length */- (indexNum - 1)
+					* rows * cols;
 		}
 	}
 
