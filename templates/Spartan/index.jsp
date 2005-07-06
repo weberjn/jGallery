@@ -1,4 +1,4 @@
-<%@ taglib uri="http://www.jwi.de/jGallery/taglib" prefix="jg" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
@@ -11,17 +11,22 @@
 <body>
 
 ${folder.title} 
-<jg:if exists="${folder.totalIndexes}">(${folder.indexNum}/${folder.totalIndexes})</jg:if>
+<c:if test="${!empty folder.totalIndexes}">(${folder.indexNum}/${folder.totalIndexes})</c:if>
 
 
 
-<jg:if exists="${folder.totalIndexes}">
+<c:if test="${!empty folder.totalIndexes}">
 
 <select style="border: 0px none;" onchange="window.location.href = this.options[this.selectedIndex].value">
-   <jg:indexiterator>
    
-	<option ${index.selected} value="${index.page}">Page ${index.number}</option>
-   </jg:indexiterator>	
+<c:forEach var="page" items="${folder.pageIndexes}">
+
+   <option ${page.selected} value="${page.page}">Page ${page.number}</option>
+
+</c:forEach>
+   
+   
+   
 </select> 
 
 
@@ -36,7 +41,7 @@ ${folder.title}
 		<a href="${folder.nextIndexPage}">
 		&gt;&gt;</a>
 	</jg:if>
-</jg:if>
+</c:if>
 
 
 

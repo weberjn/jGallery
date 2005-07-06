@@ -26,6 +26,8 @@ import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
 
+import de.jwi.jgallery.PageIndex;
+
 /**
  * @author Jürgen Weber
  * Source file created on 10.03.2004
@@ -41,7 +43,7 @@ public class IndexIteratorTagTEI extends TagExtraInfo
     public VariableInfo[] getVariableInfo(TagData data)
     {
         VariableInfo info = new VariableInfo(IndexIteratorTag.CURRENTINDEX,
-                IndexIteratorCursor.class.getClass().getName(), true, VariableInfo.NESTED);
+                PageIndex.class.getClass().getName(), true, VariableInfo.NESTED);
         VariableInfo[] infos = { info };
         return infos;
     }
