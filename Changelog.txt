@@ -1,3 +1,7 @@
+Version 0.9.3, 2005-07-06
+- finally fixed the bug that a folder containing images and subfolders wouldn't work
+- dropped support for jGallery's custom tags, all logic in templates is now done by JSTL
+
 2005-03-27
 - jGallery parameters from WEB-INF/jGallery.properties can now be overwritten
   with context InitParameters (which can come from web.xml or in Tomcat's case from a context.xml).  
