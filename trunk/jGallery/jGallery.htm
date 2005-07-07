@@ -20,8 +20,7 @@ the online demo</a>.<br>
 <p>jGallery consists of a controller that reads in the image
 information, and JSPs that generate the HTML pages. There are different
 sets of templates that define the look of generated
-pages. jGallery's templates are based on the idea of <a
- href="http://www.datadosen.se/jalbum/">JAlbum</a>'s skins.<br>
+pages.<br>
 </p>
 <p>jGallery is licensed under the <a href="http://www.gnu.org/">Gnu
 Public License</a> (GPL).<br>
@@ -44,7 +43,6 @@ context<br>
 generated HTML pages</a></li>
   <li><a href="#Configuration">Configuration</a></li>
   <li><a href="#Architecture">Architecture</a></li>
-  <li><a href="#Adapting_a_JAlbum_skin">Adapting a JAlbum skin</a></li>
   <li><a href="#Thanks">Thanks</a></li>
 </ul>
 <br>
@@ -335,52 +333,6 @@ request.getAttribute("image").getExif().getCameraModel().<br>
 <br>
 <h3><a name="Architecture">Variables</a></h3>
 TODO<br>
-<h3><a name="Adapting_a_JAlbum_skin">Porting a JAlbum skin</a></h3>
-<p>A template consists of JSP 2.0 files. In order to make porting
-JAlbum
-skins as easy as possible, jGallery uses variables of same name and
-semantic as JAlbum, but variables can only be referenced from an
-object. jGallery calls pages with the current Folder and Image
-object bound to the request. From there you can reference all
-variables. For example, instead of JAlbum's $indexNum use
-${folder.indexNum} in JSP 2.0 EL syntax, for the thumbWidth image
-information use ${image.thumbWidth}. Exif information is in an
-Exif object referenced from the image (e.g. ${image.exif.originalDate}
-). <br>
-</p>
-<p>The image object is bound to the image currently displayed on a
-slide or, within a coliterator tag, the current image.<br>
-</p>
-<p>Generally the less &lt;% %&gt; Java scriptlets are in the JAlbum
-HTML templates, the easier you can port a skin. If there are no
-scriptlets, the skin can be ported almost automatically.<br>
-</p>
-<p>Steps to do:
-</p>
-<ul>
-  <li>unpack the skin to /jGallery/templates</li>
-  <li>for index.htt and slide.htt run <code>java
-de.jwi.jgallery.util.VariablesTransformer &lt;htt file&gt;</code></li>
-  <li>replace the Scriptlets. Simple things like <code>&lt;%=
-aJalbumVar mathop aNumber %&gt;</code> can be replaced with a JSP 2.0
-EL expression like <code>${folder.aJalbumVar mathop aNumber}</code></li>
-  <li>rename the *.htt.jsp to *.jsp</li>
-  <li>run your gallery and try to fix other errors, JSP 2.0 is very
-strict with matching tags and matching double quotes.</li>
-</ul>
-<h4>How I ported JAlbums Standard skin:</h4>
-<ul>
-  <li>ran VariablesTransformer </li>
-  <li>replaced all &lt;%=title%&gt; with ${folder.title}</li>
-  <li>replaced &lt;%= new File(imageDirectory, label+".txt") %&gt; with
-${image.label}.txt</li>
-  <li>On the slide page, removed the ../ from
-"../${folder.indexPage}" (jGallery only works with absolute paths).<br>
-  </li>
-</ul>
-<br>
-That's all!<br>
-<br>
 <br>
 <h3><a name="Thanks">Thanks to<br>
 </a></h3>

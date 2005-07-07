@@ -109,15 +109,4 @@
   <location>/errorpage.jsp</location>
   </error-page>
 -->
-    
-    <jsp-config>
-        <taglib>
-	    <taglib-uri>
-	       http://www.jwi.de/jGallery/taglib
-	    </taglib-uri>
-	    <taglib-location>
-	       /WEB-INF/jGallery.tld
-	    </taglib-location>
-	</taglib>
-    </jsp-config>
 </web-app>
