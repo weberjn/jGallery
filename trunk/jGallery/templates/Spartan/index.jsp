@@ -31,16 +31,16 @@ ${folder.title}
 
 
 	<!-- Previous index -->
-	<jg:if exists="${folder.previousIndexPage}">
+	<c:if test="${!empty folder.previousIndexPage}">
 		<a href="${folder.previousIndexPage}">
 		&lt;&lt; </a>
-	</jg:if>
+	</c:if>
 
 	<!-- Next index -->
-	<jg:if exists="${folder.nextIndexPage}">
+	<c:if test="${!empty folder.nextIndexPage}">
 		<a href="${folder.nextIndexPage}">
 		&gt;&gt;</a>
-	</jg:if>
+	</c:if>
 </c:if>
 
 
@@ -49,9 +49,11 @@ ${folder.title}
 <center>
 
 <table>
-<jg:rowiterator> 
+
+
+<c:forEach var="row" items="${folder.imageRows}">
 	<tr>
-	<jg:coliterator>
+	<c:forEach var="image" items="${row}">
 	
 		<td>
 	
@@ -63,9 +65,9 @@ ${folder.title}
 		</a> 
 		</td>
 		
-	</jg:coliterator>
+	</c:forEach>
 	</tr>
-</jg:rowiterator>
+</c:forEach>
 </table>		
 
 </center>
