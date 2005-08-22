@@ -294,8 +294,7 @@ public class Controller extends HttpServlet
 	{
 		// No need to synchronize access to the Folders because they are per
 		// session. In the worst case if a user has several browser windows
-		// (that
-		// share the same session), there might be unnecessary creations of
+		// (that share the same session), there might be unnecessary creations of
 		// Folders.
 
 		Folder folder;

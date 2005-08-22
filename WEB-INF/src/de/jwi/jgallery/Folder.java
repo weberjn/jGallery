@@ -55,8 +55,6 @@ public class Folder implements Serializable
 
 	private static final String CAPTIONSFILE = "captions.txt";
 
-	private static final String JGALLERYIGNOREFILE = ".jGalleryIgnore";
-
 	private ConfigData configData;
 
 	private static final String GENERATORURL = "http://www.jwi.de/jgallery/";
@@ -299,8 +297,6 @@ public class Folder implements Serializable
 		thumbQuality = configuration.getFloat("thumbnails.quality",
 				thumbQuality);
 
-
-		// parentlink.galleries=
 
 		templatePath = jgalleryContextPath + "/templates/" + template;
 		resResourcePath = "/templates/" + template + "/res";
@@ -1184,14 +1180,7 @@ public class Folder implements Serializable
 
 	protected String[] getSubDirectories()
 	{
-		File f = new File(directory, JGALLERYIGNOREFILE);
-		if (f.exists())
-		{
-			return new String[0];
-		}
-
-		return directory.list(new DirectoriesFilter(getThumbsdir(),
-				JGALLERYIGNOREFILE));
+		return directory.list(new DirectoriesFilter(getThumbsdir()));
 	}
 
 	public int setFileName(String pathInfoFileName) throws GalleryException
@@ -1199,7 +1188,7 @@ public class Folder implements Serializable
 		String s = pathInfoFileName.startsWith("/") ? pathInfoFileName
 				.substring(1) : pathInfoFileName;
 		String s1;
-		int n = 0;
+		int n = 0, i;
 
 		if (s.startsWith("index"))
 		{
@@ -1211,7 +1200,7 @@ public class Folder implements Serializable
 			}
 			else
 			{
-				int i = 0;
+				i = 0;
 
 				s1 = s.substring("index".length(), s.indexOf('.'));
 				try
@@ -1278,54 +1267,77 @@ public class Folder implements Serializable
 
 	public void loadFolder() throws GalleryException
 	{
+		int i;
+		String s;
+
 		if (!isDirectoryParsed)
 		{
-			calculateParentFolderList(folderPath);
-
-			// "/testalbum/second/"
 
 			String[] parts = folderPath.split("/");
 
 			StringBuffer sb = new StringBuffer();
+			StringBuffer currentParent = null;
 
-			if (parts.length > 2) // [0] is empty, [1..n-2] are parents, [n-1]
-			// is current
+			parentFolderList = new ArrayList();
+
+			String hTMLBase = jgalleryContextPath;
+			String parentlink = null;
+
+			boolean skipReadImages = false;
+
+
+			// ParentLink
+
+			// [, galleries, Portugal, Lissabon]
+
+			// [0] is empty, [1..n-2] are parents, [n-1] is current
+
+			if (parts.length > 2)
 			{
-				for (int i = 1; i < parts.length - 1; i++)
+				for (i = 1; i < parts.length - 1; i++)
 				{
 					level = i;
 					sb.append(parts[i]);
 					sb.append('/');
-				}
-				String parent = sb.toString();
+					parentlink = null;
 
-				String hTMLBase = jgalleryContextPath;
-				parentIndexPage = hTMLBase + "/" + parent + "index."
-						+ configData.urlExtention;
-
-				// Check, if parent directory is to be ignored
-
-				File parentFile = directory.getParentFile();
-				if (null != parentFile)
-				{
-					File f = new File(parentFile, JGALLERYIGNOREFILE);
-					if (f.exists())
+					if (i == 1)
 					{
-						parentIndexPage = "";
+						s = configuration.getString("parentlink." + parts[1]);
+						if (s != null)
+						{
+							parentlink = s;
+						}
+
+						if ((s != null) && (parts.length == 2))
+						{
+							// at top folder and replacement given
+							skipReadImages = true;
+						}
 					}
+
+					currentParent = new StringBuffer();
+
+					if (parentlink != null)
+					{
+						currentParent.append(parentlink);
+					}
+					else
+					{
+						currentParent.append(hTMLBase).append("/").append(sb)
+								.append("index.").append(
+										configData.urlExtention);
+					}
+
+
+					parentFolderList.add(new ParentLink(parts[i], currentParent
+							.toString()));
+
 				}
 
+				parentIndexPage = currentParent.toString();
 			}
-			if ("".equals(parentIndexPage))
-			{
-				parentIndexPage = parentlink != null ? parentlink : ""; // set
-				// to
-				// non
-				// defined
-			}
-
-			File f = new File(directory, JGALLERYIGNOREFILE);
-			if (f.exists())
+			if (skipReadImages)
 			{
 				imageFiles = new String[0];
 			}
@@ -1345,7 +1357,7 @@ public class Folder implements Serializable
 				subDirectories = getSubDirectories();
 			}
 
-			f = new File(directory, CAPTIONSFILE);
+			File f = new File(directory, CAPTIONSFILE);
 			InputStream is = null;
 			try
 			{
@@ -1396,6 +1408,9 @@ public class Folder implements Serializable
 		// folderPath is URL part after context
 		// e.g. /galleries/TemplateTest/
 
+		if (true)
+			return;
+
 		parentFolderList = new ArrayList();
 
 		String s = folderPath.substring(1, folderPath.length() - 1);
@@ -1406,17 +1421,25 @@ public class Folder implements Serializable
 
 		String p = jgalleryContextPath;
 
-		StringBuffer sb = new StringBuffer(jgalleryContextPath).append('/')
-				.append(s1[0]).append('/');
-		StringBuffer sb1;
 
-		for (int i = 1; i < s1.length; i++)
+		StringBuffer sb = null, sb1;
+
+		if (s1.length > 1)
+		{
+			sb = new StringBuffer(jgalleryContextPath).append('/')
+					.append(s1[0]).append('/');
+		}
+
+		parentFolderList.add(new ParentLink("index", getParentIndexPage()));
+
+		for (int i = 1; i < s1.length - 1; i++)
 		{
 			sb1 = new StringBuffer(sb.toString()).append("index.").append(
 					configData.urlExtention);
 			parentFolderList.add(new ParentLink(s1[i - 1], sb1.toString()));
 			sb.append(s1[i]).append('/');
 		}
+
 
 		int x = 5;
 	}
