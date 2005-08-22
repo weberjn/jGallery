@@ -32,13 +32,12 @@ import java.io.File;
 public class DirectoriesFilter implements java.io.FilenameFilter
 {
     private String thumbsDirName;
-    private String ignoreFileName;
     
-    public DirectoriesFilter(String thumbsDirName,String ignoreFileName)
+    public DirectoriesFilter(String thumbsDirName)
     {
         this.thumbsDirName=thumbsDirName;
-        this.ignoreFileName=ignoreFileName;
     }
+    
     public boolean accept(File dir, String name)
     {
         File f = new File(dir, name);
@@ -49,12 +48,6 @@ public class DirectoriesFilter implements java.io.FilenameFilter
         
         if (thumbsDirName.equals(name)) return false;
         
-        File f1 = new File(f,ignoreFileName);
-        if (f1.exists())
-        {
-            return false;
-        }
-
         return true;
     }
 }
