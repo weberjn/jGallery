@@ -1372,6 +1372,20 @@ public class Folder implements Serializable
 			{
 				throw new GalleryException(e.getMessage(), e);
 			}
+			finally
+			{
+				if (is!=null)
+				{
+					try
+					{
+						is.close();
+					}
+					catch (IOException e)
+					{
+						throw new GalleryException(e.getMessage(), e);
+					}
+				}
+			}
 
 			imageCounters = new int[imageFiles.length];
 			Arrays.fill(imageCounters, -1);
