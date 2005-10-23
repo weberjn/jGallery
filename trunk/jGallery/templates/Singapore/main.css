@@ -203,6 +203,10 @@ div.sgThumbnail table {
 	border: 1px solid #ccc;
 }
 
+div.centertext {
+  text-align: center; 
+}
+
 
 /* the following code does the rounded corners of the 35mm slide effect on 
    the album pages. Taken from http://www.albin.net/CSS/roundedCorners/ */

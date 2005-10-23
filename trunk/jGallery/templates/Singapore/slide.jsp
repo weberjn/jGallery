@@ -107,6 +107,7 @@ ${image.name}
     <img src="${image.imagePath}" class="sgImage"
     	alt="${folder.name}" height="${image.imageHeight}" width="${image.imageWidth}" /> 
   
+  
     </td>
     <td class="mr"><img src="${folder.templatePath}/images/blank.gif" alt="" /></td>
   </tr>
@@ -117,7 +118,22 @@ ${image.name}
   </tr>
 </table></div>
 
-
+<div class="centertext">
+  <!-- Always display comment below image (if exists) -->
+<c:choose> 
+	<c:when test="${!empty image.comment}">
+	<br>
+	<div class="name">${image.comment}</div>
+</c:when> 
+	<c:otherwise>
+	<!-- Try to extract the comment from a file carrying the same base name as this image -->
+	<br>
+	<div class="name">
+		<jsp:include page="${image.label}.txt" />
+	</div>
+</c:otherwise>
+</c:choose>
+</div>
 
   <c:if test="${!empty image.exif.flash}"> 
   <div class="footer">
