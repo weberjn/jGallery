@@ -36,14 +36,23 @@ public class ImageComparator implements Comparator
     public static final int SORTBYNAME = 1;
     public static final int SORTBYFILEDATE = 2;
     public static final int SORTBYEXIFDATE = 3;
+    public static final int SORT_ASC = 0;
+    public static final int SORT_DESC = 1;
     
-    private int mode;
+    private int sortBy,sortOrder;
     
-    ImageComparator(int mode) throws GalleryException
+    ImageComparator(int sortBy,int sortOrder) throws GalleryException
     {
-        this.mode = mode;
+        this.sortBy = sortBy;
         
-        if ((mode != SORTBYFILEDATE) && (mode != SORTBYNAME) && (mode != SORTBYEXIFDATE))
+        if ((sortBy != SORTBYFILEDATE) && (sortBy != SORTBYNAME) && (sortBy != SORTBYEXIFDATE))
+        {
+            throw new GalleryException("illegal sorting mode");
+        }
+        
+        this.sortOrder = sortOrder;
+        
+        if ((sortOrder != SORT_ASC) && (sortOrder != SORT_DESC))
         {
             throw new GalleryException("illegal sorting mode");
         }
@@ -56,11 +65,11 @@ public class ImageComparator implements Comparator
         
         Image i1 = (Image)o1;
         Image i2 = (Image)o2;
-        if (SORTBYFILEDATE == mode)
+        if (SORTBYFILEDATE == sortBy)
         {
             rc = (int) (i1.getLastModified() - i2.getLastModified()) ;
         }
-        else if (SORTBYEXIFDATE == mode)
+        else if (SORTBYEXIFDATE == sortBy)
         {
             EXIFInfo e1 = i1.getExif();
             EXIFInfo e2 = i2.getExif();
@@ -83,10 +92,16 @@ public class ImageComparator implements Comparator
                 }
             }
         }
-        else if (SORTBYNAME == mode)
+        else if (SORTBYNAME == sortBy)
         {
             rc= i1.getName().compareToIgnoreCase(i2.getName());
         }
+        
+        if (sortOrder==SORT_DESC)
+        {
+        	rc*=-1;
+        }
+        
         return rc;
     }
 }

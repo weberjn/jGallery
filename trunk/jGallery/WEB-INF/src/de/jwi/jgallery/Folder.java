@@ -200,7 +200,8 @@ public class Folder implements Serializable
 		return variables;
 	}
 
-	private int sortingOrder = ImageComparator.SORTNONE;
+	private int sortCriterion = ImageComparator.SORTNONE;
+	private int sortOrder = ImageComparator.SORT_ASC;
 
 
 	private Configuration readTemplateConfiguration(String templateConfigFile,
@@ -255,28 +256,46 @@ public class Folder implements Serializable
 
 		textEncoding = configuration.getString("textEncoding", textEncoding);
 
-		String s = configuration.getString("sortingOrder");
+		String s = configuration.getString("sortCriterion");
 		if ("filedate".equals(s))
 		{
-			sortingOrder = ImageComparator.SORTBYFILEDATE;
+			sortCriterion = ImageComparator.SORTBYFILEDATE;
 		}
 		else if ("exifdate".equals(s))
 		{
-			sortingOrder = ImageComparator.SORTBYEXIFDATE;
+			sortCriterion = ImageComparator.SORTBYEXIFDATE;
 		}
 		else if ("name".equals(s))
 		{
-			sortingOrder = ImageComparator.SORTBYNAME;
+			sortCriterion = ImageComparator.SORTBYNAME;
 		}
 		else if ("none".equals(s))
 		{
-			sortingOrder = ImageComparator.SORTNONE;
+			sortCriterion = ImageComparator.SORTNONE;
 		}
 		else
 		{
-			sortingOrder = ImageComparator.SORTNONE;
+			sortCriterion = ImageComparator.SORTNONE;
 		}
 
+		
+		s = configuration.getString("sortOrder");
+		if ("asc".equals(s))
+		{
+			sortOrder = ImageComparator.SORT_ASC;
+		}
+		else if ("desc".equals(s))
+		{
+			sortOrder = ImageComparator.SORT_DESC;
+		}
+		else
+		{
+			sortOrder = ImageComparator.SORT_ASC;
+		}
+		
+		
+		
+		
 		isShowImageNum = configuration.getBoolean("showImageNum",
 				isShowImageNum);
 
@@ -1469,14 +1488,14 @@ public class Folder implements Serializable
 
 		// if sorting is wished for, need to load all images first
 		// and sort them
-		if (sortingOrder != ImageComparator.SORTNONE)
+		if (sortCriterion != ImageComparator.SORTNONE)
 		{
 			for (int i = 0; i < imageFiles.length; i++)
 			{
 				// getImage(i + 1);
 				getSubDirOrImage(i + 1);
 			}
-			Comparator c = new ImageComparator(sortingOrder);
+			Comparator c = new ImageComparator(sortCriterion,sortOrder);
 
 			Arrays.sort(imagesArray, subDirectories.length, imagesArray.length,
 					c);
