@@ -10,17 +10,17 @@
 </head>
 <body>
 
-<a href="${folder.indexPage}"> ${folder.title} </a> / (Image ${folder.imageNum}/${folder.totalImages})
+<a href="<c:url value='${folder.indexPage}'/>"> ${folder.title} </a> / (Image ${folder.imageNum}/${folder.totalImages})
 
 
 <!-- Previous Slide -->
 <c:if test="${!empty folder.previousPage}">
-	<a href="${folder.previousPage}">&lt;&lt;</a>
+	<a href="<c:url value='${folder.previousPage}'/>">&lt;&lt;</a>
 </c:if>
 
 <!-- Next Slide -->
 <c:if test="${!empty folder.nextPage}">
-	<a href="${folder.nextPage}">
+	<a href="<c:url value='${folder.nextPage}'/>">
 	&gt;&gt;</a>
 </c:if>
 

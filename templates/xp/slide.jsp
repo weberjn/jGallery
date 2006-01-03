@@ -24,13 +24,20 @@ You are here:
 
 <c:forEach var="parent" items="${folder.parentFolderList}">
 
-<a href="${parent.url}">${parent.name}</a>
 
+  <c:if test="${!parent.outOfContext}"> 
+	<a href="<c:url value='${parent.url}'/>">${parent.name}</a> 
+  </c:if> 
+  
+  <c:if test="${parent.outOfContext}"> 
+	<a href="${parent.url}">${parent.name}</a> 
+  </c:if> 
 	           &gt;               
 
 </c:forEach>
 
-<a href="${folder.indexPage}">${folder.name}</a>
+<a href="<c:url value='${folder.indexPage}'/>">${folder.name}</a>
+
 
  &gt;
 
@@ -46,7 +53,7 @@ ${image.name}
 
 <c:forEach var="image" items="${image.neighbourImages}">
 
-	<a href="${image.closeupPath}">
+	<a href="<c:url value='${image.closeupPath}'/>">
 	
 	<c:choose> 
 		<c:when test="${image.iconPath}"> 
@@ -70,13 +77,13 @@ ${image.name}
 
 
 <c:if test="${!empty folder.previousPage}"> 
-    	<a href="${folder.previousPage}">Previous</a> | 
+    	<a href="<c:url value='${folder.previousPage}'/>">Previous</a> | 
   </c:if> 
 
-  <a href="${folder.indexPage}"  title="${folder.title}">Thumbnails</a>
+  <a href="<c:url value='${folder.indexPage}'/>"  title="${folder.title}">Thumbnails</a>
   
   <c:if test="${!empty folder.nextPage}"> 
-    |	<a href="${folder.nextPage}">Next</a> 
+    |	<a href="<c:url value='${folder.nextPage}'/>">Next</a> 
   </c:if> 
  
 </p>

@@ -41,12 +41,12 @@
 <td class="navigation" width="20%">
 
 <!-- Index button -->
-<a href="${folder.indexPage}"><img src="${folder.resPath}/index.gif" border=0 alt="index Page" title="index Page"></a>
+<a href="<c:url value='${folder.indexPage}'/>"><img src="${folder.resPath}/index.gif" border=0 alt="index Page" title="index Page"></a>
 
 <!-- Previous button -->
 <c:choose> 
 	<c:when test="${!empty folder.previousPage}">
-	<a href="${folder.previousPage}"><img src="${folder.resPath}/previous.gif" alt="previous Page" title="previous Page" border=0></a>
+	<a href="<c:url value='${folder.previousPage}'/>"><img src="${folder.resPath}/previous.gif" alt="previous Page" title="previous Page" border=0></a>
 	</c:when> 
 	<c:otherwise>
 	<img src="${folder.resPath}/previous_disabled.gif" alt="at first page">
@@ -56,7 +56,7 @@
 <!-- Next button -->
 <c:choose> 
 	<c:when test="${!empty folder.nextPage}">
-	<a href="${folder.nextPage}"><img src="${folder.resPath}/next.gif" alt="next Page" 
+	<a href="<c:url value='${folder.nextPage}'/>"><img src="${folder.resPath}/next.gif" alt="next Page" 
 	title="next Page" border=0></a>
 	</c:when> 
 	<c:otherwise>
@@ -73,7 +73,7 @@
 <!-- Image, maybe with link to original -->
 <c:choose> 
 	<c:when test="${!empty image.originalPath}">
-	<a href="${image.originalPath}">
+	<a href="<c:url value='${image.originalPath}'/>">
 		<img src="${image.imagePath}" width="${image.imageWidth}" height="${image.imageHeight}" border=0 alt="original image">
 	</a>
 	</c:when> 
