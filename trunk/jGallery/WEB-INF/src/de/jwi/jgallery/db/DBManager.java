@@ -51,40 +51,43 @@ public class DBManager implements Serializable
 
 		if (conn != null)
 		{
-			Statement stmt = conn.createStatement();
-
-			query = "SELECT id FROM folders where folder='$FOLDER'";
-			query = query.replaceAll("\\$FOLDER", folder);
-			ResultSet rs = stmt.executeQuery(query);
-
-			if (!rs.next())
+			try
 			{
-				if (!doInc)
+				Statement stmt = conn.createStatement();
+
+				query = "SELECT id FROM folders where folder='$FOLDER'";
+				query = query.replaceAll("\\$FOLDER", folder);
+				ResultSet rs = stmt.executeQuery(query);
+
+				if (!rs.next())
 				{
-					conn.close();
-					return 0;
+					// even with doInc = false create the folder in the database
+					
+					query = "INSERT INTO folders (folder) VALUES ('$FOLDER')";
+					query = query.replaceAll("\\$FOLDER", folder);
+					stmt.executeUpdate(query);
 				}
-				query = "INSERT INTO folders (folder) VALUES ('$FOLDER')";
+
+				if (doInc)
+				{
+					query = "UPDATE folders SET hits = hits + 1 where folder='$FOLDER'";
+					query = query.replaceAll("\\$FOLDER", folder);
+					stmt.executeUpdate(query);
+				}
+
+				query = "SELECT hits FROM folders where folder='$FOLDER'";
 				query = query.replaceAll("\\$FOLDER", folder);
-				stmt.executeUpdate(query);
-			}
+				rs = stmt.executeQuery(query);
 
-			if (doInc)
+				if (rs.next())
+				{
+					counter = rs.getInt(1);
+				}
+			}
+			finally
 			{
-				query = "UPDATE folders SET hits = hits + 1 where folder='$FOLDER'";
-				query = query.replaceAll("\\$FOLDER", folder);
-				stmt.executeUpdate(query);
+				conn.close();
 			}
-
-			query = "SELECT hits FROM folders where folder='$FOLDER'";
-			query = query.replaceAll("\\$FOLDER", folder);
-			rs = stmt.executeQuery(query);
-
-			if (rs.next())
-			{
-				counter = rs.getInt(1);
-			}
-			conn.close();
 		}
 
 		return counter;
@@ -100,59 +103,62 @@ public class DBManager implements Serializable
 
 		if (conn != null)
 		{
-			Statement stmt = conn.createStatement();
-
-			query = "SELECT id FROM folders f where folder='$FOLDER'";
-			query = query.replaceAll("\\$FOLDER", folder);
-			ResultSet rs = stmt.executeQuery(query);
-
-			if (rs.next())
+			try
 			{
-				id = rs.getInt(1);
+				Statement stmt = conn.createStatement();
 
-			}
+				query = "SELECT id FROM folders f where folder='$FOLDER'";
+				query = query.replaceAll("\\$FOLDER", folder);
+				ResultSet rs = stmt.executeQuery(query);
 
-			String fid = Integer.toString(id);
-
-			query = "SELECT id FROM images WHERE folderid='$FID' and image='$IMAGE'";
-			query = query.replaceAll("\\$FID", fid);
-			query = query.replaceAll("\\$IMAGE", image);
-
-			rs = stmt.executeQuery(query);
-
-			// is image allready in table ?
-
-			if (!rs.next())
-			{
-				if (!doInc)
+				if (rs.next())
 				{
-					conn.close();
-					return 0;
+					id = rs.getInt(1);
+
 				}
-				query = "INSERT INTO images (folderid,image) VALUES ('$FID','$IMAGE')";
+
+				String fid = Integer.toString(id);
+
+				query = "SELECT id FROM images WHERE folderid='$FID' and image='$IMAGE'";
 				query = query.replaceAll("\\$FID", fid);
 				query = query.replaceAll("\\$IMAGE", image);
-				stmt.executeUpdate(query);
-			}
 
-			if (doInc)
-			{
-				query = "UPDATE images SET hits = hits + 1 where folderid='$FID' and image='$IMAGE'";
+				rs = stmt.executeQuery(query);
+
+				// is image allready in table ?
+
+				if (!rs.next())
+				{
+					// even with doInc = false create the folder in the database
+					
+					query = "INSERT INTO images (folderid,image) VALUES ('$FID','$IMAGE')";
+					query = query.replaceAll("\\$FID", fid);
+					query = query.replaceAll("\\$IMAGE", image);
+					stmt.executeUpdate(query);
+				}
+
+				if (doInc)
+				{
+					query = "UPDATE images SET hits = hits + 1 where folderid='$FID' and image='$IMAGE'";
+					query = query.replaceAll("\\$FID", fid);
+					query = query.replaceAll("\\$IMAGE", image);
+					stmt.executeUpdate(query);
+				}
+				
+				query = "SELECT hits FROM images where folderid='$FID' and image='$IMAGE'";
 				query = query.replaceAll("\\$FID", fid);
 				query = query.replaceAll("\\$IMAGE", image);
-				stmt.executeUpdate(query);
-			}
-			
-			query = "SELECT hits FROM images where folderid='$FID' and image='$IMAGE'";
-			query = query.replaceAll("\\$FID", fid);
-			query = query.replaceAll("\\$IMAGE", image);
-			rs = stmt.executeQuery(query);
+				rs = stmt.executeQuery(query);
 
-			if (rs.next())
-			{
-				counter = rs.getInt(1);
+				if (rs.next())
+				{
+					counter = rs.getInt(1);
+				}
 			}
-			conn.close();
+			finally
+			{
+				conn.close();
+			}
 		}
 
 		return counter;
