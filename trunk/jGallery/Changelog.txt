@@ -1,4 +1,7 @@
 
+Version 0.9.7, 2006-01-04
+- Fixed the bug, that with cookies off each image view would increment the folder's hit count. Did that by using URL rewriting.
+
 
 Version 0.9.6, 2005-11-02
 - the property that decides the sort criterion is now called sortCriterion

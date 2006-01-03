@@ -22,9 +22,20 @@
 
 <!-- Link to parent index, if any -->
 
-<c:if test="${!empty folder.parentIndexPage}"> 
-<a href="${folder.parentIndexPage}"><img src="${folder.resPath}/up.gif" border=0 alt="up"></a>
-</c:if>
+  <c:if test="${!empty folder.parentIndexPage}"> 
+         <c:if test="${!folder.parentIndexPage.outOfContext}"> 
+	      <a href="<c:url value='${folder.parentIndexPage.url}'/>"><img src="${folder.resPath}/up.gif" border=0 alt="up"></a>
+         </c:if> 
+  
+         <c:if test="${folder.parentIndexPage.outOfContext}"> 
+	      <a href="${folder.parentIndexPage.url}"><img src="${folder.resPath}/up.gif" border=0 alt="up"></a>
+         </c:if> 
+  </c:if>  
+
+
+
+
+
 
 <!-- Create navigation buttons if more than one index page -->
 <c:if test="${!empty folder.totalIndexes}"> 
@@ -33,7 +44,7 @@
 	
 	<c:choose> 
 		<c:when test="${!empty folder.previousIndexPage}">
-			<a href="${folder.previousIndexPage}"><img src="${folder.resPath}/previous.gif" alt="previous page>" border=0></a>
+			<a href="<c:url value='${folder.previousIndexPage}'/>"><img src="${folder.resPath}/previous.gif" alt="previous page>" border=0></a>
 		</c:when> 
 		<c:otherwise> 
 		<img src="${folder.resPath}/previous_disabled.gif" alt="at first page">
@@ -44,7 +55,7 @@
 	
 	<c:choose> 
 		<c:when test="${!empty folder.nextIndexPage}">
-			<a href="${folder.nextIndexPage}"><img src="${folder.resPath}/next.gif" alt="next page" border=0></a>
+			<a href="<c:url value='${folder.nextIndexPage}'/>"><img src="${folder.resPath}/next.gif" alt="next page" border=0></a>
 		</c:when> 
 		<c:otherwise>
 			<img src="${folder.resPath}/next_disabled.gif" alt="at last page">
@@ -67,7 +78,7 @@
 	<tr>
 	<c:forEach var="image" items="${row}">
 		<td width="${folder.maxThumbWidth}" valign="bottom">
-			<a href="${image.closeupPath}">
+			<a href="<c:url value='${image.closeupPath}'/>">
 				<c:choose> 
 				<c:when test="${!empty image.iconPath}">
 					<!-- No frames around icons like folders and movie files -->

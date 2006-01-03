@@ -21,7 +21,7 @@ ${folder.title}
    
 <c:forEach var="page" items="${folder.pageIndexes}">
 
-   <option ${page.selected} value="${page.page}">Page ${page.number}</option>
+   <option ${page.selected} value="<c:url value='${page.page}'/>">Page ${page.number}</option>
 
 </c:forEach>
    
@@ -32,13 +32,13 @@ ${folder.title}
 
 	<!-- Previous index -->
 	<c:if test="${!empty folder.previousIndexPage}">
-		<a href="${folder.previousIndexPage}">
+		<a href="<c:url value='${folder.previousIndexPage}'/>">
 		&lt;&lt; </a>
 	</c:if>
 
 	<!-- Next index -->
 	<c:if test="${!empty folder.nextIndexPage}">
-		<a href="${folder.nextIndexPage}">
+		<a href="<c:url value='${folder.nextIndexPage}'/>">
 		&gt;&gt;</a>
 	</c:if>
 </c:if>
@@ -57,7 +57,7 @@ ${folder.title}
 	
 		<td>
 	
-		<a href="${image.closeupPath}">
+		<a href="<c:url value='${image.closeupPath}'/>">
 			<img class="image" 
 				src="${image.thumbPath}" 
 				width="${image.thumbWidth}" 

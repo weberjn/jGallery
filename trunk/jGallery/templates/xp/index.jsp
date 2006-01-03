@@ -28,11 +28,19 @@ You are here:
 
 <c:forEach var="parent" items="${folder.parentFolderList}">
 
-<a href="${parent.url}">${parent.name}</a>
+  <c:if test="${!parent.outOfContext}"> 
+	<a href="<c:url value='${parent.url}'/>">${parent.name}</a> 
+  </c:if> 
+  
+  <c:if test="${parent.outOfContext}"> 
+	<a href="${parent.url}">${parent.name}</a> 
+  </c:if> 
 
-	           &gt;               
+&gt;               
 
 </c:forEach>
+
+
 
 ${folder.name}
 
@@ -54,17 +62,24 @@ ${folder.name}
     Showing ${folder.firstIndexImage}-${folder.lastIndexImage} of ${folder.totalImages} 
     
         <c:if test="${!empty folder.previousIndexPage}"> 
-    	<a href="${folder.previousIndexPage}">Previous</a> |  
+    	<a href="<c:url value='${folder.previousIndexPage}'/>">Previous</a> |  
   </c:if> 
 
+ 
     
-    <c:if test="${!empty folder.parentIndexPage}"> 
-    	<a href="${folder.parentIndexPage}">Up</a>  
+  <c:if test="${!empty folder.parentIndexPage}"> 
+         <c:if test="${!folder.parentIndexPage.outOfContext}"> 
+	      <a href="<c:url value='${folder.parentIndexPage.url}'/>">Up</a>
+         </c:if> 
+  
+         <c:if test="${folder.parentIndexPage.outOfContext}"> 
+	      <a href="${folder.parentIndexPage.url}">Up</a>
+         </c:if> 
   </c:if>  
-    
+  
 
 <c:if test="${!empty folder.nextIndexPage}"> 
-    	| <a href="${folder.nextIndexPage}">Next</a> 
+    	| <a href="<c:url value='${folder.nextIndexPage}'/>">Next</a> 
   </c:if> 
 
   
@@ -88,10 +103,10 @@ ${folder.name}
         
         <table><tr><td>
 		<c:if test="${image.representsSubdirectory}">
-			<a href="${image.closeupPath}">${image.name}</a>
+			<a href="<c:url value='${image.closeupPath}'/>">${image.name}</a>
 		</c:if> 
 
-          	<a href="${image.closeupPath}">
+          	<a href="<c:url value='${image.closeupPath}'/>">
 			<c:choose> 
 				<c:when test="${image.iconPath}">
 					<img class="sgPreviewThumb"

@@ -106,7 +106,7 @@ public class Folder implements Serializable
 
 	protected String jgalleryContextPath;
 
-	private String parentIndexPage;
+	private ParentLink parentIndexPage;
 
 	private String parentlink;
 
@@ -170,6 +170,8 @@ public class Folder implements Serializable
 	private DBManager dBManager;
 
 	private ServletContext appContext;
+
+	private boolean firstIndexPageWasDisplayed = false;
 
 	public Folder(File directory, ServletContext appContext,
 			Configuration configuration, ConfigData configData,
@@ -618,8 +620,8 @@ public class Folder implements Serializable
 		{
 			for (int i = 0; i < totalIndexes; i++)
 			{
-				String page = getCalculatedIndexPage(i);
-				String number = Integer.toString(i);
+				String page = getCalculatedIndexPage(i+1);
+				String number = Integer.toString(i+1);
 				String selected = getIndexNum().equals(number)
 						? "selected"
 						: "";
@@ -715,7 +717,7 @@ public class Folder implements Serializable
 
 	public String getHTMLBase()
 	{
-		return jgalleryContextPath + folderPath;
+		return folderPath;
 	}
 
 	public String toString()
@@ -1034,7 +1036,7 @@ public class Folder implements Serializable
 	/**
 	 * @return Filename of parent index page
 	 */
-	public String getParentIndexPage()
+	public ParentLink getParentIndexPage()
 	{
 		return parentIndexPage;
 	}
@@ -1259,7 +1261,10 @@ public class Folder implements Serializable
 
 				currentCols = Math.min(r, cols);
 			}
-
+			if (indexNum == 1)
+			{
+				firstIndexPageWasDisplayed = true;
+			}
 			n = INDEX;
 		}
 		else
@@ -1299,7 +1304,10 @@ public class Folder implements Serializable
 
 			parentFolderList = new ArrayList();
 
-			String hTMLBase = jgalleryContextPath;
+//			String hTMLBase = jgalleryContextPath;
+			
+			String hTMLBase = "";
+			
 			String parentlink = null;
 
 			boolean skipReadImages = false;
@@ -1320,12 +1328,15 @@ public class Folder implements Serializable
 					sb.append('/');
 					parentlink = null;
 
+					boolean isOutOfContext = false;
+					
 					if (i == 1)
 					{
 						s = configuration.getString("parentlink." + parts[1]);
 						if (s != null)
 						{
 							parentlink = s;
+							isOutOfContext = true;
 						}
 
 						if ((s != null) && (parts.length == 2))
@@ -1349,12 +1360,12 @@ public class Folder implements Serializable
 					}
 
 
-					parentFolderList.add(new ParentLink(parts[i], currentParent
-							.toString()));
+					parentFolderList.add(parentIndexPage = new ParentLink(parts[i], currentParent
+							.toString(),isOutOfContext));
 
 				}
 
-				parentIndexPage = currentParent.toString();
+//				parentIndexPage = currentParent.toString();
 			}
 			if (skipReadImages)
 			{
@@ -1418,11 +1429,22 @@ public class Folder implements Serializable
 		private String name;
 
 		private String url;
+		
+		private boolean isOutOfContext;
+
+		public ParentLink(String name, String url, boolean isOutOfContext)
+		{
+			// TODO Auto-generated constructor stub
+			this.name = name;
+			this.url = url;
+			this.isOutOfContext = isOutOfContext;
+		}
 
 		private ParentLink(String name, String url)
 		{
 			this.name = name;
 			this.url = url;
+			this.isOutOfContext = false;
 		}
 
 		public String getName()
@@ -1433,6 +1455,11 @@ public class Folder implements Serializable
 		public String getUrl()
 		{
 			return url;
+		}
+
+		public boolean getOutOfContext()
+		{
+			return isOutOfContext;
 		}
 	}
 
@@ -1463,7 +1490,7 @@ public class Folder implements Serializable
 					.append(s1[0]).append('/');
 		}
 
-		parentFolderList.add(new ParentLink("index", getParentIndexPage()));
+		parentFolderList.add(new ParentLink("index", getParentIndexPage().getUrl()));
 
 		for (int i = 1; i < s1.length - 1; i++)
 		{
@@ -1576,10 +1603,16 @@ public class Folder implements Serializable
 
 			if (null != dBManager)
 			{
+				// increment counter only once per Session
+				// and only if the index Page was already shown in this session
+				// (to prevent folder counting on image viewing with cookies off)
+				
+				boolean doIncrement = firstIndexPageWasDisplayed & this.configData.doCount;
+			
 				try
 				{
 					folderCounter = dBManager.getAndIncFolderCounter(
-							folderPath, this.configData.doCount);
+							folderPath, doIncrement);
 				}
 				catch (SQLException e)
 				{
