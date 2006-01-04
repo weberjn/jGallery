@@ -54,7 +54,7 @@ public class StatisticsController extends HttpServlet
 
 	public void init() throws ServletException
 	{
-		String dataSource = (String) getServletContext().getInitParameter(
+		String dataSource = getServletContext().getInitParameter(
 				"dataSource");
 
 		Context context;
