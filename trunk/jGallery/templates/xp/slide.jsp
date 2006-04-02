@@ -16,7 +16,7 @@
  </head>
 
 
-<body>
+<body> 
 
 
 <div id="crumb">
@@ -125,19 +125,10 @@ ${image.name}
 
 <div class="centertext">
   <!-- Always display comment below image (if exists) -->
-<c:choose> 
-	<c:when test="${!empty image.comment}">
+	<c:if test="${!empty image.comment}">
 	<br>
 	<div class="name">${image.comment}</div>
-</c:when> 
-	<c:otherwise>
-	<!-- Try to extract the comment from a file carrying the same base name as this image -->
-	<br>
-	<div class="name">
-		<jsp:include page="${image.label}.txt" />
-	</div>
-</c:otherwise>
-</c:choose>
+	</c:if> 
 </div>
 
   <c:if test="${!empty image.exif.flash}"> 
