@@ -1,3 +1,8 @@
+2006-04-02
+- removed unused include of <imagename>.txt (comments are done by captions.txt)
+
+Version 0.9.7a, 2006-02-27
+- updated to metadata-extractor-2.3.1.jar
 
 Version 0.9.7, 2006-01-04
 - Fixed the bug, that with cookies off each image view would increment the folder's hit count. Did that by using URL rewriting.
