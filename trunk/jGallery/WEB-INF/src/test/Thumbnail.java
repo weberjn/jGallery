@@ -64,7 +64,7 @@ public class Thumbnail
         JPEGEncodeParam param = encoder.getDefaultJPEGEncodeParam(thumbImage);
         int quality = Integer.parseInt(args[4]);
         quality = Math.max(0, Math.min(quality, 100));
-        param.setQuality((float) quality / 100.0f, false);
+        param.setQuality(quality / 100.0f, false);
         encoder.setJPEGEncodeParam(param);
         encoder.encode(thumbImage);
         System.out.println("Done.");

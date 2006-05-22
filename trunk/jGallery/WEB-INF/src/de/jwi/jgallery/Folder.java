@@ -523,9 +523,11 @@ public class Folder implements Serializable
 					}
 				}
 				// get a subfolder representation
+				// the the Image constructor closes all used file handles
 				image = new Image(subDirectories[n - 1], true, this,
 						makeImageAccessor(subDirectories[n - 1]), thumbNailInfo);
 
+				
 				imagesArray[n - 1] = image;
 			}
 		}

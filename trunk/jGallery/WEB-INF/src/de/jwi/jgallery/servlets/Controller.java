@@ -29,7 +29,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Enumeration;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
@@ -66,8 +65,6 @@ public class Controller extends HttpServlet
 	private static String version = "unknown";
 
 	private static String urlExtention;
-
-	private static final String FOLDERS = "folders";
 
 	private static final String CONFIGFILE = "jGallery.properties";
 
@@ -176,25 +173,25 @@ public class Controller extends HttpServlet
 			}
 		}
 
-		
+
 		// Parameters from the config file in WEB-INF can be overridden from parameters 
 		// in the context configuration
-		
+
 		Configuration configurationFromContext = null;
 		Enumeration en = context.getInitParameterNames();
 		while (en.hasMoreElements())
 		{
 			if (configurationFromContext == null)
 			{
-				configuration = configurationFromContext = new Configuration(configuration);
+				configuration = configurationFromContext = new Configuration(
+						configuration);
 			}
-			s = (String)en.nextElement();
+			s = (String) en.nextElement();
 			String s1 = context.getInitParameter(s);
-			configurationFromContext.addProperty(s,s1);
+			configurationFromContext.addProperty(s, s1);
 		}
-		
-		
-		
+
+
 		is = context.getResourceAsStream("/WEB-INF/" + WEBDIRSFILE);
 
 		if (null != is)
@@ -228,10 +225,10 @@ public class Controller extends HttpServlet
 			}
 		}
 
-
+		String versioncfg = "/WEB-INF/" + VERSIONCONFIGFILE;
 		try
 		{
-			is = context.getResourceAsStream("/WEB-INF/" + VERSIONCONFIGFILE);
+			is = context.getResourceAsStream(versioncfg);
 
 			Properties versionProperties = new Properties();
 			versionProperties.load(is);
@@ -244,7 +241,7 @@ public class Controller extends HttpServlet
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace(System.err); // TODO
+			throw new ServletException(versioncfg + " not found");
 		}
 
 		if (is != null)
@@ -266,26 +263,29 @@ public class Controller extends HttpServlet
 		return version;
 	}
 
+
+	private void rememberFolder(HttpSession session, Folder folder,
+			String folderPath)
+	{
+		session.setAttribute("lastFolder", folder);
+		session.setAttribute("lastFolderPath", folderPath);
+	}
+
 	private Folder getFolder(HttpSession session, String folderPath)
 	{
-		Hashtable folders = getFolders(session);
+		Folder f = null;
 
-		Folder folder = (Folder) folders.get(folderPath);
+		String lastFolderPath = (String) session.getAttribute("lastFolderPath");
+		Folder lastFolder = (Folder) session.getAttribute("lastFolder");
 
-		return folder;
-	}
-
-	private Hashtable getFolders(HttpSession session)
-	{
-		Hashtable folders = (Hashtable) session.getAttribute(FOLDERS);
-
-		if (null == folders)
+		if ((lastFolder != null) && folderPath.equals(lastFolderPath))
 		{
-			folders = new Hashtable();
-			session.setAttribute(FOLDERS, folders);
+			f = lastFolder;
 		}
-		return folders;
+
+		return f;
 	}
+
 
 	private Folder createFolder(HttpSession session, String folderPath,
 			String imagePath, String folderRealPath,
@@ -355,10 +355,6 @@ public class Controller extends HttpServlet
 				configData, jgalleryContextPath, folderPath, imagePath,
 				dBManager);
 
-		Hashtable folders = getFolders(session);
-
-		folders.put(folderPath, folder);
-
 		return folder;
 	}
 
@@ -425,14 +421,10 @@ public class Controller extends HttpServlet
 		folder = new WebFolder(baseURL, getServletContext(), configuration,
 				configData, remoteKey, jgalleryContextPath, folderPath, wis);
 
-		Hashtable folders = getFolders(session);
-
-		folders.put(folderPath, folder);
-
 		return folder;
 	}
 
-	
+
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException
 	{
@@ -471,8 +463,10 @@ public class Controller extends HttpServlet
 		String folderRealPath = null;
 
 		String forward = null;
+		
+		HttpSession session = request.getSession();
 
-		Folder folder = getFolder(request.getSession(), folderPath);
+		Folder folder = getFolder(session, folderPath);
 
 		try
 		{
@@ -499,10 +493,12 @@ public class Controller extends HttpServlet
 					imagePath = contextPath + folderPath;
 				}
 
-				folder = createFolder(request.getSession(), folderPath,
+				folder = createFolder(session, folderPath,
 						imagePath, folderRealPath, contextPath, doCount);
 
 				folder.loadFolder();
+				
+				rememberFolder(session, folder,folderPath);
 			}
 			int n = folder.setFileName(imageName);
 
