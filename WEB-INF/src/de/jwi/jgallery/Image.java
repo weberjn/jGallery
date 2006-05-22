@@ -167,6 +167,20 @@ public class Image implements Serializable
 			{
 				exif = null;
 			}
+			finally
+			{
+				if (imageInputStream != null)
+				{
+					try
+					{
+						imageInputStream.close();
+					}
+					catch (IOException e)
+					{
+						// NOP
+					}
+				}
+			}
 		}
 
 	}
