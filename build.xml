@@ -25,6 +25,10 @@
   
  
   <target name="init">
+  	
+  	<echo message="java.home = ${java.home}"/>
+  	<echo message="java.version = ${java.version}"/>  	
+  	
     <mkdir dir="${build}"/>
     <mkdir dir="${dist}"/>
     
@@ -33,24 +37,29 @@
 
   <target name="clean">
     <delete dir="${build}"/>
-    <delete dir="${dist}/"/>
   </target>
 
  
   <target name="compile" depends="init">
-    <javac destdir="${build}" debug="true">
+    <javac destdir="${build}" debug="true" source="1.4" target="1.4">
     	 <src path="${src}"/>
 	    <classpath refid="project.class.path"/>
     </javac>
   </target>
   
+   <target name="jar" depends="compile">
+	      <jar jarfile="${lib}/${ant.project.name}.jar">
+	         <fileset dir="${build}" includes="**/*.class" excludes="**/test/**"/>
+	      </jar>
+	  </target>	
+	
       
-    <target name="dist" depends="compile">
+    <target name="dist" depends="jar">
 
     <zip destfile="${dist}/${ant.project.name}-${version}.zip">
 	    <zipfileset  prefix="${ant.project.name}" 
 	    dir="." includes="WEB-INF/**"
-	    excludes="jGallery.properties,web.xml,WEB-INF/classes/test/**"/>
+	    excludes="jGallery.properties,web.xml,WEB-INF/classes/**"/>
 	    <zipfileset prefix="${ant.project.name}"
 	    dir="." includes="templates/Spartan/**,templates/Standard/**"/>
 	    <zipfileset prefix="${ant.project.name}"
@@ -58,7 +67,9 @@
 	    <zipfileset prefix="${ant.project.name}"
 	    dir="." includes="build.xml,build.properties,jGallery.xml,jgallery.sql, jGallery.htm,contact.htm,*.css"/>
 	    <zipfileset prefix="${ant.project.name}"
-	    dir="." includes="contrib/**"/>
+	    	dir="." includes="security/**"/>
+		<zipfileset prefix="${ant.project.name}"	    	
+	        dir="." includes="contrib/**"/>
 	    <zipfileset prefix="${ant.project.name}"
 	    dir="." includes="COPYING,readme.txt,converted-templates.txt,Changelog.txt"/>
     </zip>
@@ -73,4 +84,30 @@
     </javadoc>
   </target>
   
+	 <target name="war" depends="compile">
+	 	
+	 	<war destfile="${dist}/${ant.project.name}.war" 
+	 		webxml="WEB-INF/web.xml">
+
+	 		<fileset dir=".">
+	 		    <include name="contact.htm"/>
+	 		    <include name="jGallery.htm"/>
+	 		    <include name="statistics.css"/>
+	 		    <include name="style.css"/>
+	 		  </fileset>
+	 		<zipfileset dir="WEB-INF" 
+		 		              prefix="WEB-INF">
+	 			<exclude name="web.xml"/>
+	 			</zipfileset>
+	 			<zipfileset dir="META-INF" prefix="META-INF"/>	 		
+ 		<zipfileset dir="images" 
+	 		              prefix="images"/>
+ 		<zipfileset dir="security" 
+		 		              prefix="security"/>
+	 		<zipfileset dir="templates" 
+			 		              prefix="templates"/>
+
+	 	</war>
+	  </target>
+	
 </project>
