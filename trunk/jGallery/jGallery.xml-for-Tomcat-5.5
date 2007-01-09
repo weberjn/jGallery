@@ -1,0 +1,20 @@
+<!--
+
+    Context configuration file for the JGallery Web App
+
+-->
+
+
+<Context path="/jGallery" docBase="D:/eclipse/workspace/jGallery"
+        crossContext="true" debug="9" >
+
+
+  <Parameter name="useDataBase" value="false" override="true"/>
+	
+	
+  <Resource name="jdbc/jGallery" auth="Container" type="javax.sql.DataSource"
+               maxActive="100" maxIdle="30" maxWait="10000"
+               username="jgallery" password="jgallery" driverClassName="com.mysql.jdbc.Driver"
+               url="jdbc:mysql://localhost:3306/jgallery?autoReconnect=true"/>
+	
+</Context>

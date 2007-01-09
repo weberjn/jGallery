@@ -23,7 +23,7 @@
     
     <context-param>
     	<param-name>dataSource</param-name>
-	<param-value>java:comp/env/jdbc/MySQL</param-value>
+	<param-value>java:comp/env/jdbc/jGallery</param-value>
     </context-param>
 
         <context-param>
@@ -34,7 +34,7 @@
     <context-param>
 	<description>separate with commas</description>
     	<param-name>dirmappings</param-name>
-	<param-value>galleries=D:/home/galleries,holiday=D:/holiday</param-value>
+	<param-value>galleries=D:/Apache/htdocs/galleries</param-value>
     </context-param>
     
     <servlet>

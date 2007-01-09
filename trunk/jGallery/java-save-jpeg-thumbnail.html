@@ -1,0 +1,219 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head><script>function PrivoxyWindowOpen(){return(null);}</script><title>Thumbnail.java - Load an image, scale it to thumbnail size and save it as JPEG</title>
+
+<link href="java-save-jpeg-thumbnail_files/style.css" type="text/css" rel="stylesheet">
+<link rel="Start" href="http://www.geocities.com/marcoschmidt.geo/index.html">
+<link rel="Up" href="http://www.geocities.com/marcoschmidt.geo/java-image-file-code-examples.html">
+<link rel="index" href="http://www.geocities.com/marcoschmidt.geo/java-image-file-code-examples.html" title="Java source code examples for handling image files">
+<link rel="First" href="http://www.geocities.com/marcoschmidt.geo/java-load-image-toolkit.html">
+<link rel="Prev" href="http://www.geocities.com/marcoschmidt.geo/java-load-image-toolkit.html">
+<link rel="Next" href="http://www.geocities.com/marcoschmidt.geo/java-save-screenshot.html">
+<link rel="Last" href="http://www.geocities.com/marcoschmidt.geo/java-highlight.html">
+
+
+<meta http-equiv="content-type" content="text/html;CHARSET=iso-8859-1">
+<meta name="description" content="A small commented Java program that creates a JPEG thumbnail file." lang="en">
+<meta name="keywords" content="Java,image,load,Toolkit,display,window" lang="en">
+<meta name="author" content="Marco Schmidt">
+<meta name="DC.Date" content="2004-02-03">
+<meta name="DC.Type" content="text/html">
+<meta name="DC.Language" content="en">
+<meta name="DC.Relation" content="http://www.geocities.com/marcoschmidt.geo/"></head>
+
+
+<body lang="en">
+
+<p class="menu">
+<a href="http://www.geocities.com/marcoschmidt.geo/index.html">Main page</a> &gt; 
+<a href="http://www.geocities.com/marcoschmidt.geo/java.html">Java</a> &gt;
+<a href="http://www.geocities.com/marcoschmidt.geo/java-code-examples.html">Code examples</a> &gt;
+<a href="http://www.geocities.com/marcoschmidt.geo/java-image-file-code-examples.html">Imaging</a>
+</p>
+
+<h1>Thumbnail.java - Load an image, scale it to thumbnail size and save it as JPEG</h1>
+
+<p>
+This programm loads an image via <code>java.awt.Toolkit</code>,
+scales it down to a user-defined resolution and saves it as a <a href="http://www.geocities.com/marcoschmidt.geo/jpeg-image-file-format.html">JPEG</a> file.
+The first part, the loading of the original image, is done the same way
+as in <a href="http://www.geocities.com/marcoschmidt.geo/java-load-image-toolkit.html">Viewer</a>.
+So if you don't know yet how loading images with <code>Toolkit</code> works
+you might want to study that program first.
+</p>
+
+<p>
+Different from <em>Viewer</em>, this program (Thumbnail) works on the command line.
+So you won't get any windows or other graphical user interface components.
+The only visual feedback is the word <code>Done.</code> after the program
+successfully terminated.
+</p>
+
+<p>
+To use this program do the following:
+</p>
+
+<ul>
+<li>Save the <a href="#source">program's source code</a> as <code>Thumbnail.java</code> (regard case).
+  You can also get all demo programs from these example pages from 
+  <a href="http://www.geocities.com/marcoschmidt.geo/java-image-file-code-examples.html#download">the 
+  download section</a> of the Java image file code examples main page.</li>
+<li>Open a shell (prompt), go to the directory where <code>Thumbnail.java</code> is and compile it:
+ <pre>javac Thumbnail.java</pre>
+ You should now have a new class file <code>Thumbnail.class</code>.</li>
+<li>Run the program with five parameters for image file, thumbnail file, 
+ thumbnail width and thumbnail height and quality (a value from 0 to 100, 100 being the best
+ and 0 the worst quality), e.g.:
+ <pre>java Thumbnail c:\image.jpg c:\thumbnail.jpg 120 80 75</pre>
+ The file <code>image.jpg</code> must exist already, <code>thumbnail.jpg</code> will be created (and any
+ existing file of that name overwritten).</li>
+</ul>
+
+<p>
+You will need Java 1.2 or higher to successfully run this program.
+The <code>com.sun.image.codec.jpeg</code> package that will be used for saving the thumbnail is 
+not available with all Java development kits, but as long as you are using a Sun JDK, it should be present.
+</p>
+<p>
+With Java 1.4 a new way of writing JPEG files was introduced, the image I/O library in
+the package <code>javax.imageio</code>.
+See <a href="http://www.geocities.com/marcoschmidt.geo/java-save-screenshot.html">the Screenshot.java example program</a>.
+It saves as PNG, but all you have to do is change the second argument of <code>ImageIO.write</code>
+from <code>png</code> to <code>jpg</code>.
+</p>
+
+<h2>Explanation</h2>
+
+<p>
+Now let's see how this program works.
+First, it is checked that we have exactly five arguments.
+If this is not the case, an error message is printed to output and the program terminates.
+</p>
+<p>
+Next, the input image is loaded via <code>Toolkit</code> and
+<code>MediaTracker</code> just as it was done in <a href="http://www.geocities.com/marcoschmidt.geo/java-load-image-toolkit.html">Viewer</a>.
+</p>
+<p>
+The third and fourth program argument contain the maximum size of the thumbnail to be created.
+The <em>actual</em> size of the thumbnail will be computed from that maximum size and the actual size of the image (all sizes
+are given as pixels).
+The code that does this is not really very readable, and also not essential to loading and saving image files.
+But it is necessary to create a thumbnail that is scaled correctly.
+</p>
+<p>
+As an example, if the two arguments for the maximum thumbnail size are both <code>100</code> and
+the image that was loaded is <code>400</code> times <code>200</code> pixels large, we want
+the thumbnail to be <code>100</code> times <code>50</code> pixels large, not <code>100</code>
+times <code>100</code>, because the original image is twice as wide as it is high.
+A <code>100</code> times <code>100</code> pixel thumbnail would contain a very skewed version
+of the original image.
+</p>
+
+<p>
+Now that we have determined the size of the thumbnail we create a <code>BufferedImage</code>
+of that size, named <code>thumbImage</code>.
+We ask for a <code>Graphics2D</code> object for that new thumbnail image and call its
+<code>drawImage</code> method to draw the original image on that new image.
+The call to <code>drawImage</code> does the actual scaling.
+The rendering hints for bilinear interpolation can be left out if quality
+is not that necessary and speed more important.
+For nicer results (at least in some cases) try <code>RenderingHints.VALUE_INTERPOLATION_BICUBIC</code>
+instead of <code>RenderingHints.VALUE_INTERPOLATION_BILINEAR</code>.
+</p>
+
+<p>
+In order to save the scaled-down image to a JPEG file, we create a buffered <code>FileOutputStream</code>
+with the second argument as name and initialize the necessary objects from the
+<code>com.sun.image.codec.jpeg</code> package.
+The quality argument from the command line is converted from the interval <code>0</code>
+to <code>100</code> to the interval <code>0.0f</code> to <code>1.0f</code>, because
+that's what the codec expects
+(I mostly use <code>0.75f</code>).
+The higher that quality number is, the better the resulting thumbnail image quality, 
+but also the larger the resulting file.
+</p>
+
+<p>
+The call to <code>System.exit(0);</code> is unfortunately necessary for some
+Java runtime environments (because of a bug that keeps the AWT thread from terminating).
+</p>
+
+<h2><a name="source">Source code of Thumbnail.java</a></h2>
+
+<pre>/*
+ * Thumbnail.java (requires Java 1.2+)
+ */
+
+import com.sun.image.codec.jpeg.*;
+import java.awt.*;
+import java.awt.image.*;
+import java.io.*;
+
+public class Thumbnail {
+  public static void main(String[] args) throws Exception {
+    if (args.length != 5) {
+      System.err.println("Usage: java Thumbnail INFILE " +
+        "OUTFILE WIDTH HEIGHT QUALITY");
+      System.exit(1);
+    }
+    // load image from INFILE
+    Image image = Toolkit.getDefaultToolkit().getImage(args[0]);
+    MediaTracker mediaTracker = new MediaTracker(new Container());
+    mediaTracker.addImage(image, 0);
+    mediaTracker.waitForID(0);
+    // determine thumbnail size from WIDTH and HEIGHT
+    int thumbWidth = Integer.parseInt(args[2]);
+    int thumbHeight = Integer.parseInt(args[3]);
+    double thumbRatio = (double)thumbWidth / (double)thumbHeight;
+    int imageWidth = image.getWidth(null);
+    int imageHeight = image.getHeight(null);
+    double imageRatio = (double)imageWidth / (double)imageHeight;
+    if (thumbRatio &lt; imageRatio) {
+      thumbHeight = (int)(thumbWidth / imageRatio);
+    } else {
+      thumbWidth = (int)(thumbHeight * imageRatio);
+    }
+    // draw original image to thumbnail image object and
+    // scale it to the new size on-the-fly
+    BufferedImage thumbImage = new BufferedImage(thumbWidth, 
+      thumbHeight, BufferedImage.TYPE_INT_RGB);
+    Graphics2D graphics2D = thumbImage.createGraphics();
+    graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+      RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+    graphics2D.drawImage(image, 0, 0, thumbWidth, thumbHeight, null);
+    // save thumbnail image to OUTFILE
+    BufferedOutputStream out = new BufferedOutputStream(new
+      FileOutputStream(args[1]));
+    JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
+    JPEGEncodeParam param = encoder.
+      getDefaultJPEGEncodeParam(thumbImage);
+    int quality = Integer.parseInt(args[4]);
+    quality = Math.max(0, Math.min(quality, 100));
+    param.setQuality((float)quality / 100.0f, false);
+    encoder.setJPEGEncodeParam(param);
+    encoder.encode(thumbImage);
+    System.out.println("Done.");
+    System.exit(0);
+  }
+}
+</pre>
+
+<p class="lastmod">Last modification 2004-02-03</p>
+
+<p class="copyright">Copyright © 2002, 2003, 2004 <a href="http://www.geocities.com/marcoschmidt.geo/contact.html">Marco Schmidt</a></p>
+
+
+<script language="javascript">
+<!--
+var awdoc=document.location.href;
+if (awdoc.match(/^http/i)!=null) {
+document.write('<scr' + 'ipt language="javascript" src="http://jiu.sourceforge.net/cgi-bin/pslogger.pl?loc='+escape(document.location)+'&ref='+escape("Not Your Business!"));
+if(document.all) { document.write('&size='+document.fileSize); }
+document.write('"></scr' + 'ipt>'); }
+-->
+</script><script language="javascript" src="java-save-jpeg-thumbnail_files/pslogger.txt"></script>
+
+<script>function PrivoxyWindowOpen(a, b, c){return(window.open(a, b, c));}</script><!-- text below generated by server. PLEASE REMOVE -->
+<script language="JavaScript">var PUpage="76001067"; var PUprop="geocities"; </script><script language="JavaScript" src="java-save-jpeg-thumbnail_files/pu5geo.htm"></script><script language="JavaScript" src="java-save-jpeg-thumbnail_files/ygNSLib9.htm"></script><script language="JavaScript">yvSM=0;yvVP=0;var yvnContents='http://us.toto.geo.yahoo.com/toto?s=76001067&l=NE&b=0&t=1090777509';yvnR='us';yfnEA(0);</script><script language="JavaScript" src="java-save-jpeg-thumbnail_files/mc.js"></script><script language="JavaScript" src="java-save-jpeg-thumbnail_files/geov2.js"></script><script language="javascript">geovisit();</script><img src="java-save-jpeg-thumbnail_files/visit.gif" border="0">
+<noscript></noscript>
+
+</body></html>

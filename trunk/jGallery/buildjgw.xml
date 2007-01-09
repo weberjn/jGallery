@@ -1,0 +1,28 @@
+<project name="jGallery_home" default="build_home" basedir=".">
+
+	
+	 <property name="dist" value="dist"/>
+	
+  <target name="build_home">
+  	
+  	<ant antfile="build.xml" target="war">
+  	  <property name="webxml" value="dontDistribute/home/web.xml"/>
+  	  <property name="metainf" value="dontDistribute/home"/>
+  	</ant>
+    
+  </target>
+
+	 <target name="build_wabble">
+	  	
+	  	<ant antfile="build.xml" target="war">
+	  	  <property name="webxml" value="../webersoft/wabble.net/web.xml"/>
+	  	  <property name="contextxml" value="../webersoft/wabble.net/web.xml"/>
+	  		
+	  		
+	  	</ant>
+	    
+	  </target>	
+	
+	
+	
+</project>
