@@ -7,6 +7,9 @@
   <property name="webapp" value="${ant.project.name}"/>
   <property name="apidoc" value="apidoc"/>
   <property name="webinf" value="WEB-INF"/>
+  <property name="webxml" value="${webinf}/web.xml"/>
+   <property name="metainf" value="META-INF"/>
+	
   <property name="lib" value="WEB-INF/lib"/>
   <property name="build" value="WEB-INF/classes"/>
   <property name="src" value="WEB-INF/src"/>
@@ -27,7 +30,10 @@
   <target name="init">
   	
   	<echo message="java.home = ${java.home}"/>
-  	<echo message="java.version = ${java.version}"/>  	
+  	<echo message="java.version = ${java.version}"/>
+  	
+  	<echo message="web.xml = ${webxml}"/>
+  	<echo message="metainf = ${metainf}"/>  	
   	
     <mkdir dir="${build}"/>
     <mkdir dir="${dist}"/>
@@ -87,7 +93,7 @@
 	 <target name="war" depends="compile">
 	 	
 	 	<war destfile="${dist}/${ant.project.name}.war" 
-	 		webxml="WEB-INF/web.xml">
+	 		webxml="${webxml}">
 
 	 		<fileset dir=".">
 	 		    <include name="contact.htm"/>
@@ -99,7 +105,9 @@
 		 		              prefix="WEB-INF">
 	 			<exclude name="web.xml"/>
 	 			</zipfileset>
-	 			<zipfileset dir="META-INF" prefix="META-INF"/>	 		
+	 			<zipfileset dir="${metainf}" prefix="META-INF">
+	 				<include name="context.xml"/>
+	 			</zipfileset>
  		<zipfileset dir="images" 
 	 		              prefix="images"/>
  		<zipfileset dir="security" 

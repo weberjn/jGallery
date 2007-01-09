@@ -1,3 +1,6 @@
+Version 0.9.7d, 2007-01-09
+- fixed bug in DBManager, IDs were used as Strings
+
 Version 0.9.7c, 2006-11-01
 - fixed bug in managing subfolders
 

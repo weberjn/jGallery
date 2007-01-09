@@ -1,0 +1,28 @@
+http://www.jalbum.net/forum/thread.jspa?threadID=2784
+
+ jGallery web application
+Posted: 02-Jun-2004 23:59 	
+	  		Reply
+
+Hello everyone
+
+I'd like to present my jGallery web application, GPL license.
+
+http://jgallery.dev.java.net/
+
+(the download is hidden in the "Documents & files" menu)
+
+jGallery is inspired by JAlbum, but contrary to JAlbum it generates web pages on the fly. That means, whereas JAlbum works offline and generates web pages beforehand, jGallery is a J2EE web application that runs under Tomcat 5. So jGallery works like the zillions of PHP galleries.
+
+jGallery was written with the aim of using JAlbum's skins.
+
+A jGallery skin consists of JSP 2.0 files and uses JSP 2.0 syntax (which is different to JAlbum's). In order to make porting JAlbum skins as easy as possible, jGallery uses variables of same name and semantic as JAlbum, but variables can only be referenced from an object. jGallery calls pages with the current Folder and Image object bound to the request. For example, instead of JAlbum's $indexNum use ${folder.indexNum} in JSP 2.0 EL syntax, for the thumbWidth image information use ${image .thumbWidth}. Exif information is in an Exif object referenced from the image (e.g. ${image.exif.originalDate} ). Simple skins (that means in practice, a skin that does not use Java) can be ported almost automatically.
+
+As I am not sure about the license of JAlbum's skins, I could not include a ported skin in jGallery's distribution, only a very simple skin called Spartan, that I wrote from scratch.
+Therefore I'd be grateful for donations of skins under the GPL license.
+
+
+Thank you,
+Juergen Weber
+
+weberjn at dev.java.net 
