@@ -27,8 +27,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
@@ -472,13 +474,14 @@ public class Controller extends HttpServlet
 		{
 			if (null == folder)
 			{
+				List traceHints = new ArrayList();
 				RealPath theRealPath = PathHelper.getHttpRealPath(
-						getServletContext(), folderPath, dirmapping);
+						getServletContext(), folderPath, dirmapping, traceHints);
 
 				if (null == theRealPath)
 				{
 					response.sendError(HttpServletResponse.SC_NOT_FOUND,
-							request.getRequestURI());
+							"path: " + folderPath + ": "+ traceHints);
 					return;
 				}
 
@@ -517,14 +520,13 @@ public class Controller extends HttpServlet
 		}
 		catch (GalleryNotFoundException e)
 		{
-			response.sendError(HttpServletResponse.SC_NOT_FOUND, request
-					.getRequestURI());
+			response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
 			return;
 		}
 		catch (GalleryException e)
 		{
 			e.printStackTrace(System.err);
-			throw new ServletException(e.getMessage());
+			throw new ServletException(e.getMessage(),e);
 			//            request.setAttribute("javax.servlet.error.exception",e);
 			//          forward = "/errorpage.jsp";
 		}
