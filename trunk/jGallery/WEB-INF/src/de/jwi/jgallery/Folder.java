@@ -1626,8 +1626,19 @@ public class Folder implements Serializable
 
 		return s;
 	}
+	
+	public String getImageCounterNI(String name)
+	{
+		// non incrementing version
+		return getImageCounter1(name, false);
+	}
 
 	public String getImageCounter(String name)
+	{
+		return getImageCounter1(name, true);
+	}
+	
+	private String getImageCounter1(String name, boolean doInc )
 	{
 		// trigger first putting folder into DB
 		getCounter();
@@ -1650,9 +1661,13 @@ public class Folder implements Serializable
 				try
 				{
 					c = dBManager.getAndIncImageCounter(folderPath,
-							imageFiles[imageNum - 1], this.configData.doCount);
+							imageFiles[imageNum - 1], this.configData.doCount & doInc);
 
-					imageCounters[imageNum - 1] = c;
+					if (doInc)
+					{
+						// if !doInc don't spoil chance to increment 
+						imageCounters[imageNum - 1] = c;
+					}
 
 					rc = Integer.toString(c);
 				}
