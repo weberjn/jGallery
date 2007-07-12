@@ -184,6 +184,19 @@ div.sgThumbnail {
   text-align: center;
 }
 
+
+div.counter {
+  	text-align: center;
+	color: grey;
+	font-size: xx-small;
+}
+
+a.imagelink {
+	font-size: xx-small;
+position: relative; 
+top: -1ex;
+}
+
 div.sgThumbnail table {
   width:  116px;
   height: 116px;
