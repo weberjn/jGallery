@@ -117,19 +117,28 @@ ${folder.name}
 				<c:otherwise> 
 					<img class="sgPreviewThumb"
 					src="${image.thumbPath}" 
-					width="${image.thumbWidth}" height="${image.thumbHeight}" title="click to see large view"
+					width="${image.thumbWidth}" height="${image.thumbHeight}" 
+					<c:if test="${!empty image.counterNI}">
+					title="${image.counterNI} views. click to see large view"
+					 </c:if>
+					 <c:if test="${!empty image.counterNI}">
+					 title="click to see large view"
+					 </c:if>
 					alt="" />
 				</c:otherwise> 
-			</c:choose>  
+			</c:choose> 
 		</a>
         </td></tr></table>
         
-        <div class="roundedCornerSpacer">&nbsp;</div>
+        <div class="roundedCornerSpacer">&nbsp;<a class="imagelink" href="<c:url value='${image.closeupPath}'/>">${image.label}</a></div>
       </div>
       <div class="bottomCorners">
         <img class="borderBL" src="${folder.templatePath}/images/slide-bl.gif" alt="" />
         <img class="borderBR" src="${folder.templatePath}/images/slide-br.gif" alt="" />
       </div>
+             
+      
+      
     </div>
      </c:forEach>
   
