@@ -359,6 +359,10 @@ public class Image implements Serializable
 
 	public String getCounterNI()
 	{
+		if (isRepresentsSubdirectory)
+		{
+			return null;
+		}
 		String rc = folder.getImageCounterNI(name);
 
 		return rc;
