@@ -1,3 +1,6 @@
+Version 0.9.8, 2007-07-12
+- Tooltip on XP and Singapore index shows image views
+
 Version 0.9.7d, 2007-01-09
 - fixed bug in DBManager, IDs were used as Strings
 
