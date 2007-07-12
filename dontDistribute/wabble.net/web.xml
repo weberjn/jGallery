@@ -17,7 +17,7 @@
     
     <context-param>
     	<param-name>useDataBase</param-name>
-	<param-value>false</param-value>
+	<param-value>true</param-value>
     </context-param>    
   
     
@@ -34,7 +34,7 @@
     <context-param>
 	<description>separate with commas</description>
     	<param-name>dirmappings</param-name>
-	<param-value>galleries=D:/home/galleries,holiday=D:/holiday</param-value>
+	<param-value>galleries2007=/home/wabble.net/webapps/galleries2007,galleries=/home/wabble.net/webapps/galleries,demo=/home/wabble.net/webapps/demo</param-value>
     </context-param>
     
     <servlet>

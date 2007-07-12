@@ -16,11 +16,9 @@
 
 	 <target name="build_wabble">
 	  	
-	  	<ant antfile="build.xml" target="distwar">
-	  	  <property name="webxml" value="../webersoft/wabble.net/web.xml"/>
-	  	  <property name="contextxml" value="../webersoft/wabble.net/web.xml"/>
-	  		
-	  		
+	  	<ant antfile="build.xml" target="war">
+	    	  <property name="webxml" value="dontDistribute/wabble.net/web.xml"/>
+	    	  <property name="metainf" value="dontDistribute/wabble.net"/>
 	  	</ant>
 	    
 	 	

@@ -129,9 +129,16 @@ ${folder.name}
 				<c:otherwise> 
 					<img class="sgPreviewThumb"
 					src="${image.thumbPath}" 
-					width="${image.thumbWidth}" height="${image.thumbHeight}" title="click to see large view"
+					width="${image.thumbWidth}" height="${image.thumbHeight}" 
+					<c:if test="${!empty image.counterNI}">
+					title="${image.counterNI} views. click to see large view"
+					 </c:if>
+					 <c:if test="${empty image.counterNI}">
+					 title="click to see large view"
+					 </c:if>
 					alt="" />
 				</c:otherwise> 
+				
 			</c:choose>  
 		</a>
         </td></tr></table>

@@ -121,7 +121,7 @@ ${folder.name}
 					<c:if test="${!empty image.counterNI}">
 					title="${image.counterNI} views. click to see large view"
 					 </c:if>
-					 <c:if test="${!empty image.counterNI}">
+					 <c:if test="${empty image.counterNI}">
 					 title="click to see large view"
 					 </c:if>
 					alt="" />
@@ -130,7 +130,7 @@ ${folder.name}
 		</a>
         </td></tr></table>
         
-        <div class="roundedCornerSpacer">&nbsp;<a class="imagelink" href="<c:url value='${image.closeupPath}'/>">${image.label}</a></div>
+        <div class="roundedCornerSpacer"><!--&nbsp;<a class="imagelink" href="<c:url value='${image.closeupPath}'/>">${image.label}</a>--></div>
       </div>
       <div class="bottomCorners">
         <img class="borderBL" src="${folder.templatePath}/images/slide-bl.gif" alt="" />
