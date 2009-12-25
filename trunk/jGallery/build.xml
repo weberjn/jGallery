@@ -1,121 +1,120 @@
 <project name="jGallery" default="compile" basedir=".">
 
-  <property file="build.properties"/>
+	<property file="build.properties" />
 
 
-  <property name="dist" value="dist"/>
-  <property name="webapp" value="${ant.project.name}"/>
-  <property name="apidoc" value="apidoc"/>
-  <property name="webinf" value="WEB-INF"/>
-  <property name="webxml" value="${webinf}/web.xml"/>
-   <property name="metainf" value="META-INF"/>
-	
-  <property name="lib" value="WEB-INF/lib"/>
-  <property name="build" value="WEB-INF/classes"/>
-  <property name="src" value="WEB-INF/src"/>
+	<property name="dist" value="dist" />
+	<property name="webapp" value="${ant.project.name}" />
+	<property name="apidoc" value="apidoc" />
+	<property name="webinf" value="WEB-INF" />
+	<property name="webxml" value="${webinf}/web.xml" />
+	<property name="jgallery.properties" value="${webinf}" />
+	<property name="metainf" value="META-INF" />
 
-  
-  <property file="${webinf}/version.properties"/>
-
-  
-  <path id="project.class.path">
-    <pathelement location="${TOMCAT5}/common/lib/servlet-api.jar"/>
-    <pathelement location="${TOMCAT5}/common/lib/jsp-api.jar"/>    
-    <fileset dir="${lib}">
-    	<include name="*.jar"/>
-    </fileset>
-   </path>
-  
- 
-  <target name="init">
-  	
-  	<echo message="java.home = ${java.home}"/>
-  	<echo message="java.version = ${java.version}"/>
-  	
-  	<echo message="web.xml = ${webxml}"/>
-  	<echo message="metainf = ${metainf}"/>  	
-  	
-    <mkdir dir="${build}"/>
-    <mkdir dir="${dist}"/>
-    
-  </target>
+	<property name="lib" value="WEB-INF/lib" />
+	<property name="build" value="WEB-INF/classes" />
+	<property name="src" value="WEB-INF/src" />
 
 
-  <target name="clean">
-    <delete dir="${build}"/>
-  </target>
+	<property file="${webinf}/version.properties" />
 
- 
-  <target name="compile" depends="init">
-    <javac destdir="${build}" debug="true" source="1.4" target="1.4">
-    	 <src path="${src}"/>
-	    <classpath refid="project.class.path"/>
-    </javac>
-  </target>
-  
-   <target name="jar" depends="compile">
-	      <jar jarfile="${lib}/${ant.project.name}.jar">
-	         <fileset dir="${build}" includes="**/*.class" excludes="**/test/**"/>
-	      </jar>
-	  </target>	
-	
-      
-    <target name="dist" depends="jar">
 
-    <zip destfile="${dist}/${ant.project.name}-${version}.zip">
-	    <zipfileset  prefix="${ant.project.name}" 
-	    dir="." includes="WEB-INF/**"
-	    excludes="jGallery.properties,web.xml,WEB-INF/classes/**"/>
-	    <zipfileset prefix="${ant.project.name}"
-	    dir="." includes="templates/Spartan/**,templates/Standard/**"/>
-	    <zipfileset prefix="${ant.project.name}"
-	    dir="." includes="templates/XP/**,templates/Singapore/**"/>
-	    <zipfileset prefix="${ant.project.name}"
-	    dir="." includes="build.xml,build.properties,jGallery.xml,jgallery.sql, jGallery.htm,contact.htm,*.css"/>
-	    <zipfileset prefix="${ant.project.name}"
-	    	dir="." includes="security/**"/>
-		<zipfileset prefix="${ant.project.name}"	    	
-	        dir="." includes="contrib/**"/>
-	    <zipfileset prefix="${ant.project.name}"
-	    dir="." includes="COPYING,readme.txt,converted-templates.txt,Changelog.txt"/>
-    </zip>
-    
-  </target>
-  
-  
-  <target name="javadoc" depends="compile">
-    <javadoc sourcepath="${src}" destdir="${apidoc}" 
-    windowtitle="${ant.project.name} API" packagenames="de/*">
-      <classpath refid="project.class.path"/>
-    </javadoc>
-  </target>
-  
-	 <target name="war" depends="compile">
-	 	
-	 	<war destfile="${dist}/${ant.project.name}.war" 
-	 		webxml="${webxml}">
+	<path id="project.class.path">
+		<pathelement location="${TOMCAT6}/common/lib/servlet-api.jar" />
+		<pathelement location="${TOMCAT7}/common/lib/jsp-api.jar" />
+		<fileset dir="${lib}">
+			<include name="*.jar" />
+		</fileset>
+	</path>
 
-	 		<fileset dir=".">
-	 		    <include name="contact.htm"/>
-	 		    <include name="jGallery.htm"/>
-	 		    <include name="statistics.css"/>
-	 		    <include name="style.css"/>
-	 		  </fileset>
-	 		<zipfileset dir="WEB-INF" 
-		 		              prefix="WEB-INF">
-	 			<exclude name="web.xml"/>
-	 			</zipfileset>
-	 			<zipfileset dir="${metainf}" prefix="META-INF">
-	 				<include name="context.xml"/>
-	 			</zipfileset>
- 		<zipfileset dir="images" 
-	 		              prefix="images"/>
- 		<zipfileset dir="security" 
-		 		              prefix="security"/>
-	 		<zipfileset dir="templates" 
-			 		              prefix="templates"/>
 
-	 	</war>
-	  </target>
-	
+	<target name="init">
+
+		<echo message="java.home = ${java.home}" />
+		<echo message="java.version = ${java.version}" />
+
+		<echo message="web.xml = ${webxml}" />
+		<echo message="metainf = ${metainf}" />
+
+		<mkdir dir="${build}" />
+		<mkdir dir="${dist}" />
+
+	</target>
+
+
+	<target name="clean">
+		<delete dir="${build}" />
+	</target>
+
+
+	<target name="compile" depends="init">
+		<javac destdir="${build}" debug="true" source="1.4" target="1.4">
+			<src path="${src}" />
+			<classpath refid="project.class.path" />
+		</javac>
+	</target>
+
+	<target name="jar" depends="compile">
+		<jar jarfile="${lib}/${ant.project.name}.jar">
+			<fileset dir="${build}" includes="**/*.class" excludes="**/test/**" />
+		</jar>
+	</target>
+
+
+	<target name="dist" depends="jar">
+
+		<zip destfile="${dist}/${ant.project.name}-${version}.zip">
+			<zipfileset prefix="${ant.project.name}" dir="." includes="WEB-INF/**" excludes="jGallery.properties,web.xml,WEB-INF/classes/**" />
+			<zipfileset prefix="${ant.project.name}" dir="." includes="templates/Spartan/**,templates/Standard/**" />
+			<zipfileset prefix="${ant.project.name}" dir="." includes="templates/XP/**,templates/Singapore/**" />
+			<zipfileset prefix="${ant.project.name}" dir="." includes="build.xml,build.properties,jGallery.xml,jgallery.sql, jGallery.htm,contact.htm,*.css" />
+			<zipfileset prefix="${ant.project.name}" dir="." includes="security/**" />
+			<zipfileset prefix="${ant.project.name}" dir="." includes="contrib/**" />
+			<zipfileset prefix="${ant.project.name}" dir="." includes="COPYING,readme.txt,converted-templates.txt,Changelog.txt" />
+		</zip>
+
+	</target>
+
+
+	<target name="javadoc" depends="compile">
+		<javadoc sourcepath="${src}" destdir="${apidoc}" 
+			windowtitle="${ant.project.name} API" packagenames="de/*">
+			<classpath refid="project.class.path" />
+		</javadoc>
+	</target>
+
+	<target name="war" depends="compile">
+		<war destfile="${dist}/${ant.project.name}.war" webxml="${webxml}">
+
+			<fileset dir=".">
+				<include name="contact.htm" />
+				<include name="jGallery.htm" />
+				<include name="statistics.css" />
+				<include name="style.css" />
+			</fileset>
+			<zipfileset dir="WEB-INF" prefix="WEB-INF">
+				<include name="jGallery.tld" />
+				<include name="statistics.jsp" />
+				<include name="statisticsdet.jsp" />
+				<include name="version.properties" />
+			</zipfileset>
+			<zipfileset dir="WEB-INF" prefix="WEB-INF">
+							<include name="lib/*" />
+			</zipfileset>
+			
+			
+			<zipfileset prefix="WEB-INF" dir="${jgallery.properties}">
+				<include name="jGallery.properties" />
+			</zipfileset>
+			
+			<zipfileset dir="${metainf}" prefix="META-INF">
+				<include name="context.xml" />
+			</zipfileset>
+			<zipfileset dir="images" prefix="images" />
+			<zipfileset dir="security" prefix="security" />
+			<zipfileset dir="templates" prefix="templates" />
+
+		</war>
+	</target>
+
 </project>

@@ -42,9 +42,9 @@
         <servlet-class>de.jwi.jgallery.servlets.Controller</servlet-class>
 	
 	<init-param>
+		<description>Path prefix, that maps to web ressources</description>
 		<param-name>webprefix</param-name>
 		<param-value>/web/</param-value>
-		<description>Path prefix, that maps to web ressources</description>
 	</init-param>
 
     </servlet>

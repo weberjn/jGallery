@@ -434,7 +434,7 @@ public class Folder implements Serializable
 
 		if (subImages == null)
 		{
-			throw new GalleryException("makeThumbNailInfoFromRandom called for non-folder "+subDirectoryName);
+			throw new GalleryException("makeThumbNailInfoFromRandom called for non-folder " + subDirectoryName);
 		}
 		
 //		if (subImages == null)
