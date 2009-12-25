@@ -1,29 +1,30 @@
-<project name="jGallery_home" default="build_home" basedir=".">
+<project name="jGallery_home" default="build_wabble" basedir=".">
 
-	
-	 <property name="dist" value="dist"/>
-	
-  <target name="build_home">
-  	
-  	<ant antfile="build.xml" target="war">
-  	  <property name="webxml" value="dontDistribute/home/web.xml"/>
-  	  <property name="metainf" value="dontDistribute/home"/>
-  	</ant>
 
-	<copy file="dist/jGallery.war" todir="/java/apache-tomcat-5.5.17/webapps"/>
-  	
-  </target>
+	<property name="dist" value="dist" />
 
-	 <target name="build_wabble">
-	  	
-	  	<ant antfile="build.xml" target="war">
-	    	  <property name="webxml" value="dontDistribute/wabble.net/web.xml"/>
-	    	  <property name="metainf" value="dontDistribute/wabble.net"/>
-	  	</ant>
-	    
-	 	
-	  </target>	
-	
-	
-	
+	<target name="build_home">
+
+		<ant antfile="build.xml" target="war">
+			<property name="webxml" value="dontDistribute/home/web.xml" />
+			<property name="metainf" value="dontDistribute/home" />
+		</ant>
+
+		<copy file="dist/jGallery.war" todir="/java/apache-tomcat-5.5.17/webapps" />
+
+	</target>
+
+	<target name="build_wabble">
+
+		<ant antfile="build.xml" target="war">
+			<property name="webxml" value="dontDistribute/wabble.net/web.xml" />
+			<property name="metainf" value="dontDistribute/wabble.net" />
+			<property name="jgallery.properties" value="dontDistribute/wabble.net" />
+		</ant>
+
+
+	</target>
+
+
+
 </project>
