@@ -45,6 +45,12 @@ public class Configuration implements Serializable
 	
 	private IThumbnailWriter thumbnailWriter;
 
+	public Configuration(Properties properties)
+	{
+		this.properties = properties;
+	}
+
+	
 	public Configuration(Configuration parent)
 	{
 		this.parent = parent;
