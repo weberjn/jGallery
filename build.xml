@@ -12,8 +12,8 @@
 	<property name="metainf" value="META-INF" />
 
 	<property name="lib" value="WEB-INF/lib" />
-	<property name="build" value="WEB-INF/classes" />
-	<property name="src" value="WEB-INF/src" />
+	<property name="build" value="build" />
+	<property name="src" value="src" />
 
 
 	<property file="${webinf}/version.properties" />
