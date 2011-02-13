@@ -31,12 +31,6 @@
 	<param-value>de.jwi.jgallery.toolkit.ToolkitThumbnailWriter</param-value>
     </context-param>
 
-    <context-param>
-	<description>separate with commas</description>
-    	<param-name>dirmappings</param-name>
-	<param-value>galleries=D:/home/galleries,holiday=D:/holiday</param-value>
-    </context-param>
-    
     <servlet>
         <servlet-name>Controller</servlet-name>
         <servlet-class>de.jwi.jgallery.servlets.Controller</servlet-class>
