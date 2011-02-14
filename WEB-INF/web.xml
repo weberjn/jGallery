@@ -64,14 +64,14 @@
 
  <!-- Define reference to the user database for looking up roles 
  and counter data -->
-	<resource-ref>
+ <!-- 	<resource-ref>
 		<description>DB Connection</description>
 		<res-ref-name>jdbc/MySQL</res-ref-name>
 		<res-type>javax.sql.DataSource</res-type>
 		<res-auth>Container</res-auth>
 	</resource-ref>
-  
-    
+   -->
+  <!--   
     <security-constraint>
       <web-resource-collection>
          <web-resource-name>jGallery</web-resource-name>
@@ -82,7 +82,7 @@
 	 <role-name>manager</role-name>
       </auth-constraint>
     </security-constraint>
-       
+     
     
     <login-config>
       <auth-method>FORM</auth-method>
@@ -98,7 +98,7 @@
        <security-role>
       <role-name>manager</role-name>
     </security-role>   
-    
+      --> 
     
     <welcome-file-list>
     	<welcome-file>jGallery.htm</welcome-file>

@@ -120,23 +120,25 @@ public class Controller extends HttpServlet
 
 		InputStream is = null;
 
-
-		URL urlWI = getClass().getResource(CONFIGFILE);
-		if (urlWI != null)
+		URL urlWI = null;
+		
+		try
 		{
-			context.log("reading " + urlWI);
-			is = getClass().getResourceAsStream(CONFIGFILE);
-			try
+			urlWI = context.getResource("/WEB-INF" +CONFIGFILE);
+			if (urlWI != null)
 			{
+				context.log("reading " + urlWI);
+				is = context.getResourceAsStream("/WEB-INF" +CONFIGFILE);
+
 				propsWI.load(is);
 				is.close();
 			}
-			catch (IOException e)
-			{
-				throw new ServletException(e);
-			}
 		}
-
+		catch (IOException e)
+		{
+			throw new ServletException(e);
+		}
+		
 		URL urlCP = getClass().getResource(CONFIGFILE);
 		if (urlCP != null)
 		{
@@ -338,7 +340,6 @@ public class Controller extends HttpServlet
 	}
 
 
-
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException
 	{
@@ -365,8 +366,8 @@ public class Controller extends HttpServlet
 		// Folder object)
 		// and imageName myimage.html
 
-		String folderPath = servletPath.substring(0, servletPath
-				.lastIndexOf('/') + 1);
+		String folderPath = servletPath.substring(0,
+				servletPath.lastIndexOf('/') + 1);
 		String imageName = servletPath
 				.substring(servletPath.lastIndexOf('/') + 1);
 
@@ -435,8 +436,7 @@ public class Controller extends HttpServlet
 		}
 		catch (GalleryNotFoundException e)
 		{
-			response
-					.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
+			response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
 			return;
 		}
 		catch (GalleryException e)
