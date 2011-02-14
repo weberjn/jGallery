@@ -71,15 +71,9 @@ public class Controller extends HttpServlet
 
 	static final String VERSIONCONFIGFILE = "version.properties";
 
-	private static final String WEBDIRSFILE = "web.properties";
-
 	private Configuration configuration;
 
-	private Properties webDirectories = null;
-
-	private HashSet webKeys = new HashSet();
-
-	private Properties dirmapping = null;
+	private Properties dirmappings = null;
 
 	private String dataSource = null;
 
@@ -165,28 +159,24 @@ public class Controller extends HttpServlet
 
 
 		dataSource = propsWI.getProperty("dataSource");
+		
+		dirmappings = new Properties();
 
-		String s = propsWI.getProperty("dirmappings");
-
-		dirmapping = new Properties();
-
-		if (null != s)
+		for (Enumeration e = propsWI.propertyNames();e.hasMoreElements();)
 		{
-			StringTokenizer st = new StringTokenizer(s, ",");
-			while (st.hasMoreTokens())
+			String s = (String)e.nextElement();
+			
+			// gallery.holiday=D:/holiday
+			
+			if (s.startsWith("gallery."))
 			{
-				String s1 = st.nextToken();
-				int p = s1.indexOf('=');
-				if (p > -1)
-				{
-					String key = s1.substring(0, p);
-					String val = s1.substring(p + 1);
-					dirmapping.setProperty(key, val);
-				}
+				String key = s.substring("gallery.".length());
+				String val = propsWI.getProperty(s);
+				dirmappings.setProperty(key, val);
 			}
 		}
-
-		s = propsWI.getProperty("useDataBase");
+		
+		String s = propsWI.getProperty("useDataBase");
 
 		if (null != s)
 		{
@@ -390,7 +380,7 @@ public class Controller extends HttpServlet
 				List traceHints = new ArrayList();
 				RealPath theRealPath = PathHelper
 						.getHttpRealPath(getServletContext(), folderPath,
-								dirmapping, traceHints);
+								dirmappings, traceHints);
 
 				if (null == theRealPath)
 				{
