@@ -148,15 +148,17 @@ Camera model: ${image.exif.cameraModel}
 
 <div class="sgNavBar">
  <p> 
-  <c:if test="${!empty folder.previousPage}"> 
-    	<a href="${folder.previousPage}">Previous</a> | 
+ 
+ <c:if test="${!empty folder.previousPage}"> 
+    	<a href="<c:url value='${folder.previousPage}'/>">Previous</a> | 
   </c:if> 
-
-  <a href="${folder.indexPage}"  title="${folder.title}">Thumbnails</a>
+ 
+  <a href="<c:url value='${folder.indexPage}'/>"  title="${folder.title}">Thumbnails</a>
   
   <c:if test="${!empty folder.nextPage}"> 
-    |	<a href="${folder.nextPage}">Next</a> 
+    |	<a href="<c:url value='${folder.nextPage}'/>">Next</a> 
   </c:if> 
+ 
  
   </p>
 </div>

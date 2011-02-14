@@ -20,6 +20,10 @@ CAPTIONS
 
 Iterator über einzelne Indexseiten
 
+
+14.02.2011 -----------------
+Laden der Konfiguration umgebaut.
+
 07.06.2004 -----------------
 Michael Mehrle hat gefunden, daß der Indexiterator in Spartan nicht tut.
 Wenn man die TagTEI auskommentiert, dann tut es.
