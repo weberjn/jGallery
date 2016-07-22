@@ -1,0 +1,6 @@
+dontDistribute/
+target/
+.classpath
+.project
+.settings/
+tmp/
