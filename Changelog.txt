@@ -1,3 +1,6 @@
+Version 1.0.0, 2016-07-21
+- converted to Maven project
+
 Version 0.9.8, 2007-07-12
 - Tooltip on XP and Singapore index shows image views
 
