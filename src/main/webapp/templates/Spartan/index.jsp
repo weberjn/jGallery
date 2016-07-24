@@ -61,7 +61,7 @@ ${folder.title}
 			<img class="image" 
 				src="${image.thumbPath}" 
 				width="${image.thumbWidth}" 
-				height="${image.thumbHeight}" 
+				height="${image.thumbHeight}" />
 		</a> 
 		</td>
 		

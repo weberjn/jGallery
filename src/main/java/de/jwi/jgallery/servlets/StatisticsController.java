@@ -76,9 +76,8 @@ public class StatisticsController extends HttpServlet
 
 		try
 		{
-			InputStream is = getServletContext().getResourceAsStream(
-					"/WEB-INF/" + Controller.VERSIONCONFIGFILE);
-
+			InputStream is = StatisticsController.class.getResourceAsStream(Controller.VERSIONCONFIGFILE);
+			
 			Properties versionProperties = new Properties();
 			versionProperties.load(is);
 
@@ -87,6 +86,8 @@ public class StatisticsController extends HttpServlet
 			{
 				version = s;
 			}
+			
+			is.close();
 		}
 		catch (Exception e)
 		{

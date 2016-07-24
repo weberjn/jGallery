@@ -46,6 +46,8 @@ public class DirectoriesFilter implements java.io.FilenameFilter
             return false;
         }
         
+        if ("WEB-INF".equalsIgnoreCase(name)) return false;
+        
         if (thumbsDirName.equals(name)) return false;
         
         return true;

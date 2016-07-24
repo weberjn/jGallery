@@ -26,11 +26,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Properties;
-import java.util.StringTokenizer;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -49,38 +48,31 @@ import de.jwi.jgallery.Configuration;
 import de.jwi.jgallery.Folder;
 import de.jwi.jgallery.GalleryException;
 import de.jwi.jgallery.GalleryNotFoundException;
-import de.jwi.jgallery.IThumbnailWriter;
-import de.jwi.jgallery.WebFolder;
 import de.jwi.jgallery.db.DBManager;
+import de.jwi.jgallery.imageio.ImageIOThumbnailWriter;
 import de.jwi.servletutil.PathHelper;
 import de.jwi.servletutil.RealPath;
 
 /**
  * @author Jürgen Weber Source file created on 17.02.2004
- *  
+ * 
  */
 public class Controller extends HttpServlet
 {
 
 	private static String version = "unknown";
-	
+
 	private static String builddate = "unknown";
 
 	private static String urlExtention;
 
-	private static final String CONFIGFILE = "jGallery.properties";
+	private static final String CONFIGFILE = "/jGallery.properties";
 
-	static final String VERSIONCONFIGFILE = "/version.txt";
-
-	private static final String WEBDIRSFILE = "web.properties";
+	static final String VERSIONCONFIGFILE = "/version.properties";
 
 	private Configuration configuration;
 
-	private Properties webDirectories = null;
-
-	private HashSet webKeys = new HashSet();
-
-	private Properties dirmapping = null;
+	private Properties dirmappings = null;
 
 	private String dataSource = null;
 
@@ -88,7 +80,7 @@ public class Controller extends HttpServlet
 
 	private DBManager dBManager;
 
-	private void initDBConnection () throws ServletException
+	private void initDBConnection() throws ServletException
 	{
 		if (useDataBase)
 		{
@@ -103,41 +95,82 @@ public class Controller extends HttpServlet
 				DataSource ds = (DataSource) context.lookup(dataSource);
 
 				dBManager = new DBManager(ds);
-			}
-			catch (NamingException e)
+			} catch (NamingException e)
 			{
 				throw new ServletException(e.getMessage(), e);
 			}
 		}
 	}
 
-	public void init () throws ServletException
+	public void init() throws ServletException
 	{
 		ServletContext context = getServletContext();
 
-		dataSource = context.getInitParameter("dataSource");
+		Properties propsCP = new Properties();
+		Properties propsWI = new Properties();
 
-		String s = context.getInitParameter("dirmappings");
+		InputStream is = null;
 
-		dirmapping = new Properties();
+		URL urlWI = null;
 
-		if (null != s)
+		try
 		{
-			StringTokenizer st = new StringTokenizer(s, ",");
-			while (st.hasMoreTokens())
+			urlWI = context.getResource("/WEB-INF" + CONFIGFILE);
+			if (urlWI != null)
 			{
-				String s1 = st.nextToken();
-				int p = s1.indexOf('=');
-				if (p > -1)
-				{
-					String key = s1.substring(0, p);
-					String val = s1.substring(p + 1);
-					dirmapping.setProperty(key, val);
-				}
+				context.log("reading " + urlWI);
+				is = context.getResourceAsStream("/WEB-INF" + CONFIGFILE);
+
+				propsWI.load(is);
+				is.close();
+			}
+		} catch (IOException e)
+		{
+			throw new ServletException(e);
+		}
+
+		URL urlCP = getClass().getResource(CONFIGFILE);
+		if (urlCP != null)
+		{
+			context.log("reading " + urlCP);
+			is = getClass().getResourceAsStream(CONFIGFILE);
+			try
+			{
+				propsCP.load(is);
+				is.close();
+			} catch (IOException e)
+			{
+				throw new ServletException(e);
 			}
 		}
 
-		s = context.getInitParameter("useDataBase");
+		if (urlWI == null && urlCP == null)
+		{
+			context.log("no " + CONFIGFILE + " found");
+		}
+
+		// Classpath properties override WEB-INF properties
+		propsWI.putAll(propsCP);
+
+		dataSource = propsWI.getProperty("dataSource");
+
+		dirmappings = new Properties();
+
+		for (Enumeration e = propsWI.propertyNames(); e.hasMoreElements();)
+		{
+			String s = (String) e.nextElement();
+
+			// gallery.holiday=D:/holiday
+
+			if (s.startsWith("gallery."))
+			{
+				String key = s.substring("gallery.".length());
+				String val = propsWI.getProperty(s);
+				dirmappings.setProperty(key, val);
+			}
+		}
+
+		String s = propsWI.getProperty("useDataBase");
 
 		if (null != s)
 		{
@@ -145,145 +178,50 @@ public class Controller extends HttpServlet
 			initDBConnection();
 		}
 
-		InputStream is = context.getResourceAsStream("/WEB-INF/" + CONFIGFILE);
+		configuration = new Configuration(propsWI);
 
-		try
-		{
-			configuration = new Configuration(is);
+		configuration.setThumbnailWriter(new ImageIOThumbnailWriter());
 
-			s = context.getInitParameter("thumbnailWriter");
-
-			Object o = Class.forName(s).newInstance();
-
-			configuration.setThumbnailWriter((IThumbnailWriter) o);
-		}
-		catch (Exception e)
-		{
-			throw new ServletException(e.getMessage());
-		}
-
-		if (is != null)
-		{
-			try
-			{
-				is.close();
-			}
-			catch (IOException e)
-			{
-				throw new ServletException(e.getMessage());
-			}
-		}
-
-		// Parameters from the config file in WEB-INF can be overridden from parameters 
-		// in the context configuration
-
-		Configuration configurationFromContext = null;
-		Enumeration en = context.getInitParameterNames();
-		while (en.hasMoreElements())
-		{
-			if (configurationFromContext == null)
-			{
-				configuration = configurationFromContext = new Configuration(configuration);
-			}
-			s = (String) en.nextElement();
-			String s1 = context.getInitParameter(s);
-			configurationFromContext.addProperty(s, s1);
-		}
-
-		is = context.getResourceAsStream("/WEB-INF/" + WEBDIRSFILE);
-
-		if (null != is)
-		{
-			try
-			{
-				webDirectories = new Properties();
-				webDirectories.load(is);
-
-				for (en = webDirectories.keys(); en.hasMoreElements();)
-				{
-					webKeys.add(en.nextElement());
-				}
-
-			}
-			catch (IOException e)
-			{
-				throw new ServletException(e.getMessage());
-			}
-		}
-
-		if (is != null)
-		{
-			try
-			{
-				is.close();
-			}
-			catch (IOException e)
-			{
-				throw new ServletException(e.getMessage());
-			}
-		}
-
-		try
-		{
-			InputStream isv = getClass().getResourceAsStream(VERSIONCONFIGFILE);
-
-			if (isv != null)
-			{
-				Properties versionProperties = new Properties();
-				versionProperties.load(isv);
-				isv.close();
-
-				s = versionProperties.getProperty("version");
-				if (null != s)
-				{
-					version = s;
-				}
-
-				s = versionProperties.getProperty("build.date");
-				if (null != s)
-				{
-					builddate = s;
-				}
-
-			}
-		}
-
-		catch (Exception e)
+		is = Controller.class.getResourceAsStream(VERSIONCONFIGFILE);
+		if (is == null)
 		{
 			throw new ServletException(VERSIONCONFIGFILE + " not found");
 		}
 
-		if (is != null)
+		Properties versionProperties = new Properties();
+		try
 		{
-			try
-			{
-				is.close();
-			}
-			catch (IOException e)
-			{
-				throw new ServletException(e.getMessage());
-			}
+			versionProperties.load(is);
+			is.close();
+		} catch (IOException e)
+		{
+			throw new ServletException(e);
 		}
 
+		s = versionProperties.getProperty("version");
+		version = s;
+
+		s = versionProperties.getProperty("builddate");
+		builddate = s;
 	}
 
-	public static String getVersion ()
+	public static String getVersion()
 	{
 		return version;
 	}
 
-	public static String getBuilddate ()
+	public static String getBuilddate()
 	{
 		return builddate;
 	}
-	
-	private void rememberFolder (HttpSession session, Folder folder, String folderPath)
+
+	private void rememberFolder(HttpSession session, Folder folder, String folderPath)
 	{
 		session.setAttribute("lastFolder", folder);
 		session.setAttribute("lastFolderPath", folderPath);
 	}
 
-	private Folder getFolder (HttpSession session, String folderPath)
+	private Folder getFolder(HttpSession session, String folderPath)
 	{
 		Folder f = null;
 
@@ -298,13 +236,13 @@ public class Controller extends HttpServlet
 		return f;
 	}
 
-	private Folder createFolder (	HttpSession session, String folderPath, String imagePath, String folderRealPath,
-									String jgalleryContextPath, boolean doCount)
-		throws GalleryException
+	private Folder createFolder(HttpSession session, String folderPath, String imagePath, String folderRealPath,
+			String jgalleryContextPath, boolean doCount) throws GalleryException
 	{
 		// No need to synchronize access to the Folders because they are per
 		// session. In the worst case if a user has several browser windows
-		// (that share the same session), there might be unnecessary creations of
+		// (that share the same session), there might be unnecessary creations
+		// of
 		// Folders.
 
 		Folder folder;
@@ -324,8 +262,7 @@ public class Controller extends HttpServlet
 			try
 			{
 				is = new FileInputStream(config);
-			}
-			catch (FileNotFoundException e)
+			} catch (FileNotFoundException e)
 			{
 				throw new GalleryException(e.getMessage());
 			}
@@ -334,20 +271,17 @@ public class Controller extends HttpServlet
 			{
 				Configuration conf = new Configuration(is, configuration);
 				configuration = conf;
-			}
-			catch (IOException e)
+			} catch (IOException e)
 			{
 				throw new GalleryException(e.getMessage());
-			}
-			finally
+			} finally
 			{
 				if (is != null)
 				{
 					try
 					{
 						is.close();
-					}
-					catch (IOException e)
+					} catch (IOException e)
 					{
 						throw new GalleryException(e.getMessage());
 					}
@@ -358,81 +292,17 @@ public class Controller extends HttpServlet
 		ConfigData configData = new ConfigData();
 		configData.version = version;
 		configData.builddate = builddate;
+		
 		configData.urlExtention = urlExtention;
 		configData.doCount = doCount;
 
-		folder = new Folder(directory, getServletContext(), configuration, configData, jgalleryContextPath, folderPath, imagePath,
-			dBManager);
+		folder = new Folder(directory, getServletContext(), configuration, configData, jgalleryContextPath, folderPath,
+				imagePath, dBManager);
 
 		return folder;
 	}
 
-	private Folder createWebFolder (HttpSession session, String remoteKey, String folderPath, String baseURL, String jgalleryContextPath)
-		throws GalleryException
-	{
-		// No need to synchronize access to the Folders because they are per
-		// session. In the worst case if a user has several browser windows
-		// (that
-		// share the same session), there might be unnecessary creations of
-		// Folders.
-
-		Configuration configuration = this.configuration;
-		Folder folder;
-		InputStream wis = null;
-		URL url;
-		URLConnection connection = null;
-		try
-		{
-			url = new URL(baseURL + folderPath + "images.txt");
-			connection = url.openConnection();
-			connection.connect();
-		}
-		catch (Exception e)
-		{
-			throw new GalleryException(e.getMessage());
-		}
-
-		try
-		{
-			wis = connection.getInputStream();
-			long l = connection.getLastModified();
-		}
-		catch (IOException e)
-		{
-			throw new GalleryNotFoundException(e.getMessage());
-		}
-
-		try
-		{
-			URL url1 = new URL(baseURL + folderPath + CONFIGFILE);
-			URLConnection connection1 = url1.openConnection();
-			connection1.connect();
-			InputStream is = connection1.getInputStream();
-
-			if (null != is)
-			{
-				Configuration conf = new Configuration(is, configuration);
-				configuration = conf;
-			}
-		}
-		catch (Exception e1)
-		{
-			// nothing
-		}
-		configuration = new Configuration(configuration);
-		configuration.addProperty("thumbnails.create", "false");
-
-		ConfigData configData = new ConfigData();
-		configData.version = version;
-		configData.builddate = builddate;
-		configData.urlExtention = urlExtention;
-
-		folder = new WebFolder(baseURL, getServletContext(), configuration, configData, remoteKey, jgalleryContextPath, folderPath, wis);
-
-		return folder;
-	}
-
-	public void doGet (HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException
 	{
 		String pathInfo = request.getPathInfo();
 		String queryString = request.getQueryString();
@@ -476,11 +346,13 @@ public class Controller extends HttpServlet
 		{
 			if (null == folder)
 			{
-				RealPath theRealPath = PathHelper.getHttpRealPath(getServletContext(), folderPath, dirmapping);
+				List traceHints = new ArrayList();
+				RealPath theRealPath = PathHelper.getHttpRealPath(getServletContext(), folderPath, dirmappings,
+						traceHints);
 
 				if (null == theRealPath)
 				{
-					response.sendError(HttpServletResponse.SC_NOT_FOUND, request.getRequestURI());
+					response.sendError(HttpServletResponse.SC_NOT_FOUND, "path: " + folderPath + ": " + traceHints);
 					return;
 				}
 
@@ -506,8 +378,7 @@ public class Controller extends HttpServlet
 			if (Folder.INDEX == n)
 			{
 				forward = folder.getIndexJsp();
-			}
-			else
+			} else
 			{
 				forward = folder.getSlideJsp();
 			}
@@ -515,18 +386,16 @@ public class Controller extends HttpServlet
 			request.setAttribute("folder", folder);
 			request.setAttribute("image", folder.getImage());
 
-		}
-		catch (GalleryNotFoundException e)
+		} catch (GalleryNotFoundException e)
 		{
-			response.sendError(HttpServletResponse.SC_NOT_FOUND, request.getRequestURI());
+			response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
 			return;
-		}
-		catch (GalleryException e)
+		} catch (GalleryException e)
 		{
 			e.printStackTrace(System.err);
-			throw new ServletException(e.getMessage());
-			//            request.setAttribute("javax.servlet.error.exception",e);
-			//          forward = "/errorpage.jsp";
+			throw new ServletException(e.getMessage(), e);
+			// request.setAttribute("javax.servlet.error.exception",e);
+			// forward = "/errorpage.jsp";
 		}
 
 		RequestDispatcher requestDispatcher = getServletContext().getRequestDispatcher(forward);

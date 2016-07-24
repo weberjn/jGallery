@@ -26,6 +26,7 @@
 	<param-value>java:comp/env/jdbc/MySQL</param-value>
     </context-param>
 
+
         <context-param>
     	<param-name>thumbnailWriter</param-name>
 	<param-value>de.jwi.jgallery.toolkit.ToolkitThumbnailWriter</param-value>

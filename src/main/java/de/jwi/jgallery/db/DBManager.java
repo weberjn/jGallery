@@ -119,7 +119,7 @@ public class DBManager implements Serializable
 
 				String fid = Integer.toString(id);
 
-				query = "SELECT id FROM images WHERE folderid='$FID' and image='$IMAGE'";
+				query = "SELECT id FROM images WHERE folderid=$FID and image='$IMAGE'";
 				query = query.replaceAll("\\$FID", fid);
 				query = query.replaceAll("\\$IMAGE", image);
 
@@ -131,7 +131,7 @@ public class DBManager implements Serializable
 				{
 					// even with doInc = false create the folder in the database
 					
-					query = "INSERT INTO images (folderid,image) VALUES ('$FID','$IMAGE')";
+					query = "INSERT INTO images (folderid,image) VALUES ($FID,'$IMAGE')";
 					query = query.replaceAll("\\$FID", fid);
 					query = query.replaceAll("\\$IMAGE", image);
 					stmt.executeUpdate(query);
@@ -139,13 +139,13 @@ public class DBManager implements Serializable
 
 				if (doInc)
 				{
-					query = "UPDATE images SET hits = hits + 1 where folderid='$FID' and image='$IMAGE'";
+					query = "UPDATE images SET hits = hits + 1 where folderid=$FID and image='$IMAGE'";
 					query = query.replaceAll("\\$FID", fid);
 					query = query.replaceAll("\\$IMAGE", image);
 					stmt.executeUpdate(query);
 				}
 				
-				query = "SELECT hits FROM images where folderid='$FID' and image='$IMAGE'";
+				query = "SELECT hits FROM images where folderid=$FID and image='$IMAGE'";
 				query = query.replaceAll("\\$FID", fid);
 				query = query.replaceAll("\\$IMAGE", image);
 				rs = stmt.executeQuery(query);

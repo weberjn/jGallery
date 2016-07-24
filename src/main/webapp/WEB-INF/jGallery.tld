@@ -1,85 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE taglib
-  PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.2//EN"
-         "http://java.sun.com/dtd/web-jsptaglibrary_1_2.dtd">
+<taglib
+	xsi:schemaLocation="
+            http://java.sun.com/xml/ns/javaee 
+            http://java.sun.com/xml/ns/javaee/web-jsptaglibrary_2_1.xsd"
+	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	version="2.1">
 
-<taglib>
+	<tlib-version>1.0</tlib-version>
+	<short-name>controls</short-name>
 
-  <tlib-version>1.0</tlib-version>
-  <jsp-version>1.2</jsp-version>
-  <short-name>controls</short-name>
-  <description>
-    JSP tag library containing logic tags for JGallery.
-  </description>
+	<tag>
 
+		<name>if</name>
+		<tag-class>de.jwi.jgallery.tags.IfTag</tag-class>
+		<body-content>JSP</body-content>
 
-  <tag>
+		<attribute>
+			<name>exists</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
 
-    <name>if</name>
-    <tag-class>de.jwi.jgallery.tags.IfTag</tag-class>
-    <body-content>JSP</body-content>
+		<attribute>
+			<name>test</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
 
-    <attribute>
-      <name>exists</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-    </attribute>
+	</tag>
 
-    <attribute>
-      <name>test</name>
-      <required>false</required>
-      <rtexprvalue>true</rtexprvalue>
-    </attribute>
-    
-  </tag>
-
-  <tag>
-    <name>else</name>
-    <tag-class>de.jwi.jgallery.tags.ElseTag</tag-class>
-    <body-content>JSP</body-content>
-  </tag>
-
-   
-    <tag>
-    <name>text</name>
-    <tag-class>de.jwi.jgallery.tags.TextTag</tag-class>
-    <body-content>JSP</body-content>
-  </tag>
-
-  <tag>
-    <name>rowiterator</name>
-    <tag-class>de.jwi.jgallery.tags.RowIteratorTag</tag-class>
-    <body-content>JSP</body-content>
-  </tag>
-
-  <tag>
-    <name>coliterator</name>
-    <tag-class>de.jwi.jgallery.tags.ColIteratorTag</tag-class>
-    <body-content>JSP</body-content>
-    <teiclass>de.jwi.jgallery.tags.ColIteratorTagTEI</teiclass>
-  </tag>
-
-  <tag>
-    <name>indexiterator</name>
-    <tag-class>de.jwi.jgallery.tags.IndexIteratorTag</tag-class>
-    <body-content>JSP</body-content>
-  <!--  <teiclass>de.jwi.jgallery.tags.IndexIteratorTagTEI</teiclass> -->
-  
-  </tag>
+	<tag>
+		<name>else</name>
+		<tag-class>de.jwi.jgallery.tags.ElseTag</tag-class>
+		<body-content>JSP</body-content>
+	</tag>
 
 
-  <tag>
-    <name>counter</name>
-    <tag-class>de.jwi.jgallery.tags.CounterTag</tag-class>
-    <body-content>JSP</body-content>
-  </tag>
+	<tag>
+		<name>text</name>
+		<tag-class>de.jwi.jgallery.tags.TextTag</tag-class>
+		<body-content>JSP</body-content>
+	</tag>
 
-  
-  <tag>
-    <name>test</name>
-    <tag-class>de.jwi.jgallery.tags.TestTag</tag-class>
-    <bodycontent>EMPTY</bodycontent>
-  </tag>
-  
-  
+	<tag>
+		<name>rowiterator</name>
+		<tag-class>de.jwi.jgallery.tags.RowIteratorTag</tag-class>
+		<body-content>JSP</body-content>
+	</tag>
+
+	<tag>
+		<name>coliterator</name>
+		<tag-class>de.jwi.jgallery.tags.ColIteratorTag</tag-class>
+		<tei-class>de.jwi.jgallery.tags.ColIteratorTagTEI</tei-class>
+		<body-content>JSP</body-content>
+	</tag>
+
+	<tag>
+		<name>indexiterator</name>
+		<tag-class>de.jwi.jgallery.tags.IndexIteratorTag</tag-class>
+		<body-content>JSP</body-content>
+		<!-- <teiclass>de.jwi.jgallery.tags.IndexIteratorTagTEI</teiclass> -->
+
+	</tag>
+
+
+	<tag>
+		<name>counter</name>
+		<tag-class>de.jwi.jgallery.tags.CounterTag</tag-class>
+		<body-content>JSP</body-content>
+	</tag>
+
+
+	<tag>
+		<name>test</name>
+		<tag-class>de.jwi.jgallery.tags.TestTag</tag-class>
+		<body-content>empty</body-content>
+	</tag>
+
+
 </taglib>

@@ -25,6 +25,7 @@ package de.jwi.servletutil;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.Properties;
 
 import javax.servlet.ServletContext;
@@ -39,9 +40,9 @@ public class PathHelper
 {
 
 
-    public static RealPath getHttpRealPath(ServletContext servletContext, String path,Properties dirmapping) throws IOException
+    public static RealPath getHttpRealPath(ServletContext servletContext, String path,Properties dirmapping, List traceHints) throws IOException
     {
-        String s;
+        String s, key;
 
         
         // check if path is of the form /x/.. and in a mapping
@@ -49,15 +50,20 @@ public class PathHelper
         int p = path.indexOf('/', 1);
         if (p > -1)
         {
-            s = path.substring(1, p);
+        	key = path.substring(1, p);
 
-            s = dirmapping.getProperty(s);
+            s = dirmapping.getProperty(key);
+            traceHints.add("dirmapping: " + dirmapping + "key: " + key + " got: " +s);
 
             if (s != null)
             {
                 s = s + path.substring(p);
                 File f = new File(s);
-                if (f.exists()) { return new RealPath(RealPath.ISHTTPPATH, f.getPath(),
+                
+                traceHints.add("File " + s + " exists: "+f.exists());
+                
+                if (f.exists()) { 
+                	return new RealPath(RealPath.ISHTTPPATH, f.getPath(),
                         s); }
             }
         }
@@ -70,6 +76,7 @@ public class PathHelper
         {
             s = s + path;
             File f = new File(s);
+            traceHints.add("File " + s + " exists: "+f.exists());
             if (f.exists()) { return new RealPath(RealPath.ISHTTPPATH, f.getPath(),
                     s); }
         }
@@ -77,6 +84,7 @@ public class PathHelper
         
         // no mapping, so try to get a context
 
+        traceHints.add("checking for context");
         
         // first check, if the path is below jGallery's own context
         

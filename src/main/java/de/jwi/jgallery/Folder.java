@@ -1,6 +1,27 @@
 
 package de.jwi.jgallery;
 
+/*
+ * jGallery - Java web application to display image galleries
+ * 
+ * Copyright (C) 2004 Juergen Weber
+ * 
+ * This file is part of jGallery.
+ * 
+ * jGallery is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
+ * version.
+ * 
+ * jGallery is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU General Public License along with jGallery; if not, write to the Free
+ * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston
+ */
+
+import imageinfo.ImageInfo;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,27 +43,6 @@ import java.util.Properties;
 import javax.servlet.ServletContext;
 
 import de.jwi.jgallery.db.DBManager;
-
-/*
- * jGallery - Java web application to display image galleries
- * 
- * Copyright (C) 2004 Juergen Weber
- * 
- * This file is part of jGallery.
- * 
- * jGallery is free software; you can redistribute it and/or modify it under the terms of the GNU General Public
- * License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later
- * version.
- * 
- * jGallery is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
- * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- * 
- * You should have received a copy of the GNU General Public License along with jGallery; if not, write to the Free
- * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston
- */
-
-import imageinfo.ImageInfo;
 
 /**
  * @author Juergen Weber Source file created on 17.02.2004
@@ -203,6 +203,7 @@ public class Folder implements Serializable
 	}
 
 	private int sortCriterion = ImageComparator.SORTNONE;
+
 	private int sortOrder = ImageComparator.SORT_ASC;
 
 
@@ -280,7 +281,7 @@ public class Folder implements Serializable
 			sortCriterion = ImageComparator.SORTNONE;
 		}
 
-		
+
 		s = configuration.getString("sortOrder");
 		if ("asc".equals(s))
 		{
@@ -294,10 +295,8 @@ public class Folder implements Serializable
 		{
 			sortOrder = ImageComparator.SORT_ASC;
 		}
-		
-		
-		
-		
+
+
 		isShowImageNum = configuration.getBoolean("showImageNum",
 				isShowImageNum);
 
@@ -413,45 +412,42 @@ public class Folder implements Serializable
 		return new FileImageAccessor(name, this);
 	}
 
-	private ThumbNailInfo makeThumbNailInfoFromRandom(String name)
+	private ThumbNailInfo makeThumbNailInfoFromRandom(String subDirectoryName)
 			throws GalleryException
 	{
 		File f = null;
 		String subImages[] = null;
 
-		for (int i = 0; i < 2; i++)
+		f = new File(getDirectory(), subDirectoryName + "/" + getThumbsdir());
+		subImages = f.list(new FilenameFilter()
 		{
-			f = new File(getDirectory(), name + "/" + getThumbsdir());
-			subImages = f.list(new FilenameFilter()
+			public boolean accept(File dir, String name)
 			{
-				public boolean accept(File dir, String name)
+				File f1 = new File(dir, name);
+				if (!isJPEGExtension(name))
 				{
-					File f1 = new File(dir, name);
-					if (!isJPEGExtension(name))
-					{
-						return false;
-					}
-					return !f1.isDirectory();
-				};
-			});
+					return false;
+				}
+				return !f1.isDirectory();
+			};
+		});
 
-			if (subImages == null)
-			{
-				Folder subFolder = new Folder(new File(directory, name),
-						appContext, configuration, configData,
-						jgalleryContextPath, folderPath + "/" + name, imagePath
-								+ "/" + name, dBManager);
-
-				subFolder.loadFolder();
-
-				// no thumbnails created yet
-
-			}
-			else
-			{
-				break;
-			}
+		if (subImages == null)
+		{
+			throw new GalleryException("makeThumbNailInfoFromRandom called for non-folder " + subDirectoryName);
 		}
+		
+//		if (subImages == null)
+//		{
+//			Folder subFolder = new Folder(new File(directory, subDirectoryName),
+//					appContext, configuration, configData, jgalleryContextPath,
+//					folderPath + "/" + subDirectoryName, imagePath + "/" + subDirectoryName, dBManager);
+//
+//			subFolder.loadFolder();
+//
+//			// no thumbnails created yet
+//
+//		}
 		int n = (int) (Math.random() * subImages.length);
 
 		File f1 = new File(f, subImages[n]);
@@ -486,7 +482,7 @@ public class Folder implements Serializable
 			// NOP
 		}
 
-		ThumbNailInfo info = new ThumbNailInfo(getImageBasePath() + name + "/"
+		ThumbNailInfo info = new ThumbNailInfo(getImageBasePath() + subDirectoryName + "/"
 				+ getThumbsdir() + "/" + subImages[n], thumbWidth, thumbHeight);
 
 		return info;
@@ -527,7 +523,7 @@ public class Folder implements Serializable
 				image = new Image(subDirectories[n - 1], true, this,
 						makeImageAccessor(subDirectories[n - 1]), thumbNailInfo);
 
-				
+
 				imagesArray[n - 1] = image;
 			}
 		}
@@ -622,8 +618,8 @@ public class Folder implements Serializable
 		{
 			for (int i = 0; i < totalIndexes; i++)
 			{
-				String page = getCalculatedIndexPage(i+1);
-				String number = Integer.toString(i+1);
+				String page = getCalculatedIndexPage(i + 1);
+				String number = Integer.toString(i + 1);
 				String selected = getIndexNum().equals(number)
 						? "selected"
 						: "";
@@ -801,7 +797,7 @@ public class Folder implements Serializable
 	 */
 	public String getGenerator()
 	{
-		String s = String.format("jGallery %s (%s)", getInternalVersion(), getBuildDate());
+		String s = String.format("jGallery %s (%s)",getInternalVersion(), getBuilddate());
 		return s;
 	}
 
@@ -847,7 +843,7 @@ public class Folder implements Serializable
 		return configData.version;
 	}
 
-	public String getBuildDate()
+	public String getBuilddate()
 	{
 		return configData.builddate;
 	}
@@ -1313,10 +1309,10 @@ public class Folder implements Serializable
 
 			parentFolderList = new ArrayList();
 
-//			String hTMLBase = jgalleryContextPath;
-			
+			//			String hTMLBase = jgalleryContextPath;
+
 			String hTMLBase = "";
-			
+
 			String parentlink = null;
 
 			boolean skipReadImages = false;
@@ -1338,7 +1334,7 @@ public class Folder implements Serializable
 					parentlink = null;
 
 					boolean isOutOfContext = false;
-					
+
 					if (i == 1)
 					{
 						s = configuration.getString("parentlink." + parts[1]);
@@ -1369,12 +1365,13 @@ public class Folder implements Serializable
 					}
 
 
-					parentFolderList.add(parentIndexPage = new ParentLink(parts[i], currentParent
-							.toString(),isOutOfContext));
+					parentFolderList
+							.add(parentIndexPage = new ParentLink(parts[i],
+									currentParent.toString(), isOutOfContext));
 
 				}
 
-//				parentIndexPage = currentParent.toString();
+				//				parentIndexPage = currentParent.toString();
 			}
 			if (skipReadImages)
 			{
@@ -1387,7 +1384,8 @@ public class Folder implements Serializable
 					public boolean accept(File dir, String name)
 					{
 						File f1 = new File(dir, name);
-						return (f1.isDirectory() && !thumbsdir.equals(name))
+						return (f1.isDirectory() && !thumbsdir.equals(name)
+								&& !"WEB-INF".equalsIgnoreCase(name))
 								| isJPEGExtension(name);
 						// return isJPEGExtension(name);
 					};
@@ -1413,7 +1411,7 @@ public class Folder implements Serializable
 			}
 			finally
 			{
-				if (is!=null)
+				if (is != null)
 				{
 					try
 					{
@@ -1438,7 +1436,7 @@ public class Folder implements Serializable
 		private String name;
 
 		private String url;
-		
+
 		private boolean isOutOfContext;
 
 		public ParentLink(String name, String url, boolean isOutOfContext)
@@ -1499,7 +1497,8 @@ public class Folder implements Serializable
 					.append(s1[0]).append('/');
 		}
 
-		parentFolderList.add(new ParentLink("index", getParentIndexPage().getUrl()));
+		parentFolderList.add(new ParentLink("index", getParentIndexPage()
+				.getUrl()));
 
 		for (int i = 1; i < s1.length - 1; i++)
 		{
@@ -1531,7 +1530,7 @@ public class Folder implements Serializable
 				// getImage(i + 1);
 				getSubDirOrImage(i + 1);
 			}
-			Comparator c = new ImageComparator(sortCriterion,sortOrder);
+			Comparator c = new ImageComparator(sortCriterion, sortOrder);
 
 			Arrays.sort(imagesArray, subDirectories.length, imagesArray.length,
 					c);
@@ -1615,9 +1614,10 @@ public class Folder implements Serializable
 				// increment counter only once per Session
 				// and only if the index Page was already shown in this session
 				// (to prevent folder counting on image viewing with cookies off)
-				
-				boolean doIncrement = firstIndexPageWasDisplayed & this.configData.doCount;
-			
+
+				boolean doIncrement = firstIndexPageWasDisplayed
+						& this.configData.doCount;
+
 				try
 				{
 					folderCounter = dBManager.getAndIncFolderCounter(
@@ -1633,8 +1633,19 @@ public class Folder implements Serializable
 
 		return s;
 	}
+	
+	public String getImageCounterNI(String name)
+	{
+		// non incrementing version
+		return getImageCounter1(name, false);
+	}
 
 	public String getImageCounter(String name)
+	{
+		return getImageCounter1(name, true);
+	}
+	
+	private String getImageCounter1(String name, boolean doInc )
 	{
 		// trigger first putting folder into DB
 		getCounter();
@@ -1657,9 +1668,13 @@ public class Folder implements Serializable
 				try
 				{
 					c = dBManager.getAndIncImageCounter(folderPath,
-							imageFiles[imageNum - 1], this.configData.doCount);
+							imageFiles[imageNum - 1], this.configData.doCount & doInc);
 
-					imageCounters[imageNum - 1] = c;
+					if (doInc)
+					{
+						// if !doInc don't spoil chance to increment 
+						imageCounters[imageNum - 1] = c;
+					}
 
 					rc = Integer.toString(c);
 				}
