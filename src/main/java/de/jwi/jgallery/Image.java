@@ -25,6 +25,7 @@ package de.jwi.jgallery;
 
 import imageinfo.ImageInfo;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -339,7 +340,7 @@ public class Image implements Serializable
 	{
 		this.comment = comment;
 	}
-
+	
 	public String getFileSize()
 	{
 		return fileSize;
@@ -374,4 +375,11 @@ public class Image implements Serializable
 		return isRepresentsSubdirectory;
 	}
 
+	public boolean getHasCommentFile()
+	{
+		String n = getLabel() + ".txt";
+		File f = new File(n);
+		return f.exists();
+	}
+	
 }

@@ -91,9 +91,11 @@
 	<c:otherwise>
 	<!-- Try to extract the comment from a file carrying the same base name as this image -->
 	<br>
+	<c:if test="${image.hasCommentFile}">
 	<div class="name">
 		<jsp:include page="${image.label}.txt" />
 	</div>
+	</c:if> 
 </c:otherwise>
 </c:choose>
 
