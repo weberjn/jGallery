@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<weblogic-web-app xmlns="http://xmlns.oracle.com/weblogic/weblogic-web-app">
+
+	<security-role-assignment>
+		<role-name>galleryviewer</role-name>
+		<principal-name>gallerygroup</principal-name>
+	</security-role-assignment>
+
+
+</weblogic-web-app>
