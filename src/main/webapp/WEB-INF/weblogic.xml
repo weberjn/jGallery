@@ -2,10 +2,10 @@
 
 <weblogic-web-app xmlns="http://xmlns.oracle.com/weblogic/weblogic-web-app">
 
-	<security-role-assignment>
+	<!--  security-role-assignment>
 		<role-name>galleryviewer</role-name>
 		<principal-name>gallerygroup</principal-name>
-	</security-role-assignment>
+	</security-role-assignment -->
 
 
 </weblogic-web-app>
