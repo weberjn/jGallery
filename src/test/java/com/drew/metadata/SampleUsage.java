@@ -126,18 +126,20 @@ public class SampleUsage
         // A Metadata object contains multiple Directory objects
         //
         
-        ExifSubIFDDirectory d = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
+        ExifSubIFDDirectory d = metadata.getDirectory(ExifSubIFDDirectory.class);
 
         Date date = d.getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL);
         
-        ExifIFD0Directory d1 = metadata.getFirstDirectoryOfType(ExifIFD0Directory.class);
+        ExifIFD0Directory d1 = metadata.getDirectory(ExifIFD0Directory.class);
         
         String s = d1.getString(ExifIFD0Directory.TAG_MODEL);
         
-        JpegCommentDirectory d2 = metadata.getFirstDirectoryOfType(JpegCommentDirectory.class);
+        JpegCommentDirectory d2 = metadata.getDirectory(JpegCommentDirectory.class);
         
-        s = d2.getString(JpegCommentDirectory.TAG_COMMENT);
-        
+        if (d2 != null)
+        {
+        	s = d2.getString(JpegCommentDirectory.TAG_COMMENT);
+        }
         
         s = d1.getString(ExifSubIFDDirectory.TAG_FOCAL_LENGTH);
         

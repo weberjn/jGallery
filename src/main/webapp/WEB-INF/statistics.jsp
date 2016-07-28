@@ -26,15 +26,11 @@
 <td class="header-center"><small>Folder</small>&nbsp;
 </td>
 
-<td class="header-center"><small>details</small>&nbsp;
-</td>
+
 
 <td class="header-center"><small>hits</small>&nbsp;
 </td>
 
-
-<td class="header-center"><small>max/min/avg Hits/Image</small>&nbsp;
-</td>
 </tr>
 
 <c:forEach var="folder" items="${statistics}">
@@ -45,11 +41,8 @@
 
 <td class="row-left"><a href="${folder.URL}" title="${folder.URL}">${folder.name}</a></td>
 
-<td class="row-center"><a href="${folder.detailsTO}">Image hits</a></td>
 
 <td class="row-center">${folder.hits}</td>
-
-<td class="row-center">${folder.max} / ${folder.min} / ${folder.avg}</td>
 
 
 

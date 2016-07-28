@@ -59,7 +59,6 @@ public class Folder implements Serializable
 
 	private static final String GENERATORURL = "http://www.jwi.de/jgallery/";
 
-
 	private String thumbsdir = "thumbs";
 
 	private float thumbQuality = 0.98f;
@@ -173,10 +172,9 @@ public class Folder implements Serializable
 
 	private boolean firstIndexPageWasDisplayed = false;
 
-	public Folder(File directory, ServletContext appContext,
-			Configuration configuration, ConfigData configData,
-			String jgalleryContextPath, String folderPath, String imagePath,
-			DBManager dBManager) throws GalleryException
+	public Folder(File directory, ServletContext appContext, Configuration configuration, ConfigData configData,
+			String jgalleryContextPath, String folderPath, String imagePath, DBManager dBManager)
+			throws GalleryException
 	{
 		this.directory = directory;
 
@@ -206,9 +204,7 @@ public class Folder implements Serializable
 
 	private int sortOrder = ImageComparator.SORT_ASC;
 
-
-	private Configuration readTemplateConfiguration(String templateConfigFile,
-			Configuration c)
+	private Configuration readTemplateConfiguration(String templateConfigFile, Configuration c)
 	{
 		Configuration c1 = c;
 
@@ -219,18 +215,15 @@ public class Folder implements Serializable
 			try
 			{
 				c1 = new Configuration(is, c);
-			}
-			catch (IOException e)
+			} catch (IOException e)
 			{
 				// NOP
-			}
-			finally
+			} finally
 			{
 				try
 				{
 					is.close();
-				}
-				catch (IOException e1)
+				} catch (IOException e1)
 				{
 					// NOP
 				}
@@ -242,8 +235,7 @@ public class Folder implements Serializable
 	private void readConfiguration() throws GalleryException
 	{
 		template = configuration.getString("template", template);
-		String templateConfig = "/templates/" + template
-				+ "/template.properties";
+		String templateConfig = "/templates/" + template + "/template.properties";
 
 		// Template Configurations cannot be overridden
 		configuration = readTemplateConfiguration(templateConfig, configuration);
@@ -254,7 +246,6 @@ public class Folder implements Serializable
 		indexJsp = "/templates/" + template + "/index.jsp";
 		slideJsp = "/templates/" + template + "/slide.jsp";
 
-
 		style = configuration.getString("style", style);
 
 		textEncoding = configuration.getString("textEncoding", textEncoding);
@@ -263,42 +254,33 @@ public class Folder implements Serializable
 		if ("filedate".equals(s))
 		{
 			sortCriterion = ImageComparator.SORTBYFILEDATE;
-		}
-		else if ("exifdate".equals(s))
+		} else if ("exifdate".equals(s))
 		{
 			sortCriterion = ImageComparator.SORTBYEXIFDATE;
-		}
-		else if ("name".equals(s))
+		} else if ("name".equals(s))
 		{
 			sortCriterion = ImageComparator.SORTBYNAME;
-		}
-		else if ("none".equals(s))
+		} else if ("none".equals(s))
+		{
+			sortCriterion = ImageComparator.SORTNONE;
+		} else
 		{
 			sortCriterion = ImageComparator.SORTNONE;
 		}
-		else
-		{
-			sortCriterion = ImageComparator.SORTNONE;
-		}
-
 
 		s = configuration.getString("sortOrder");
 		if ("asc".equals(s))
 		{
 			sortOrder = ImageComparator.SORT_ASC;
-		}
-		else if ("desc".equals(s))
+		} else if ("desc".equals(s))
 		{
 			sortOrder = ImageComparator.SORT_DESC;
-		}
-		else
+		} else
 		{
 			sortOrder = ImageComparator.SORT_ASC;
 		}
 
-
-		isShowImageNum = configuration.getBoolean("showImageNum",
-				isShowImageNum);
+		isShowImageNum = configuration.getBoolean("showImageNum", isShowImageNum);
 
 		folderIconStyle = FOLDER_ICON_RANDOM;
 
@@ -310,19 +292,15 @@ public class Folder implements Serializable
 
 		thumbsdir = configuration.getString("thumbnails.dir", thumbsdir);
 
-		isCreateThumbs = configuration.getBoolean("thumbnails.create",
-				isCreateThumbs);
+		isCreateThumbs = configuration.getBoolean("thumbnails.create", isCreateThumbs);
 
 		thumbSize = configuration.getInt("thumbnails.size", thumbSize);
-		thumbQuality = configuration.getFloat("thumbnails.quality",
-				thumbQuality);
-
+		thumbQuality = configuration.getFloat("thumbnails.quality", thumbQuality);
 
 		templatePath = jgalleryContextPath + "/templates/" + template;
 		resResourcePath = "/templates/" + template + "/res";
 		resPath = jgalleryContextPath + "/templates/" + template + "/res";
-		stylePath = jgalleryContextPath + "/templates/" + template + "/styles/"
-				+ style + ".css";
+		stylePath = jgalleryContextPath + "/templates/" + template + "/styles/" + style + ".css";
 
 		s = configuration.getString("parentlink");
 		if (s == null)
@@ -341,11 +319,9 @@ public class Folder implements Serializable
 		configuration.getUserVariables(variables);
 	}
 
-
 	private void setIconDimensions()
 	{
-		InputStream is = appContext.getResourceAsStream(resResourcePath
-				+ "/folder.gif");
+		InputStream is = appContext.getResourceAsStream(resResourcePath + "/folder.gif");
 		if (null != is)
 		{
 
@@ -392,6 +368,13 @@ public class Folder implements Serializable
 		return (s == null) ? "" : s;
 	}
 
+	public String getComment(String image)
+	{
+		String s = captions.getProperty(image);
+
+		return (s == null) ? "" : s;
+	}
+
 	public String getIndexJsp()
 	{
 		return indexJsp;
@@ -412,8 +395,7 @@ public class Folder implements Serializable
 		return new FileImageAccessor(name, this);
 	}
 
-	private ThumbNailInfo makeThumbNailInfoFromRandom(String subDirectoryName)
-			throws GalleryException
+	private ThumbNailInfo makeThumbNailInfoFromRandom(String subDirectoryName) throws GalleryException
 	{
 		File f = null;
 		String subImages[] = null;
@@ -436,18 +418,19 @@ public class Folder implements Serializable
 		{
 			throw new GalleryException("makeThumbNailInfoFromRandom called for non-folder " + subDirectoryName);
 		}
-		
-//		if (subImages == null)
-//		{
-//			Folder subFolder = new Folder(new File(directory, subDirectoryName),
-//					appContext, configuration, configData, jgalleryContextPath,
-//					folderPath + "/" + subDirectoryName, imagePath + "/" + subDirectoryName, dBManager);
-//
-//			subFolder.loadFolder();
-//
-//			// no thumbnails created yet
-//
-//		}
+
+		// if (subImages == null)
+		// {
+		// Folder subFolder = new Folder(new File(directory, subDirectoryName),
+		// appContext, configuration, configData, jgalleryContextPath,
+		// folderPath + "/" + subDirectoryName, imagePath + "/" +
+		// subDirectoryName, dBManager);
+		//
+		// subFolder.loadFolder();
+		//
+		// // no thumbnails created yet
+		//
+		// }
 		int n = (int) (Math.random() * subImages.length);
 
 		File f1 = new File(f, subImages[n]);
@@ -456,8 +439,7 @@ public class Folder implements Serializable
 		try
 		{
 			is = new FileInputStream(f1);
-		}
-		catch (FileNotFoundException e)
+		} catch (FileNotFoundException e)
 		{
 			// guaranteed that file exists
 		}
@@ -476,14 +458,14 @@ public class Folder implements Serializable
 		try
 		{
 			is.close();
-		}
-		catch (IOException e1)
+		} catch (IOException e1)
 		{
 			// NOP
 		}
 
-		ThumbNailInfo info = new ThumbNailInfo(getImageBasePath() + subDirectoryName + "/"
-				+ getThumbsdir() + "/" + subImages[n], thumbWidth, thumbHeight);
+		ThumbNailInfo info = new ThumbNailInfo(
+				getImageBasePath() + subDirectoryName + "/" + getThumbsdir() + "/" + subImages[n], thumbWidth,
+				thumbHeight);
 
 		return info;
 
@@ -498,36 +480,30 @@ public class Folder implements Serializable
 			{
 				// get an image
 				image = getImage(n);
-			}
-			else
+			} else
 			{
 				ThumbNailInfo thumbNailInfo = null;
 
 				if (folderIconStyle == FOLDER_ICON_ICON)
 				{
-					thumbNailInfo = new ThumbNailInfo(getIconPath(),
-							getIconHeight(), getIconWidth());
-				}
-				else
+					thumbNailInfo = new ThumbNailInfo(getIconPath(), getIconHeight(), getIconWidth());
+				} else
 				{
 					thumbNailInfo = makeThumbNailInfoFromRandom(subDirectories[n - 1]);
 					if (thumbNailInfo == null)
 					{
 						// no thumbnails created yet, use icon for now
-						thumbNailInfo = new ThumbNailInfo(getIconPath(),
-								getIconHeight(), getIconWidth());
+						thumbNailInfo = new ThumbNailInfo(getIconPath(), getIconHeight(), getIconWidth());
 					}
 				}
 				// get a subfolder representation
 				// the the Image constructor closes all used file handles
-				image = new Image(subDirectories[n - 1], true, this,
-						makeImageAccessor(subDirectories[n - 1]), thumbNailInfo);
-
+				image = new Image(subDirectories[n - 1], true, this, makeImageAccessor(subDirectories[n - 1]),
+						thumbNailInfo);
 
 				imagesArray[n - 1] = image;
 			}
-		}
-		else
+		} else
 		{
 			image = getImage(n);
 		}
@@ -545,8 +521,7 @@ public class Folder implements Serializable
 			{
 				checkAndCreateThumb(n - 1);
 			}
-			imagesArray[n - 1] = new Image(imageFiles[n - 1], false, this,
-					makeImageAccessor(imageFiles[n - 1]), null);
+			imagesArray[n - 1] = new Image(imageFiles[n - 1], false, this, makeImageAccessor(imageFiles[n - 1]), null);
 
 			String s = captions.getProperty(imageFiles[n - 1]);
 			if (s != null)
@@ -571,8 +546,7 @@ public class Folder implements Serializable
 		{
 			if (!thumbsDir.mkdir())
 			{
-				throw new GalleryException(
-						"Could not create thumbnail directory: " + thumbsDir);
+				throw new GalleryException("Could not create thumbnail directory: " + thumbsDir);
 			}
 		}
 
@@ -585,11 +559,9 @@ public class Folder implements Serializable
 			try
 			{
 				thumbnailWriter.write(original, thumb, thumbQuality, thumbSize);
-			}
-			catch (IOException e)
+			} catch (IOException e)
 			{
-				throw new GalleryException("Error creating thumbnail" + thumb
-						+ " :" + e.getMessage());
+				throw new GalleryException("Error creating thumbnail" + thumb + " :" + e.getMessage());
 			}
 		}
 	}
@@ -609,7 +581,6 @@ public class Folder implements Serializable
 		return Integer.toString(lastImageOnIndexPage);
 	}
 
-
 	public List getPageIndexes()
 	{
 		List l = new ArrayList();
@@ -620,9 +591,7 @@ public class Folder implements Serializable
 			{
 				String page = getCalculatedIndexPage(i + 1);
 				String number = Integer.toString(i + 1);
-				String selected = getIndexNum().equals(number)
-						? "selected"
-						: "";
+				String selected = getIndexNum().equals(number) ? "selected" : "";
 
 				PageIndex p = new PageIndex();
 				p.setPage(page);
@@ -647,7 +616,6 @@ public class Folder implements Serializable
 		return getImages(true);
 	}
 
-
 	private List getImages(boolean inRows) throws GalleryException
 	{
 		int cols = getColsI();
@@ -671,8 +639,7 @@ public class Folder implements Serializable
 				if (inRows)
 				{
 					cl.add(img);
-				}
-				else
+				} else
 				{
 					rl.add(img);
 				}
@@ -693,8 +660,7 @@ public class Folder implements Serializable
 	{
 		String baseName = image.getName();
 
-		Integer imgnum = (Integer) images.get(baseName.substring(0, baseName
-				.indexOf('.')));
+		Integer imgnum = (Integer) images.get(baseName.substring(0, baseName.indexOf('.')));
 
 		int i = imgnum.intValue();
 
@@ -758,8 +724,7 @@ public class Folder implements Serializable
 			{
 				n++;
 			}
-		}
-		else
+		} else
 		{
 			n = i;
 		}
@@ -797,7 +762,7 @@ public class Folder implements Serializable
 	 */
 	public String getGenerator()
 	{
-		String s = String.format("jGallery %s (%s)",getInternalVersion(), getBuilddate());
+		String s = String.format("jGallery %s (%s)", getInternalVersion(), getBuilddate());
 		return s;
 	}
 
@@ -848,7 +813,6 @@ public class Folder implements Serializable
 		return configData.builddate;
 	}
 
-	
 	/**
 	 * @return Level of album directory (0 meaning root level)
 	 */
@@ -929,7 +893,6 @@ public class Folder implements Serializable
 	{
 		return name;
 	}
-
 
 	/**
 	 * @return Total number of index pages
@@ -1069,15 +1032,13 @@ public class Folder implements Serializable
 		return thumbsdir;
 	}
 
-	public String getFileContent(String fname)
-			throws FileNotFoundException, IOException, GalleryException
+	public String getFileContent(String fname) throws FileNotFoundException, IOException, GalleryException
 	{
 		File f = new File(directory, fname);
 		StringBuffer sb = new StringBuffer();
 		String s;
 
-		if (f.getParentFile().getCanonicalPath().equals(
-				directory.getCanonicalPath()))
+		if (f.getParentFile().getCanonicalPath().equals(directory.getCanonicalPath()))
 		{
 			// only allow to read in Folder's directory
 
@@ -1086,8 +1047,7 @@ public class Folder implements Serializable
 			{
 				sb.append(s);
 			}
-		}
-		else
+		} else
 		{
 			throw new GalleryException("Will only read in current directory.");
 		}
@@ -1134,7 +1094,6 @@ public class Folder implements Serializable
 		return templatePath;
 	}
 
-
 	// 1..
 	private String getSlidePage(int n)
 	{
@@ -1174,9 +1133,7 @@ public class Folder implements Serializable
 	 */
 	public String getPreviousPage()
 	{
-		return imageNum > 1 + subDirectories.length
-				? getSlidePage(imageNum - 1)
-				: "";
+		return imageNum > 1 + subDirectories.length ? getSlidePage(imageNum - 1) : "";
 	}
 
 	/**
@@ -1201,7 +1158,6 @@ public class Folder implements Serializable
 		return s1.endsWith(".jpg") | s1.endsWith(".jpeg");
 	}
 
-
 	public static final int INDEX = 1, SLIDE = 2;
 
 	protected String[] getSubDirectories()
@@ -1211,8 +1167,7 @@ public class Folder implements Serializable
 
 	public int setFileName(String pathInfoFileName) throws GalleryException
 	{
-		String s = pathInfoFileName.startsWith("/") ? pathInfoFileName
-				.substring(1) : pathInfoFileName;
+		String s = pathInfoFileName.startsWith("/") ? pathInfoFileName.substring(1) : pathInfoFileName;
 		String s1;
 		int n = 0, i;
 
@@ -1223,8 +1178,7 @@ public class Folder implements Serializable
 			if (s.equals("index." + configData.urlExtention))
 			{
 				indexNum = 1;
-			}
-			else
+			} else
 			{
 				i = 0;
 
@@ -1232,8 +1186,7 @@ public class Folder implements Serializable
 				try
 				{
 					i = Integer.parseInt(s1);
-				}
-				catch (NumberFormatException e)
+				} catch (NumberFormatException e)
 				{
 					throw new GalleryNotFoundException("URL not found", e);
 				}
@@ -1255,8 +1208,7 @@ public class Folder implements Serializable
 			{
 				currentCols = cols;
 				currentRows = rows;
-			}
-			else
+			} else
 			{
 				int r = totalImages % maxImagesPerIndex;
 
@@ -1271,8 +1223,7 @@ public class Folder implements Serializable
 				firstIndexPageWasDisplayed = true;
 			}
 			n = INDEX;
-		}
-		else
+		} else
 		// a slide page
 		{
 			s1 = s.substring(0, s.indexOf('.'));
@@ -1309,14 +1260,13 @@ public class Folder implements Serializable
 
 			parentFolderList = new ArrayList();
 
-			//			String hTMLBase = jgalleryContextPath;
+			// String hTMLBase = jgalleryContextPath;
 
 			String hTMLBase = "";
 
 			String parentlink = null;
 
 			boolean skipReadImages = false;
-
 
 			// ParentLink
 
@@ -1356,36 +1306,30 @@ public class Folder implements Serializable
 					if (parentlink != null)
 					{
 						currentParent.append(parentlink);
-					}
-					else
+					} else
 					{
-						currentParent.append(hTMLBase).append("/").append(sb)
-								.append("index.").append(
-										configData.urlExtention);
+						currentParent.append(hTMLBase).append("/").append(sb).append("index.")
+								.append(configData.urlExtention);
 					}
-
 
 					parentFolderList
-							.add(parentIndexPage = new ParentLink(parts[i],
-									currentParent.toString(), isOutOfContext));
+							.add(parentIndexPage = new ParentLink(parts[i], currentParent.toString(), isOutOfContext));
 
 				}
 
-				//				parentIndexPage = currentParent.toString();
+				// parentIndexPage = currentParent.toString();
 			}
 			if (skipReadImages)
 			{
 				imageFiles = new String[0];
-			}
-			else
+			} else
 			{
 				imageFiles = directory.list(new FilenameFilter()
 				{
 					public boolean accept(File dir, String name)
 					{
 						File f1 = new File(dir, name);
-						return (f1.isDirectory() && !thumbsdir.equals(name)
-								&& !"WEB-INF".equalsIgnoreCase(name))
+						return (f1.isDirectory() && !thumbsdir.equals(name) && !"WEB-INF".equalsIgnoreCase(name))
 								| isJPEGExtension(name);
 						// return isJPEGExtension(name);
 					};
@@ -1395,35 +1339,30 @@ public class Folder implements Serializable
 			}
 
 			File f = new File(directory, CAPTIONSFILE);
-			InputStream is = null;
-			try
+			if (f.exists())
 			{
-				is = new FileInputStream(f);
-				captions.load(is);
-			}
-			catch (FileNotFoundException e)
-			{
-				// ignore, no captions
-			}
-			catch (IOException e)
-			{
-				throw new GalleryException(e.getMessage(), e);
-			}
-			finally
-			{
-				if (is != null)
+				InputStream is = null;
+				try
 				{
-					try
+					is = new FileInputStream(f);
+					captions.load(is);
+				} catch (IOException e)
+				{
+					throw new GalleryException(e.getMessage(), e);
+				} finally
+				{
+					if (is != null)
 					{
-						is.close();
-					}
-					catch (IOException e)
-					{
-						throw new GalleryException(e.getMessage(), e);
+						try
+						{
+							is.close();
+						} catch (IOException e)
+						{
+							throw new GalleryException(e.getMessage(), e);
+						}
 					}
 				}
 			}
-
 			imageCounters = new int[imageFiles.length];
 			Arrays.fill(imageCounters, -1);
 
@@ -1488,26 +1427,21 @@ public class Folder implements Serializable
 
 		String p = jgalleryContextPath;
 
-
 		StringBuffer sb = null, sb1;
 
 		if (s1.length > 1)
 		{
-			sb = new StringBuffer(jgalleryContextPath).append('/')
-					.append(s1[0]).append('/');
+			sb = new StringBuffer(jgalleryContextPath).append('/').append(s1[0]).append('/');
 		}
 
-		parentFolderList.add(new ParentLink("index", getParentIndexPage()
-				.getUrl()));
+		parentFolderList.add(new ParentLink("index", getParentIndexPage().getUrl()));
 
 		for (int i = 1; i < s1.length - 1; i++)
 		{
-			sb1 = new StringBuffer(sb.toString()).append("index.").append(
-					configData.urlExtention);
+			sb1 = new StringBuffer(sb.toString()).append("index.").append(configData.urlExtention);
 			parentFolderList.add(new ParentLink(s1[i - 1], sb1.toString()));
 			sb.append(s1[i]).append('/');
 		}
-
 
 		int x = 5;
 	}
@@ -1532,8 +1466,7 @@ public class Folder implements Serializable
 			}
 			Comparator c = new ImageComparator(sortCriterion, sortOrder);
 
-			Arrays.sort(imagesArray, subDirectories.length, imagesArray.length,
-					c);
+			Arrays.sort(imagesArray, subDirectories.length, imagesArray.length, c);
 
 			for (int i = 0; i < imageFiles.length; i++)
 			{
@@ -1544,8 +1477,8 @@ public class Folder implements Serializable
 
 		for (int i = 0; i < imageFiles.length; i++)
 		{
-			String s = isJPEGExtension(imageFiles[i]) ? imageFiles[i]
-					.substring(0, imageFiles[i].indexOf('.')) : imageFiles[i];
+			String s = isJPEGExtension(imageFiles[i]) ? imageFiles[i].substring(0, imageFiles[i].indexOf('.'))
+					: imageFiles[i];
 			images.put(s, new Integer(i + 1));
 
 		}
@@ -1562,8 +1495,7 @@ public class Folder implements Serializable
 		if (p > -1)
 		{
 			name = title.substring(p + 1);
-		}
-		else
+		} else
 		{
 			name = title;
 		}
@@ -1575,11 +1507,9 @@ public class Folder implements Serializable
 		if (indexNum < totalIndexes)
 		{
 			return rows * cols;
-		}
-		else
+		} else
 		{
-			return totalImages /* + subDirectories.length */- (indexNum - 1)
-					* rows * cols;
+			return totalImages /* + subDirectories.length */ - (indexNum - 1) * rows * cols;
 		}
 	}
 
@@ -1613,17 +1543,15 @@ public class Folder implements Serializable
 			{
 				// increment counter only once per Session
 				// and only if the index Page was already shown in this session
-				// (to prevent folder counting on image viewing with cookies off)
+				// (to prevent folder counting on image viewing with cookies
+				// off)
 
-				boolean doIncrement = firstIndexPageWasDisplayed
-						& this.configData.doCount;
+				boolean doIncrement = firstIndexPageWasDisplayed & this.configData.doCount;
 
 				try
 				{
-					folderCounter = dBManager.getAndIncFolderCounter(
-							folderPath, doIncrement);
-				}
-				catch (SQLException e)
+					folderCounter = dBManager.getAndIncFolderCounter(folderPath, doIncrement);
+				} catch (SQLException e)
 				{
 					appContext.log(e.getMessage(), e);
 				}
@@ -1633,7 +1561,7 @@ public class Folder implements Serializable
 
 		return s;
 	}
-	
+
 	public String getImageCounterNI(String name)
 	{
 		// non incrementing version
@@ -1644,8 +1572,8 @@ public class Folder implements Serializable
 	{
 		return getImageCounter1(name, true);
 	}
-	
-	private String getImageCounter1(String name, boolean doInc )
+
+	private String getImageCounter1(String name, boolean doInc)
 	{
 		// trigger first putting folder into DB
 		getCounter();
@@ -1667,24 +1595,22 @@ public class Folder implements Serializable
 			{
 				try
 				{
-					c = dBManager.getAndIncImageCounter(folderPath,
-							imageFiles[imageNum - 1], this.configData.doCount & doInc);
+					c = dBManager.getAndIncImageCounter(folderPath, imageFiles[imageNum - 1],
+							this.configData.doCount & doInc);
 
 					if (doInc)
 					{
-						// if !doInc don't spoil chance to increment 
+						// if !doInc don't spoil chance to increment
 						imageCounters[imageNum - 1] = c;
 					}
 
 					rc = Integer.toString(c);
-				}
-				catch (SQLException e)
+				} catch (SQLException e)
 				{
 					appContext.log(e.getMessage(), e);
 					rc = null;
 				}
-			}
-			else
+			} else
 			{
 				rc = Integer.toString(c);
 			}

@@ -1,0 +1,6 @@
+
+create a jGallery-custom.properties in ${catalina.home}/lib
+containing your gallery mappings
+
+if you want to use Derby, add "${java.home}/db/lib" to catalina.properties
+

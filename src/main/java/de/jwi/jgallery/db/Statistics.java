@@ -52,7 +52,7 @@ public class Statistics
 		public String toString()
 		{
 
-			return name + " " + hits + " " + max + " " + avg;
+			return name + " " + hits;
 		}
 
 		private String name;
@@ -60,31 +60,16 @@ public class Statistics
 		private String id;
 
 		private String hits;
-
-		private String max;
-
-		private String min;
-
-		private String avg;
 		
 		private String baseUrl;
 
 		private String servletURL;
 		
-		public FolderInfo(String name, String id, String hits, String max, String min,
-				String avg, String baseUrl, String servletURL)
+		public FolderInfo(String name, String id, String hits, String baseUrl, String servletURL)
 		{
 			this.name = name;
 			this.id = id;
 			this.hits = hits;
-			this.max = (max != null) ? max : "0";
-			this.min = (min != null) ? min : "0";
-			this.avg = (avg != null) ? avg : "0";
-			
-			
-			
-			float f = Float.parseFloat(this.avg);
-			this.avg = numberInstance.format(f);
 			
 			this.baseUrl = baseUrl;
 			this.servletURL = servletURL;
@@ -106,11 +91,7 @@ public class Statistics
 			return servletURL + "/tn/"+id;
 		}
 
-		
-		public String getAvg()
-		{
-			return avg;
-		}
+
 
 		public String getName()
 		{
@@ -127,16 +108,6 @@ public class Statistics
 			return hits;
 		}
 
-
-		public String getMax()
-		{
-			return max;
-		}
-
-		public String getMin()
-		{
-			return min;
-		}
 
 	}
 	
@@ -185,11 +156,7 @@ public class Statistics
 		{
 			Statement stmt = conn.createStatement();
 
-			query = "select folder, f.id, f.hits as folderhits, " +
-					"max(i.hits) as maxhits, min(i.hits) as minhits, " +
-					"avg(i.hits) as avghits " +
-					"from folders f left join images i on (f.id = i.folderid) " +
-					"group by f.id order by f.hits desc;";
+			query = "select folder, f.id, f.hits as folderhits from folders f";
 			
 			ResultSet rs = stmt.executeQuery(query);
 
@@ -198,8 +165,7 @@ public class Statistics
 			while (rs.next())
 			{
 				fi = new FolderInfo(rs.getString("folder"), rs.getString("id"),
-						rs.getString("folderhits"), rs.getString("maxhits"), rs
-						.getString("minhits"), rs.getString("avghits"),baseUrl,self);
+						rs.getString("folderhits"),baseUrl,self);
 				
 				l.add(fi);
 			}

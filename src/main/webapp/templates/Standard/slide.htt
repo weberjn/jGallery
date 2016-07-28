@@ -91,7 +91,6 @@
 	<table>
 		<tr><td>File size</td><td>$fileSize</td></tr>
 		<tr><td>Original date</td><td>$originalDate</td></tr>
-		<tr><td>Resolution</td><td>$resolution</td></tr>
 		<tr><td>Flash</td><td>$flash</td></tr>
 		<tr><td>Focal length</td><td>$focalLength</td></tr>
 		<tr><td>Exposure time</td><td>$exposureTime</td></tr>

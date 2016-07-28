@@ -333,7 +333,13 @@ public class Image implements Serializable
 
 	public String getComment()
 	{
-		return comment;
+		if (comment != null && comment.length() > 0)
+		{
+			return comment;
+		}
+		
+		String s = folder.getComment(name);
+		return s;
 	}
 
 	public void setComment(String comment)

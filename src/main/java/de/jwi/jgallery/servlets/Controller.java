@@ -66,9 +66,11 @@ public class Controller extends HttpServlet
 
 	private static String urlExtention;
 
-	private static final String CONFIGFILE = "/jGallery.properties";
-
-	static final String VERSIONCONFIGFILE = "/version.properties";
+	public static final String JGALLERY_PROPERTIES = "/jGallery.properties";
+	
+	public static final String JGALLERY_CUSTOM_PROPERTIES = "/jGallery-custom.properties";
+	
+	public static final String VERSIONCONFIGFILE = "/version.properties";
 
 	private Configuration configuration;
 
@@ -106,53 +108,13 @@ public class Controller extends HttpServlet
 	{
 		ServletContext context = getServletContext();
 
-		Properties propsCP = new Properties();
-		Properties propsWI = new Properties();
-
+		Properties propsWI = (Properties)context.getAttribute(Controller.JGALLERY_PROPERTIES);
+		
 		InputStream is = null;
 
 		URL urlWI = null;
 
-		try
-		{
-			urlWI = context.getResource("/WEB-INF" + CONFIGFILE);
-			if (urlWI != null)
-			{
-				context.log("reading " + urlWI);
-				is = context.getResourceAsStream("/WEB-INF" + CONFIGFILE);
-
-				propsWI.load(is);
-				is.close();
-			}
-		} catch (IOException e)
-		{
-			throw new ServletException(e);
-		}
-
-		URL urlCP = getClass().getResource(CONFIGFILE);
-		if (urlCP != null)
-		{
-			context.log("reading " + urlCP);
-			is = getClass().getResourceAsStream(CONFIGFILE);
-			try
-			{
-				propsCP.load(is);
-				is.close();
-			} catch (IOException e)
-			{
-				throw new ServletException(e);
-			}
-		}
-
-		if (urlWI == null && urlCP == null)
-		{
-			context.log("no " + CONFIGFILE + " found");
-		}
-
-		// Classpath properties override WEB-INF properties
-		propsWI.putAll(propsCP);
-
-		dataSource = propsWI.getProperty("dataSource");
+		dataSource = propsWI.getProperty("datasource");
 
 		dirmappings = new Properties();
 
@@ -174,7 +136,7 @@ public class Controller extends HttpServlet
 
 		if (null != s)
 		{
-			useDataBase = Boolean.valueOf(s).booleanValue();
+			useDataBase = Boolean.valueOf(s.trim()).booleanValue();
 			initDBConnection();
 		}
 
@@ -182,22 +144,9 @@ public class Controller extends HttpServlet
 
 		configuration.setThumbnailWriter(new ImageIOThumbnailWriter());
 
-		is = Controller.class.getResourceAsStream(VERSIONCONFIGFILE);
-		if (is == null)
-		{
-			throw new ServletException(VERSIONCONFIGFILE + " not found");
-		}
-
-		Properties versionProperties = new Properties();
-		try
-		{
-			versionProperties.load(is);
-			is.close();
-		} catch (IOException e)
-		{
-			throw new ServletException(e);
-		}
-
+	
+		Properties versionProperties = (Properties)context.getAttribute(Controller.VERSIONCONFIGFILE);
+		
 		s = versionProperties.getProperty("version");
 		version = s;
 
@@ -255,7 +204,7 @@ public class Controller extends HttpServlet
 			throw new GalleryNotFoundException("directory does not exist: " + directory.toString());
 		}
 
-		File config = new File(directory, CONFIGFILE);
+		File config = new File(directory, JGALLERY_PROPERTIES);
 		if (config.exists())
 		{
 			InputStream is;

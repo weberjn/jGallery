@@ -69,8 +69,6 @@ public class EXIFInfo implements Serializable
 
 	private String originalDate; // Date written by camera
 
-	private String resolution; // Original image resolution as written by camera
-
 	private String flash; // If flash was used
 
 	private String focalLength; // Focal length
@@ -296,15 +294,6 @@ public class EXIFInfo implements Serializable
 		this.originalWidthDpi = originalWidthDpi;
 	}
 
-	public String getResolution()
-	{
-		return resolution;
-	}
-
-	private void setResolution(String resolution)
-	{
-		this.resolution = resolution;
-	}
 
 	private void setComment(String comment)
 	{
@@ -332,22 +321,20 @@ public class EXIFInfo implements Serializable
 	{
 		Metadata metadata = JpegMetadataReader.readMetadata(jpeg);
 
-		ExifSubIFDDirectory subIFDDirectory = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
+		ExifSubIFDDirectory subIFDDirectory = metadata.getDirectory(ExifSubIFDDirectory.class);
 
 		if (subIFDDirectory != null)
 		{
 			ExifSubIFDDescriptor exifSubIFDDescriptor = new ExifSubIFDDescriptor(subIFDDirectory);
 
-			setOriginalWidth(exifSubIFDDescriptor.getImageWidthDescription());
+			setOriginalWidth(exifSubIFDDescriptor.getExifImageWidthDescription());
 
-			setOriginalHeight(exifSubIFDDescriptor.getImageHeightDescription());
+			setOriginalHeight(exifSubIFDDescriptor.getExifImageHeightDescription());
 
-			setCompressionLevel(exifSubIFDDescriptor.getCompressionDescription());
+			setCompressionLevel(exifSubIFDDescriptor.getCompressedAverageBitsPerPixelDescription());
 
 			
 			setOriginalDate(subIFDDirectory.getString(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL));
-
-			setResolution(exifSubIFDDescriptor.getResolutionDescription());
 
 			setFlash(exifSubIFDDescriptor.getFlashDescription());
 
@@ -365,14 +352,14 @@ public class EXIFInfo implements Serializable
 
 		//	setCameraMake(exifSubIFDDescriptor.getcsubIFDDirectory.getString(ExifSubIFDDirectory.TAG_MAKE));
 		}
-		ExifIFD0Directory exifIFD0Directory = metadata.getFirstDirectoryOfType(ExifIFD0Directory.class);
+		ExifIFD0Directory exifIFD0Directory = metadata.getDirectory(ExifIFD0Directory.class);
 		if (exifIFD0Directory != null)
 		{
 			ExifIFD0Descriptor exifIFD0Descriptor = new ExifIFD0Descriptor(exifIFD0Directory); 
 			setCameraModel(exifIFD0Directory.getString(exifIFD0Directory.TAG_MODEL));
 		}
 		
-		JpegCommentDirectory jpegCommentDirectory = metadata.getFirstDirectoryOfType(JpegCommentDirectory.class);
+		JpegCommentDirectory jpegCommentDirectory = metadata.getDirectory(JpegCommentDirectory.class);
 
 		if (jpegCommentDirectory != null)
 		{

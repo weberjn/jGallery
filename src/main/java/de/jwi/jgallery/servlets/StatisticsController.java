@@ -3,6 +3,7 @@ package de.jwi.jgallery.servlets;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.util.Date;
@@ -54,9 +55,14 @@ public class StatisticsController extends HttpServlet
 
 	public void init() throws ServletException
 	{
-		String dataSource = getServletContext().getInitParameter(
-				"dataSource");
+		Properties propsWI = (Properties)getServletContext().getAttribute(Controller.JGALLERY_PROPERTIES);
 
+		Properties versionProperties = (Properties)getServletContext().getAttribute(Controller.VERSIONCONFIGFILE);
+		
+		version = versionProperties.getProperty("version");
+
+		String dataSource = propsWI.getProperty("datasource");
+		
 		Context context;
 		try
 		{
@@ -72,26 +78,6 @@ public class StatisticsController extends HttpServlet
 		catch (NamingException e)
 		{
 			throw new ServletException(e.getMessage(), e);
-		}
-
-		try
-		{
-			InputStream is = StatisticsController.class.getResourceAsStream(Controller.VERSIONCONFIGFILE);
-			
-			Properties versionProperties = new Properties();
-			versionProperties.load(is);
-
-			String s = versionProperties.getProperty("version");
-			if (null != s)
-			{
-				version = s;
-			}
-			
-			is.close();
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace(System.err); // TODO
 		}
 
 	}
