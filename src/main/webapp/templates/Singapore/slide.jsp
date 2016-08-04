@@ -11,7 +11,6 @@
 
 
   <title>${image.label}</title>
-  <link rel="stylesheet" type="text/css" href="${folder.templatePath}/main.css"/>
 
  </head>
 
