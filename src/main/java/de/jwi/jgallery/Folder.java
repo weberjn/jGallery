@@ -57,7 +57,7 @@ public class Folder implements Serializable
 
 	private ConfigData configData;
 
-	private static final String GENERATORURL = "http://www.jwi.de/jgallery/";
+	private static final String GENERATORURL = "http://www.jwi.de/jGallery/";
 
 	private String thumbsdir = "thumbs";
 
