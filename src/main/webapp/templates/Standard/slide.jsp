@@ -74,13 +74,22 @@
 <c:choose> 
 	<c:when test="${!empty image.originalPath}">
 	<a href="<c:url value='${image.originalPath}'/>">
-		<img src="${image.imagePath}" width="${image.imageWidth}" height="${image.imageHeight}" border=0 alt="original image">
+		<img src="${image.imagePath}" width="${image.imageWidth}" height="${image.imageHeight}" border=0 alt="original image" usemap="#imagemap" />
 	</a>
 	</c:when> 
 	<c:otherwise>
-	<img src="${image.imagePath}" width="${image.imageWidth}" height="${image.imageHeight}">
+	<img src="${image.imagePath}" width="${image.imageWidth}" height="${image.imageHeight}" usemap="#imagemap" />
 </c:otherwise>
 </c:choose>
+  
+  	<map name="imagemap">
+  	<c:if test="${!empty folder.previousPage}"> 
+  		<area shape="rect" coords="0,0,${image.imageWidth / 2},${image.imageHeight}" href="<c:url value='${folder.previousPage}'/>" />
+  	</c:if> 
+ 	  <c:if test="${!empty folder.nextPage}">
+ 	  	<area shape="rect" coords="${image.imageWidth / 2},0,${image.imageWidth},${image.imageHeight}" href="<c:url value='${folder.nextPage}'/>" />
+      </c:if> 
+ 	</map>  
 
 <!-- Always display comment below image (if exists) -->
 <c:choose> 

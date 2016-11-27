@@ -1,3 +1,6 @@
+2016-11-27
+- Added prev/next image map to index.jsp
+
 Version 1.0.0, 2016-07-21
 - converted to Maven project
 

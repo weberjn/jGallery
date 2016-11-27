@@ -111,8 +111,16 @@ ${image.name}
     <td class="mm">
   
     <img src="${image.imagePath}" class="sgImage"
-    	alt="${folder.name}" height="${image.imageHeight}" width="${image.imageWidth}" /> 
+    	alt="${folder.name}" height="${image.imageHeight}" width="${image.imageWidth}"  usemap="#imagemap"/> 
   
+  	<map name="imagemap">
+  	<c:if test="${!empty folder.previousPage}"> 
+  		<area shape="rect" coords="0,0,${image.imageWidth / 2},${image.imageHeight}" href="<c:url value='${folder.previousPage}'/>" />
+  	</c:if> 
+ 	  <c:if test="${!empty folder.nextPage}">
+ 	  	<area shape="rect" coords="${image.imageWidth / 2},0,${image.imageWidth},${image.imageHeight}" href="<c:url value='${folder.nextPage}'/>" />
+      </c:if> 
+ 	</map>
   
     </td>
     <td class="mr"><img src="${folder.templatePath}/images/blank.gif" alt="" /></td>
