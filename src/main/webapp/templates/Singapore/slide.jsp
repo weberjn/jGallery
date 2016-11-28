@@ -114,11 +114,12 @@ ${image.name}
     	alt="${folder.name}" height="${image.imageHeight}" width="${image.imageWidth}"  usemap="#imagemap"/> 
   
   	<map name="imagemap">
+  	<area shape="rect" coords="0,0,${image.imageWidth - 1},${image.imageHeight / 5}" href="<c:url value='${folder.indexPage}'/>" />
   	<c:if test="${!empty folder.previousPage}"> 
-  		<area shape="rect" coords="0,0,${image.imageWidth / 2},${image.imageHeight}" href="<c:url value='${folder.previousPage}'/>" />
+  		<area shape="rect" coords="0,${image.imageHeight / 5},${image.imageWidth / 2},${image.imageHeight}" href="<c:url value='${folder.previousPage}'/>" />
   	</c:if> 
  	  <c:if test="${!empty folder.nextPage}">
- 	  	<area shape="rect" coords="${image.imageWidth / 2},0,${image.imageWidth},${image.imageHeight}" href="<c:url value='${folder.nextPage}'/>" />
+ 	  	<area shape="rect" coords="${image.imageWidth / 2},${image.imageHeight / 5},${image.imageWidth},${image.imageHeight}" href="<c:url value='${folder.nextPage}'/>" />
       </c:if> 
  	</map>
   

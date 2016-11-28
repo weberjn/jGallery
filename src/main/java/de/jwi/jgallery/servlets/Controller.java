@@ -110,10 +110,6 @@ public class Controller extends HttpServlet
 
 		Properties propsWI = (Properties)context.getAttribute(Controller.JGALLERY_PROPERTIES);
 		
-		InputStream is = null;
-
-		URL urlWI = null;
-
 		dataSource = propsWI.getProperty("datasource");
 
 		dirmappings = new Properties();

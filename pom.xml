@@ -4,7 +4,7 @@
 	<groupId>de.jwi</groupId>
 	<artifactId>jGallery</artifactId>
 	<packaging>war</packaging>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>jGallery Maven Webapp</name>
 	<url>http://maven.apache.org</url>
 
